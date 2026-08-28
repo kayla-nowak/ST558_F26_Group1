@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "HW1/HW1.html",
+    "href": "HW1/HW1.html",
+    "title": "assignment1",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "HW1/HW1.html#quarto",
+    "href": "HW1/HW1.html#quarto",
+    "title": "assignment1",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "HW1/HW1.html#running-code",
+    "href": "HW1/HW1.html#running-code",
+    "title": "assignment1",
+    "section": "Running Code",
+    "text": "Running Code\nWhen you click the Render button a document will be generated that includes both content and the output of embedded code. You can embed code like this:\n\n1 + 1\n\n[1] 2\n\n\nYou can add options to executable code like this\n\n\n[1] 4\n\n\nThe echo: false option disables the printing of code (only output is displayed)."
+  }
+]
