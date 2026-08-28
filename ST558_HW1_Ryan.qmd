@@ -1,0 +1,64 @@
+---
+title: "ST558 HW1 (Ryan)"
+author: "Ryan Mersereau"
+format: html
+editor: visual
+---
+
+# Task 1: Basic Vector practice
+
+First, we create two vectors corresponding to the blood pressure of 20 subjects. The first, `pre_bp` is pre-treatment measurements, and the second, `post_bp` is post-treatment measurements.
+
+```{r}
+pre_bp <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 
+            128, 140, 137, 131, 120, 128, 139, 135)
+
+post_bp <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119,
+             130, 122, 106, 106, 124, 102, 117, 113)
+
+is.vector(pre_bp)
+```
+
+Next, we will assign `names` to the vector elements using this `paste()` function
+
+```{r}
+names(pre_bp) <- c(paste("Subject", 1:20, sep = "_"))
+names(post_bp) <- c(paste("Subject", 1:20, sep = "_"))
+print(head(pre_bp))
+```
+
+We can calculate the change in blood pressure by subtracting post-treatment measurements from pre-treatment measurements.
+
+```{r}
+diff_bp <- pre_bp - post_bp
+names(diff_bp) <- c(paste("Subject", 1:20, sep = "_"))
+```
+
+Now, we can calculate the average decrease in blood pressure across all patients
+
+```{r}
+mean(diff_bp)
+```
+
+From this data, blood pressure decreased 17 bpm, on average, after treatment.
+
+We can specifically determine which patients experienced a decrease in blood pressure after treatment (positive change) using the `which()` function
+
+```{r}
+which((diff_bp) > 0)
+```
+
+We can see that all patients experienced a decrease in blood pressure after treatment except for subject 9, 13, and 17. Therefore, we can make a vector that is a subset of the differences to only include subjects whose blood pressure decreased.
+
+```{r}
+positive_diff_bp <- diff_bp[which((diff_bp) > 0)]
+print(positive_diff_bp)
+```
+
+Finally, we can recalculate the average decrease in blood pressure from this subset
+
+```{r}
+mean(positive_diff_bp)
+```
+
+From this subset of only subjects who experienced a decrease in blood pressure after treatment, the average decrease for this sample was 20.647 bpm
