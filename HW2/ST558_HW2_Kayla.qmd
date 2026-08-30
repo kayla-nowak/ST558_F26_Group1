@@ -1,0 +1,30 @@
+---
+title: "Homework 2"
+author: "Kayla Nowak"
+format: html
+editor: visual
+---
+
+## Task 1: Basic Vector practice
+
+```{r}
+
+```
+
+## Task 2: Basic Data Frame practice
+
+```{r}
+
+```
+
+## Task 3: List practice
+
+```{r}
+
+```
+
+## Task 4: Control Flow Practice
+
+```{r}
+
+```
