@@ -1,5 +1,5 @@
 ---
-title: "ST558 HW1 (Ryan)"
+title: "ST558 HW2 (Ryan)"
 author: "Ryan Mersereau"
 format: html
 editor: visual
@@ -22,8 +22,9 @@ is.vector(pre_bp)
 Next, we will assign `names` to the vector elements using this `paste()` function
 
 ```{r}
-names(pre_bp) <- c(paste("Subject", 1:20, sep = "_"))
-names(post_bp) <- c(paste("Subject", 1:20, sep = "_"))
+patient <- c(paste("Subject", 1:20, sep = "_"))
+names(pre_bp) <- patient
+names(post_bp) <- patient
 print(head(pre_bp))
 ```
 
@@ -31,7 +32,7 @@ We can calculate the change in blood pressure by subtracting post-treatment meas
 
 ```{r}
 diff_bp <- pre_bp - post_bp
-names(diff_bp) <- c(paste("Subject", 1:20, sep = "_"))
+names(diff_bp) <- patient
 ```
 
 Now, we can calculate the average decrease in blood pressure across all patients
@@ -62,3 +63,66 @@ mean(positive_diff_bp)
 ```
 
 From this subset of only subjects who experienced a decrease in blood pressure after treatment, the average decrease for this sample was 20.647 bpm
+
+# Task 2: Basic Data Frame practice
+
+Continuing from task 1, we'll create a data frame object with four columns corresponding to: `patient`, `pre_bp`, `post_bp`, and `diff_bp`
+
+```{r}
+bp_df <- data.frame(patient, pre_bp, post_bp, diff_bp)
+bp_df
+```
+
+Next, let's return only rows where `diff_bp` is negative, we'll use the`[` function
+
+Using `bp_df[ , ]`, we can subset rows (first argument) or columns. By specifying `bp_df[4] < 0` in the rows argument, we are subsetting for rows where the fourth column of our dataframe, `diff_bp` is less than 0.
+
+```{r}
+bp_df[bp_df[4] < 0, ]
+```
+
+Next, let's add a new boolean column to our dataframe that returns TRUE if `post_bp` is less than 120. We can do this by using `$` to reference a column.
+
+```{r}
+bp_df$low_post <- bp_df$post_bp < 120
+head(bp_df)
+```
+
+Here we referenced the `post_bp`, column, and by giving it the argument of \< 120, this returns TRUE if the conditions are met for this column, and FALSE if not. We then can assign these boolean values to a new column in our dataframe, which I've named `low_post`
+
+Finally, let's print the data frame out nicely in our final document
+
+```{r}
+knitr::kable(bp_df, caption = "Blood Pressure by Subject")
+```
+
+# Task 3: List practice
+
+Now, we have similar data from another experiment where the treatment was actually a placebo.
+
+We'll have new data for pre and post treatment values for 10 subjects, which we'll store in a dataframe structured similarly to the dataframe from task 2
+
+```{r}
+placebo_pre_bp <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+placebo_post_bp <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+placebo_diff_bp <- placebo_pre_bp - placebo_post_bp
+placebo_patient <- c(paste("Subject", 1:10, sep = "_"))
+```
+
+```{r}
+placebo_bp_df <- data.frame(placebo_patient, placebo_pre_bp, placebo_post_bp, placebo_diff_bp)
+placebo_bp_df$low_post <- placebo_bp_df$placebo_post_bp < 120
+placebo_bp_df
+```
+
+Now, we can create and store a list with two elements:
+
+- 1st element: `treatment`, our data frame from task 2
+- 2nd element: `placebo`, our data frame created above
+
+```{r}
+my_list <- list(treatment = bp_df, placebo = placebo_bp_df)
+my_list
+```
+
+We can access the first list element in three different ways:
