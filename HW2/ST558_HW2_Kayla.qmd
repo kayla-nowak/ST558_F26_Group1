@@ -101,9 +101,62 @@ knitr::kable(bp_df,
 
 ## Task 3: List practice
 
+Now working with the placebo group (previous data was the treatment group).
+
+1.  Create a bp data frame for the placebo group (same process as before).
+
 ```{r}
+#initiate placebo data (pre and post)
+pl_pre <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+pl_post <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+#derive change for placebo
+pl_chg <- pl_pre - pl_post
+
+#flag post_bp < 120 for placebo 
+pl_flag <- pl_post < 120
+
+#add subject identifiers (1:10, but different 1:10 than TRT group)
+sbj_pl <- paste("Subject", 1:10, sep="_")
+names(pl_pre)  <- sbj_pl
+names(pl_post) <- sbj_pl
+
+#combine as data frame:
+pl_df <- data.frame(patient = sbj_pl, 
+                    pre_bp  = pl_pre, 
+                    post_bp = pl_post, 
+                    diff_bp = pl_chg,
+                    post_bp_lt120 =pl_flag)
+pl_df
 
 ```
+
+
+2. Create list containing `treatment` data frame and `placebo` dataframe.
+
+```{r}
+bp_list <- list(treatment = bp_df,
+                placebo = pl_df)
+str(bp_list)
+```
+
+3. Access the first list element using 3 different types of syntax
+
+    - Note: all 3 outputs should look nearly identical
+    - **? was there a 3rd way to get a list element as its original type?** 
+
+```{r}
+bp_list[1]          #by index, returned as list
+bp_list[[1]]        #by index, returned as itself (data frame)
+bp_list$treatment   #by name,  returned as itself (data frame)
+```
+
+4. Access `pre_bp` column of placebo data in one line of code.
+
+```{r}
+bp_list[[2]][2]    # [[list]][within list], pre_bp is column 2 of placebo data frame
+```
+
 
 ## Task 4: Control Flow Practice
 
