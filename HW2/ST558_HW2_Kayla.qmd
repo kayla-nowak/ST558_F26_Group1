@@ -7,7 +7,7 @@ editor: visual
 
 ## Task 1: Basic Vector practice
 
-1.  Create pre-treatment vector and post-treatment vector:
+1.  Create pre-treatment vector and post-treatment vector.
 
 ```{r}
 bp_pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
@@ -15,15 +15,88 @@ bp_pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140
 bp_post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
 ```
 
+2.  Assign (subject) names to the vector elements.
 
 ```{r}
+#Initialize vector of names as "Subject_#"
+sbj <- paste("Subject", 1:20, sep="_")
+sbj
 
+#Update vector attributes
+names(bp_pre)  <- sbj
+names(bp_post) <- sbj
+
+#Confirm update
+names(bp_pre)
+names(bp_post)
+```
+
+3.  Calculate change in blood pressure.
+
+    -   Note: Specified as subtracting post-treatment *from* pre-treatment. Therefore, a positive value of `bp_chg` is a decrease in blood pressure post-treatment (negative = increase).
+
+```{r}
+bp_chg <- bp_pre - bp_post
+bp_chg 
+```
+
+4.  Average decrease across all participants.
+
+```{r}
+mean(bp_chg)   #positive == decrease
+```
+
+5.  Determine which patients experienced a decrease in blood pressure after treatment (a positive change).
+
+```{r}
+is_pos <- which(bp_chg > 0)
+is_pos  #values are the indices, names are preserved (matches index)
+```
+
+6.  Subset the vector of differences to only return those that have a positive change.
+
+```{r}
+bp_chg_pos <- bp_chg[is_pos]
+bp_chg_pos
+```
+
+7.  Average decrease across those with decrease.
+
+```{r}
+mean(bp_chg_pos)
 ```
 
 ## Task 2: Basic Data Frame practice
 
-```{r}
+1.  Create data frame from the bp vectors, rename columns.
 
+```{r}
+bp_df <- data.frame(patient = sbj, 
+                    pre_bp  = bp_pre, 
+                    post_bp = bp_post, 
+                    diff_bp = bp_chg)
+```
+
+2.  Return only rows with negative change (increase bp). **?moving forward or just for now?**
+
+```{r}
+subset(bp_df, diff_bp < 0)
+```
+
+3.  Add logical indicator column for post-treatment bp \< 120.
+
+```{r}
+bp_df$post_bp_lt120 <- bp_df$post_bp < 120
+bp_df
+```
+
+4.  Print data frame (formatted with knitr).
+
+```{r}
+knitr::kable(bp_df, 
+             row.names = FALSE,  #turn off row.names, redundant
+             align = c("l", "r", "r", "r", "r") #force last col to r align
+             )
 ```
 
 ## Task 3: List practice
