@@ -229,7 +229,7 @@ Subject_18 Subject_19 Subject_20
 <li>Subset the vector of differences to only return those that have a positive change.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bp_chg_pos <span class="ot">&lt;-</span> bp_chg[is_pos]</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bp_chg_pos <span class="ot">&lt;-</span> bp_chg[is_pos] <span class="co">#since is_pos is a vector of the indices</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>bp_chg_pos</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Subject_1  Subject_2  Subject_3  Subject_4  Subject_5  Subject_6  Subject_7 
@@ -262,7 +262,10 @@ Subject_18 Subject_19 Subject_20
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">diff_bp =</span> bp_chg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
-<li>Return only rows with negative change (increase bp). <strong>?moving forward or just for now?</strong></li>
+<li><p>Return only rows with negative change (increase bp).</p>
+<ul>
+<li>Note: I assumed this was asking for a printing of select rows and not a permanent subset/reduction of the data frame.</li>
+</ul></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(bp_df, diff_bp <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -538,7 +541,6 @@ Subject_10 Subject_10    130     124       6         FALSE</code></pre>
 <li><p>Access the first list element using 3 different types of syntax</p>
 <ul>
 <li>Note: all 3 outputs should look nearly identical</li>
-<li><strong>? was there a 3rd way to get a list element as its original type?</strong></li>
 </ul></li>
 </ol>
 <div class="cell">
@@ -638,7 +640,7 @@ Subject_10    130</code></pre>
 </section>
 <section id="task-4-control-flow-practice" class="level2">
 <h2 class="anchored" data-anchor-id="task-4-control-flow-practice">Task 4: Control Flow Practice</h2>
-<p>Working <strong>within(?)</strong> the list, add a new field to each data frame to categorize <code>post_bp</code> to one of the following levels:</p>
+<p>Working <em>within</em> the list, add a new field to each data frame to categorize <code>post_bp</code> to one of the following levels:</p>
 <ul>
 <li>optimal (&lt;= 120)</li>
 <li>borderline (&gt;120 but &lt;= 130)</li>
@@ -649,15 +651,110 @@ Subject_10    130</code></pre>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#update df WITHIN each list</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">1</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">20</span>)  <span class="co">#treatment dataframe, 20 records</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">2</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">10</span>)  <span class="co">#placebo dataframe, 10 records</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">1</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">20</span>)  <span class="co">#treatment dataframe, blank for 20 records</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">2</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">10</span>)  <span class="co">#placebo dataframe, blank for 10 records</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>Apply categories for the non-placebo group:</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For loop indexes over subject (row number)</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># - bp_list[[1]] isolates the treatment df list element as a df</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - [i,3] is ith row (subject) and 3rd column (post_bp)</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - [i,6] is ith row (subject) and 6th column (status)</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - logical check on 3rd column dictates the value of the 6th column</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>) {</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (bp_list[[<span class="dv">1</span>]][i,<span class="dv">3</span>] <span class="sc">&lt;=</span> <span class="dv">120</span>){</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">1</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"optimal"</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (bp_list[[<span class="dv">1</span>]][i,<span class="dv">3</span>] <span class="sc">&lt;=</span> <span class="dv">130</span>) {</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Note: &gt;120 is implied by the if/else-if logic flow</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">1</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"borderline"</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (bp_list[[<span class="dv">1</span>]][i,<span class="dv">3</span>] <span class="sc">&gt;</span> <span class="dv">130</span>) {</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">1</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"high"</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Something broke at "</span>, i)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a><span class="co">#review results after both loops finish executing to check for indexing</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <ol start="3" type="1">
 <li>Apply categories for the placebo group:</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Same approach, except...</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># - loop over 10 subjects (instead of 20)</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - bp_list[[2]] isolates the placebo df list element as a df</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (bp_list[[<span class="dv">2</span>]][i,<span class="dv">3</span>] <span class="sc">&lt;=</span> <span class="dv">120</span>){</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">2</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"optimal"</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (bp_list[[<span class="dv">2</span>]][i,<span class="dv">3</span>] <span class="sc">&lt;=</span> <span class="dv">130</span>) {</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">#else-if logic implies also (not &lt;= 120)</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">2</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"borderline"</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (bp_list[[<span class="dv">2</span>]][i,<span class="dv">3</span>] <span class="sc">&gt;</span> <span class="dv">130</span>) {</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    bp_list[[<span class="dv">2</span>]][i,<span class="dv">6</span>] <span class="ot">=</span> <span class="st">"high"</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Something broke at "</span>, i)</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Review results:</p>
+<ul>
+<li>Non-Placebo group</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              patient pre_bp post_bp diff_bp post_bp_lt120     status
+Subject_1   Subject_1    130     114      16          TRUE    optimal
+Subject_2   Subject_2    128      98      30          TRUE    optimal
+Subject_3   Subject_3    116     113       3          TRUE    optimal
+Subject_4   Subject_4    124      99      25          TRUE    optimal
+Subject_5   Subject_5    133     107      26          TRUE    optimal
+Subject_6   Subject_6    134     116      18          TRUE    optimal
+Subject_7   Subject_7    118     113       5          TRUE    optimal
+Subject_8   Subject_8    126     111      15          TRUE    optimal
+Subject_9   Subject_9    114     119      -5          TRUE    optimal
+Subject_10 Subject_10    127     117      10          TRUE    optimal
+Subject_11 Subject_11    141     101      40          TRUE    optimal
+Subject_12 Subject_12    138     119      19          TRUE    optimal
+Subject_13 Subject_13    128     130      -2         FALSE borderline
+Subject_14 Subject_14    140     122      18         FALSE borderline
+Subject_15 Subject_15    137     106      31          TRUE    optimal
+Subject_16 Subject_16    131     106      25          TRUE    optimal
+Subject_17 Subject_17    120     124      -4         FALSE borderline
+Subject_18 Subject_18    128     102      26          TRUE    optimal
+Subject_19 Subject_19    139     117      22          TRUE    optimal
+Subject_20 Subject_20    135     113      22          TRUE    optimal</code></pre>
+</div>
+</div>
+<ul>
+<li>Placebo group</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              patient pre_bp post_bp diff_bp post_bp_lt120     status
+Subject_1   Subject_1    138     105      33          TRUE    optimal
+Subject_2   Subject_2    135     136      -1         FALSE       high
+Subject_3   Subject_3    147     123      24         FALSE borderline
+Subject_4   Subject_4    117     130     -13         FALSE borderline
+Subject_5   Subject_5    152     134      18         FALSE       high
+Subject_6   Subject_6    134     143      -9         FALSE       high
+Subject_7   Subject_7    114     135     -21         FALSE       high
+Subject_8   Subject_8    121     139     -18         FALSE       high
+Subject_9   Subject_9    131     120      11         FALSE    optimal
+Subject_10 Subject_10    130     124       6         FALSE borderline</code></pre>
+</div>
+</div>
 
 
 </section>
