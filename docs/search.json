@@ -19,5 +19,47 @@
     "title": "assignment1",
     "section": "Running Code",
     "text": "Running Code\nWhen you click the Render button a document will be generated that includes both content and the output of embedded code. You can embed code like this:\n\n1 + 1\n\n[1] 2\n\n\nYou can add options to executable code like this\n\n\n[1] 4\n\n\nThe echo: false option disables the printing of code (only output is displayed)."
+  },
+  {
+    "objectID": "HW2/ST558_HW2_Kayla.html",
+    "href": "HW2/ST558_HW2_Kayla.html",
+    "title": "Homework 2",
+    "section": "",
+    "text": "Create pre-treatment vector and post-treatment vector:\n\n\nbp_pre &lt;- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)\n\nbp_post &lt;- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)"
+  },
+  {
+    "objectID": "HW2/ST558_HW2_Kayla.html#task-1-basic-vector-practice",
+    "href": "HW2/ST558_HW2_Kayla.html#task-1-basic-vector-practice",
+    "title": "Homework 2",
+    "section": "",
+    "text": "Create pre-treatment vector and post-treatment vector:\n\n\nbp_pre &lt;- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)\n\nbp_post &lt;- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)"
+  },
+  {
+    "objectID": "HW2/ST558_HW2_Kayla.html#task-2-basic-data-frame-practice",
+    "href": "HW2/ST558_HW2_Kayla.html#task-2-basic-data-frame-practice",
+    "title": "Homework 2",
+    "section": "Task 2: Basic Data Frame practice",
+    "text": "Task 2: Basic Data Frame practice"
+  },
+  {
+    "objectID": "HW2/ST558_HW2_Kayla.html#task-3-list-practice",
+    "href": "HW2/ST558_HW2_Kayla.html#task-3-list-practice",
+    "title": "Homework 2",
+    "section": "Task 3: List practice",
+    "text": "Task 3: List practice"
+  },
+  {
+    "objectID": "HW2/ST558_HW2_Kayla.html#task-4-control-flow-practice",
+    "href": "HW2/ST558_HW2_Kayla.html#task-4-control-flow-practice",
+    "title": "Homework 2",
+    "section": "Task 4: Control Flow Practice",
+    "text": "Task 4: Control Flow Practice"
+  },
+  {
+    "objectID": "ST558_HW2_Ryan.html",
+    "href": "ST558_HW2_Ryan.html",
+    "title": "ST558 HW1 (Ryan)",
+    "section": "",
+    "text": "Task 1: Basic Vector practice\nFirst, we create two vectors corresponding to the blood pressure of 20 subjects. The first, pre_bp is pre-treatment measurements, and the second, post_bp is post-treatment measurements.\n\npre_bp &lt;- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, \n            128, 140, 137, 131, 120, 128, 139, 135)\n\npost_bp &lt;- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119,\n             130, 122, 106, 106, 124, 102, 117, 113)\n\nis.vector(pre_bp)\n\n[1] TRUE\n\n\nNext, we will assign names to the vector elements using this paste() function\n\nnames(pre_bp) &lt;- c(paste(\"Subject\", 1:20, sep = \"_\"))\nnames(post_bp) &lt;- c(paste(\"Subject\", 1:20, sep = \"_\"))\nprint(head(pre_bp))\n\nSubject_1 Subject_2 Subject_3 Subject_4 Subject_5 Subject_6 \n      130       128       116       124       133       134 \n\n\nWe can calculate the change in blood pressure by subtracting post-treatment measurements from pre-treatment measurements.\n\ndiff_bp &lt;- pre_bp - post_bp\nnames(diff_bp) &lt;- c(paste(\"Subject\", 1:20, sep = \"_\"))\n\nNow, we can calculate the average decrease in blood pressure across all patients\n\nmean(diff_bp)\n\n[1] 17\n\n\nFrom this data, blood pressure decreased 17 bpm, on average, after treatment.\nWe can specifically determine which patients experienced a decrease in blood pressure after treatment (positive change) using the which() function\n\nwhich((diff_bp) &gt; 0)\n\n Subject_1  Subject_2  Subject_3  Subject_4  Subject_5  Subject_6  Subject_7 \n         1          2          3          4          5          6          7 \n Subject_8 Subject_10 Subject_11 Subject_12 Subject_14 Subject_15 Subject_16 \n         8         10         11         12         14         15         16 \nSubject_18 Subject_19 Subject_20 \n        18         19         20 \n\n\nWe can see that all patients experienced a decrease in blood pressure after treatment except for subject 9, 13, and 17. Therefore, we can make a vector that is a subset of the differences to only include subjects whose blood pressure decreased.\n\npositive_diff_bp &lt;- diff_bp[which((diff_bp) &gt; 0)]\nprint(positive_diff_bp)\n\n Subject_1  Subject_2  Subject_3  Subject_4  Subject_5  Subject_6  Subject_7 \n        16         30          3         25         26         18          5 \n Subject_8 Subject_10 Subject_11 Subject_12 Subject_14 Subject_15 Subject_16 \n        15         10         40         19         18         31         25 \nSubject_18 Subject_19 Subject_20 \n        26         22         22 \n\n\nFinally, we can recalculate the average decrease in blood pressure from this subset\n\nmean(positive_diff_bp)\n\n[1] 20.64706\n\n\nFrom this subset of only subjects who experienced a decrease in blood pressure after treatment, the average decrease for this sample was 20.647 bpm"
   }
 ]

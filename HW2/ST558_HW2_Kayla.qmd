@@ -7,6 +7,15 @@ editor: visual
 
 ## Task 1: Basic Vector practice
 
+1.  Create pre-treatment vector and post-treatment vector:
+
+```{r}
+bp_pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
+
+bp_post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
+```
+
+
 ```{r}
 
 ```
