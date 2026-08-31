@@ -638,6 +638,26 @@ Subject_10    130</code></pre>
 </section>
 <section id="task-4-control-flow-practice" class="level2">
 <h2 class="anchored" data-anchor-id="task-4-control-flow-practice">Task 4: Control Flow Practice</h2>
+<p>Working <strong>within(?)</strong> the list, add a new field to each data frame to categorize <code>post_bp</code> to one of the following levels:</p>
+<ul>
+<li>optimal (&lt;= 120)</li>
+<li>borderline (&gt;120 but &lt;= 130)</li>
+<li>high (&gt; 130)</li>
+</ul>
+<ol type="1">
+<li>Initialize new <code>status</code> column in each dataset</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#update df WITHIN each list</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">1</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">20</span>)  <span class="co">#treatment dataframe, 20 records</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="dv">2</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">10</span>)  <span class="co">#placebo dataframe, 10 records</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li>Apply categories for the non-placebo group:</li>
+</ol>
+<ol start="3" type="1">
+<li>Apply categories for the placebo group:</li>
+</ol>
 
 
 </section>

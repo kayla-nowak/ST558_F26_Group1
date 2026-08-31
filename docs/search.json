@@ -53,7 +53,7 @@
     "href": "HW2/ST558_HW2_Kayla.html#task-4-control-flow-practice",
     "title": "Homework 2",
     "section": "Task 4: Control Flow Practice",
-    "text": "Task 4: Control Flow Practice"
+    "text": "Task 4: Control Flow Practice\nWorking within(?) the list, add a new field to each data frame to categorize post_bp to one of the following levels:\n\noptimal (&lt;= 120)\nborderline (&gt;120 but &lt;= 130)\nhigh (&gt; 130)\n\n\nInitialize new status column in each dataset\n\n\n#update df WITHIN each list\nbp_list[[1]]$status &lt;- character(20)  #treatment dataframe, 20 records\nbp_list[[2]]$status &lt;- character(10)  #placebo dataframe, 10 records\n\n\nApply categories for the non-placebo group:\n\n\nApply categories for the placebo group:"
   },
   {
     "objectID": "ST558_HW2_Ryan.html",
