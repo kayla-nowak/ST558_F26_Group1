@@ -4,3 +4,68 @@ author: "Yefrid Cordoba"
 format: html
 editor: visual
 ---
+
+## Task 1: Basic Vector Practice
+
+### 1
+
+First we create two vectors for the values of the blood pressure pre and post-treatment measurements for 20 patients
+```{r}
+pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
+
+post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
+
+```
+
+### 2
+
+Now we assign names to the elements to easily match both subjects before and after treatment.
+```{r}
+ns <- paste("Subject", 1:20, sep = "_") # we create the names in order for each of the subjects
+
+#And we assign them to each of the names attributes for the two vectors
+
+names(pre) <- ns
+
+names(post) <- ns
+```
+
+### 3
+
+Here we need to calculate the change in blood pressure for each patient.
+```{r}
+ch <- pre - post
+```
+
+### 4
+
+And we calculate the average decrease in blood pressure across all patients.
+```{r}
+mean(ch)
+```
+
+### 5
+
+Using the `which()` function, we extract the indices and names of the subjects when the blood pressure decreased after treatment.
+```{r}
+which(ch > 0)
+```
+
+### 6
+
+To subset the vector with only the ones that had a positive change, we use the function `which()` to get the indices when the condition is met.
+```{r}
+dec <- ch[which(ch > 0)]
+
+dec
+```
+
+### 7
+
+And finally we calculate the average decrease in blood pressure for just the patients that actually had a decrease in blood pressure.
+```{r}
+mean(dec)
+```
+
+## Task 2: Basic Data Frame Practice
+
