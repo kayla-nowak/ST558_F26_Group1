@@ -1,0 +1,140 @@
+---
+title: "ST588_HW2_Will_Carter"
+format: html
+---
+
+# Vector Practice
+# ------------------------------------------------------
+
+# 1. pre-treatment and post-treatment vectors
+pre_treatment_vector <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 
+                    128, 140, 137, 131, 120, 128, 139, 135)
+
+post_treatment_vector <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 
+                      130, 122, 106, 106, 124, 102, 117, 113)
+
+
+
+# 2. assign names to the vector elements using paste() function
+names_x <- paste("Subject", 1:20, sep = "_")
+
+names(pre_treatment_vector) <- names_x
+names(post_treatment_vector) <- names_x
+
+
+# 3. change in blood pressure
+delta_vector <- pre_treatment_vector - post_treatment_vector
+
+# 4. average decrease across group
+average_decrease <- mean(delta_vector)
+average_decrease
+
+# 5. which in group had decrease in blood pressure
+which(delta_vector > 0)
+ 
+# 6. subset the vector differences to only return those that have a positive
+positive_delta <- delta_vector[delta_vector > 0]
+positive_delta
+
+# 7. average decrease in blood pressure for those who had positive
+mean(positive_delta)
+ 
+ 
+ 
+ 
+
+# Basic Data Frame Practice
+# --------------------------------------------
+ 
+ 
+# 1. create data frame object
+blood_pressure_df <- data.frame(
+  patient = 1:20,
+  pre_bp = unname(pre_treatment_vector),
+  post_bp = unname(post_treatment_vector),
+  diff_bp = delta_vector
+)
+
+# 2. return only rows where diff_bp is negative
+bp_df[bp_df$diff_bp < 0, ]
+
+# 3. add new column
+bp_df$under_120 <- bp_df$post_bp < 120
+ 
+# 4. print data frame
+knitr::kable(bp_df)
+ 
+
+
+
+
+# List Practice
+# ---------------------------------------
+
+# create new data frame for placebo group
+pre_placebo <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+post_placebo <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+placebo_df <- data.frame(
+  patient = 1:10,
+  pre_bp = pre_placebo,
+  post_bp = post_placebo,
+  diff_bp = pre_placebo - post_placebo
+)
+
+placebo_df$under_120 <- placebo_df$post_bp < 120
+
+# 2. create and store list with two elements
+bp_list <- list(treatment = bp_df, placebo = placebo_df)
+
+# 3. access fir element using three different types of syntax
+bp_list$treatment
+bp_list[[]]
+bp_list[["treatment"]]
+
+# 4. access placebo$pre_bp
+bp_list$placebo$pre_bp
+
+
+
+
+
+# Control Flow Practice
+# --------------------------------------------
+
+# 1. create status column
+bp_list$treatment$status <- character(nrow(bp_list$treatment))
+bp_list$placebo$status <- character(nrow(bp_list$))
+
+# 2. loop status column values
+for (i in 1:nrow(bp_list$treatment)) {
+  if (bp_list$treatment$post_bp[i] <= 120) {
+    bp_list$treatment$status[i] <- "optimal"
+  }
+  else if (bp_list$treatment$post_bp[i] <= 130) {
+    bp_list$treatment$status[i] <- "borderline"
+  }
+  else {
+    bp_list$treatment$status[i] <- "high"
+  }
+}
+
+# 3. loop status column values placebo
+for (i in 1:nrow(bp_list$placebo)) {
+  if (bp_list$placebo$post_bp[i] <= 120) {
+    bp_list$placebo$status[i] <- "optimal"
+  }
+  else if (bp_list$placebo$post_bp[i] <= 130) {
+    bp_list$placebo$status[i] <- "borderline"
+  }
+  else {
+    bp_list$placebo$status[i] <- "high"
+  }
+}
+
+ 
+ 
+# Final results
+knitr::kable(bp_list$treatment)
+knitr::kable(bp_list$placebo)
+
