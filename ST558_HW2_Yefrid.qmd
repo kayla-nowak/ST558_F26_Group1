@@ -166,3 +166,58 @@ bp_study[["placebo"]]["pre_bp"]
 ## Task 4: Control Flow Practice
 
 ### 1
+
+To validate whether  a blood pressure measurement is optimal ($\leq$ 120), borderline (120 $< bp \leq$ 130), or high ($>$ 130). We create a new column in each data frame called `status`
+```{r}
+bp_study$treatment$status <- character(20)
+
+bp_study$placebo$status <- character(10)
+```
+
+### 2 
+
+For the treatment data frame within the list, we are going to use a loop and an if/then/else logic to assign optimal, borderline or high blood pressure classification to each subject.
+```{r}
+for (i in 1:dim(bp_study$treatment)[1]){
+  
+  if (bp_study$treatment$post_bp[i] <= 120){
+    
+    bp_study$treatment$status[i] <- "optimal"
+    
+  } else if (bp_study$treatment$post_bp[i] > 130){
+    
+    bp_study$treatment$status[i] <- "high"
+    
+  } else {
+    
+    bp_study$treatment$status[i] <- "borderline"
+    
+  }
+}
+
+bp_study$treatment
+```
+
+### 3 
+
+And we create the row also for the `placebo` element in the list following the same procedure.
+```{r}
+for (i in 1:dim(bp_study$placebo)[1]){
+  
+  if (bp_study$placebo$post_bp[i] <= 120){
+    
+    bp_study$placebo$status[i] <- "optimal"
+    
+  } else if (bp_study$placebo$post_bp[i] > 130){
+    
+    bp_study$placebo$status[i] <- "high"
+    
+  } else {
+    
+    bp_study$placebo$status[i] <- "borderline"
+    
+  }
+}
+
+bp_study$placebo
+```
