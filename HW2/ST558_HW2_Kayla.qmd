@@ -56,7 +56,7 @@ is_pos  #values are the indices, names are preserved (matches index)
 6.  Subset the vector of differences to only return those that have a positive change.
 
 ```{r}
-bp_chg_pos <- bp_chg[is_pos]
+bp_chg_pos <- bp_chg[is_pos] #since is_pos is a vector of the indices
 bp_chg_pos
 ```
 
@@ -77,7 +77,9 @@ bp_df <- data.frame(patient = sbj,
                     diff_bp = bp_chg)
 ```
 
-2.  Return only rows with negative change (increase bp). **?moving forward or just for now?**
+2.  Return only rows with negative change (increase bp).
+
+    - Note: I assumed this was asking for a printing of select rows and not a permanent subset/reduction of the data frame.
 
 ```{r}
 subset(bp_df, diff_bp < 0)
@@ -101,12 +103,140 @@ knitr::kable(bp_df,
 
 ## Task 3: List practice
 
-```{r}
+Now working with the placebo group (previous data was the treatment group).
 
+1.  Create a bp data frame for the placebo group (same process as before).
+
+```{r}
+#initiate placebo data (pre and post)
+pl_pre <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+pl_post <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+#derive change for placebo
+pl_chg <- pl_pre - pl_post
+
+#flag post_bp < 120 for placebo 
+pl_flag <- pl_post < 120
+
+#add subject identifiers (1:10, but different 1:10 than TRT group)
+sbj_pl <- paste("Subject", 1:10, sep="_")
+names(pl_pre)  <- sbj_pl
+names(pl_post) <- sbj_pl
+
+#combine as data frame:
+pl_df <- data.frame(patient = sbj_pl, 
+                    pre_bp  = pl_pre, 
+                    post_bp = pl_post, 
+                    diff_bp = pl_chg,
+                    post_bp_lt120 =pl_flag)
+pl_df
+
+```
+
+2.  Create list containing `treatment` data frame and `placebo` dataframe.
+
+```{r}
+bp_list <- list(treatment = bp_df,
+                placebo = pl_df)
+str(bp_list)
+```
+
+3.  Access the first list element using 3 different types of syntax
+
+    -   Note: all 3 outputs should look nearly identical
+
+```{r}
+bp_list[1]          #by index, returned as list
+bp_list[[1]]        #by index, returned as itself (data frame)
+bp_list$treatment   #by name,  returned as itself (data frame)
+```
+
+4.  Access `pre_bp` column of placebo data in one line of code.
+
+```{r}
+bp_list[[2]][2]    # [[list]][within list], pre_bp is column 2 of placebo data frame
 ```
 
 ## Task 4: Control Flow Practice
 
+Working *within* the list, add a new field to each data frame to categorize `post_bp` to one of the following levels:
+
+-   optimal (\<= 120)
+-   borderline (\>120 but \<= 130)
+-   high (\> 130)
+
+1.  Initialize new `status` column in each dataset
+
 ```{r}
+#update df WITHIN each list
+bp_list[[1]]$status <- character(20)  #treatment dataframe, blank for 20 records
+bp_list[[2]]$status <- character(10)  #placebo dataframe, blank for 10 records
+```
+
+2.  Apply categories for the non-placebo group:
+
+```{r}
+#For loop indexes over subject (row number)
+# - bp_list[[1]] isolates the treatment df list element as a df
+# - [i,3] is ith row (subject) and 3rd column (post_bp)
+# - [i,6] is ith row (subject) and 6th column (status)
+# - logical check on 3rd column dictates the value of the 6th column
+
+for (i in 1:20) {
+  if (bp_list[[1]][i,3] <= 120){
+    bp_list[[1]][i,6] = "optimal"
+  }
+  else if (bp_list[[1]][i,3] <= 130) {
+    #Note: >120 is implied by the if/else-if logic flow
+    bp_list[[1]][i,6] = "borderline"
+  }
+  else if (bp_list[[1]][i,3] > 130) {
+    bp_list[[1]][i,6] = "high"
+  } 
+  else {
+    cat("Something broke at ", i)
+  }
+}
+
+#review results after both loops finish executing to check for indexing
+```
+
+3.  Apply categories for the placebo group:
+
+```{r}
+#Same approach, except...
+# - loop over 10 subjects (instead of 20)
+# - bp_list[[2]] isolates the placebo df list element as a df
+
+for (i in 1:10) {
+  if (bp_list[[2]][i,3] <= 120){
+    bp_list[[2]][i,6] = "optimal"
+  }
+  else if (bp_list[[2]][i,3] <= 130) {
+    #else-if logic implies also (not <= 120)
+    bp_list[[2]][i,6] = "borderline"
+  }
+  else if (bp_list[[2]][i,3] > 130) {
+    bp_list[[2]][i,6] = "high"
+  } 
+  else {
+    cat("Something broke at ", i)
+  }
+}
 
 ```
+
+Review results:
+
+- Non-Placebo group
+
+```{r}
+bp_list[[1]]
+```
+
+- Placebo group
+
+```{r}
+bp_list[[2]]
+```
+

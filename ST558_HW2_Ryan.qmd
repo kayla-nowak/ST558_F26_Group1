@@ -5,7 +5,7 @@ format: html
 editor: visual
 ---
 
-# Task 1: Basic Vector practice
+# Task 1: Basic Vector Practice
 
 First, we create two vectors corresponding to the blood pressure of 20 subjects. The first, `pre_bp` is pre-treatment measurements, and the second, `post_bp` is post-treatment measurements.
 
@@ -64,7 +64,7 @@ mean(positive_diff_bp)
 
 From this subset of only subjects who experienced a decrease in blood pressure after treatment, the average decrease for this sample was 20.647 bpm
 
-# Task 2: Basic Data Frame practice
+# Task 2: Basic Data Frame Practice
 
 Continuing from task 1, we'll create a data frame object with four columns corresponding to: `patient`, `pre_bp`, `post_bp`, and `diff_bp`
 
@@ -96,7 +96,7 @@ Finally, let's print the data frame out nicely in our final document
 knitr::kable(bp_df, caption = "Blood Pressure by Subject")
 ```
 
-# Task 3: List practice
+# Task 3: List Practice
 
 Now, we have similar data from another experiment where the treatment was actually a placebo.
 
@@ -126,3 +126,65 @@ my_list
 ```
 
 We can access the first list element in three different ways:
+
+First, using single brackets
+
+```{r}
+my_list[1]
+```
+
+Second, using double brackets
+
+```{r}
+my_list[[1]]
+```
+
+And third, using `$`
+
+```{r}
+my_list$treatment
+```
+
+Finally, let's access the `pre_bp` column from the `placebo` dataframe. We can do this via multiple bracket subsets.
+
+```{r}
+my_list[[2]][2]
+```
+
+# Task 4: Control Flow Practice
+
+Let's characterize the post-treatment (or placebo) bp measurement as optimal (\<=120), borderline (120 \< bp \<= 130), and high (\>130) by creating a new status column and using a loop with if/then/else logic
+
+```{r}
+my_list$treatment$status <- character(20) # Create a new empty character column
+
+for (i in 1:length(my_list$treatment$post_bp)) { #Reference my_list, not the original object
+  if (my_list$treatment$post_bp[i] <= 120) {
+    my_list$treatment$status[i] <- "Optimal"   # Assign values to the empty character column within the loop
+  } else if (my_list$treatment$post_bp[i] <= 130) {
+    my_list$treatment$status[i] <- "Borderline"
+  } else {
+    my_list$treatment$status[i] <- "High"
+  }
+}
+
+my_list$treatment
+```
+
+Now, we can do the same for the placebo dataframe in our list. Here we create a new empty character column with 10 observations instead of 20.
+
+```{r}
+my_list$placebo$status <- character(10)
+
+for (i in 1:length(my_list$placebo$placebo_post_bp)) {
+  if (my_list$placebo$placebo_post_bp[i] <= 120) {
+    my_list$placebo$status[i] <- "Optimal"
+  } else if (my_list$placebo$placebo_post_bp[i] <= 130) {
+    my_list$placebo$status[i] <- "Borderline"
+  } else {
+    my_list$placebo$status[i] <- "High"
+  }
+}
+
+my_list$placebo
+```

@@ -1,0 +1,223 @@
+---
+title: "ST558_HW2_Yefrid"
+author: "Yefrid Cordoba"
+format: html
+editor: visual
+---
+
+## Task 1: Basic Vector Practice
+
+### 1
+
+First we create two vectors for the values of the blood pressure pre and post-treatment measurements for 20 patients
+```{r}
+pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
+
+post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
+
+```
+
+### 2
+
+Now we assign names to the elements to easily match both subjects before and after treatment.
+```{r}
+ns <- paste("Subject", 1:20, sep = "_") # we create the names in order for each of the subjects
+
+#And we assign them to each of the names attributes for the two vectors
+
+names(pre) <- ns
+
+names(post) <- ns
+```
+
+### 3
+
+Here we need to calculate the change in blood pressure for each patient.
+```{r}
+ch <- pre - post
+```
+
+### 4
+
+And we calculate the average decrease in blood pressure across all patients.
+```{r}
+mean(ch)
+```
+
+### 5
+
+Using the `which()` function, we extract the indices and names of the subjects when the blood pressure decreased after treatment.
+```{r}
+which(ch > 0)
+```
+
+### 6
+
+To subset the vector with only the ones that had a positive change, we use the function `which()` to get the indices when the condition is met.
+```{r}
+dec <- ch[which(ch > 0)]
+
+dec
+```
+
+### 7
+
+And finally we calculate the average decrease in blood pressure for just the patients that actually had a decrease in blood pressure.
+```{r}
+mean(dec)
+```
+
+## Task 2: Basic Data Frame Practice
+
+### 1
+
+We are going to create a data frame with the corresponding data for patient, pre, post, and difference in blood pressure.
+```{r}
+bp_data <- data.frame(ns, pre, post, ch, row.names = NULL)
+
+names(bp_data) <- c("patient", "pre_bp", "post_bp", "diff_bp")
+
+bp_data
+```
+
+### 2
+
+Now we just return the rows when the difference of blood pressure is positive (decrease in blood pressure).
+```{r}
+subset(bp_data, diff_bp > 0) #Returns a new data frame that meet the conditions
+```
+
+### 3
+
+Now we add a column to the data frame of boolean when the post-treatment blood pressure is less than 120.
+```{r}
+bp_data$low_bp <- bp_data$post_bp < 120
+```
+
+### 4 
+
+Finally, we print the data frame nicely.
+
+```{r}
+knitr::kable(bp_data)
+```
+
+## Task 3: List Practice
+
+### 1
+
+We create a data frame as the previous one with the new subjects that received the placebo treatment.
+```{r}
+#Create the vectosr with the data
+pre_p <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+
+post_p <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+#Create the Subjects names
+Sub_p <- paste("Subject", 1:10, sep = "_")
+
+#Create the difference column
+diff_p <- pre_p - post_p
+
+#Create the vector of boolean when post placebo is lower than 120
+low_p <- post_p < 120
+```
+
+And now we put everything in a data frame and print it out.
+```{r}
+bp_pla <- data.frame(Sub_p, pre_p, post_p, diff_p, low_p)
+
+names(bp_pla) <- c("patient", "pre_bp", "post_bp", "diff_bp", "low_bp")
+
+knitr::kable(bp_pla)
+```
+
+### 2
+
+We create a list with the two data frames previously created, and assign name to each one.
+
+```{r}
+bp_study <- list(treatment = bp_data, placebo = bp_pla)
+```
+
+### 3
+
+After creating the list, we will access the first element in three different ways.
+
+```{r}
+# Using the indices in the list
+bp_study[1] 
+
+#Using the names assigned and brackets
+bp_study['treatment']
+
+#Using the operator $
+bp_study$treatment
+```
+
+### 4
+
+And now in one line of code we will access the `pre_bp` column from the `placebo` data frame.
+
+```{r}
+bp_study[["placebo"]]["pre_bp"]
+```
+
+## Task 4: Control Flow Practice
+
+### 1
+
+To validate whether  a blood pressure measurement is optimal ($\leq$ 120), borderline (120 $< bp \leq$ 130), or high ($>$ 130). We create a new column in each data frame called `status`
+```{r}
+bp_study$treatment$status <- character(20)
+
+bp_study$placebo$status <- character(10)
+```
+
+### 2 
+
+For the treatment data frame within the list, we are going to use a loop and an if/then/else logic to assign optimal, borderline or high blood pressure classification to each subject.
+```{r}
+for (i in 1:dim(bp_study$treatment)[1]){
+  
+  if (bp_study$treatment$post_bp[i] <= 120){
+    
+    bp_study$treatment$status[i] <- "optimal"
+    
+  } else if (bp_study$treatment$post_bp[i] > 130){
+    
+    bp_study$treatment$status[i] <- "high"
+    
+  } else {
+    
+    bp_study$treatment$status[i] <- "borderline"
+    
+  }
+}
+
+bp_study$treatment
+```
+
+### 3 
+
+And we create the row also for the `placebo` element in the list following the same procedure.
+```{r}
+for (i in 1:dim(bp_study$placebo)[1]){
+  
+  if (bp_study$placebo$post_bp[i] <= 120){
+    
+    bp_study$placebo$status[i] <- "optimal"
+    
+  } else if (bp_study$placebo$post_bp[i] > 130){
+    
+    bp_study$placebo$status[i] <- "high"
+    
+  } else {
+    
+    bp_study$placebo$status[i] <- "borderline"
+    
+  }
+}
+
+bp_study$placebo
+```
