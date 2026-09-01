@@ -73,7 +73,7 @@ mean(dec)
 
 We are going to create a data frame with the corresponding data for patient, pre, post, and difference in blood pressure.
 ```{r}
-bp_data <- data.frame(ns, pre, post, ch)
+bp_data <- data.frame(ns, pre, post, ch, row.names = NULL)
 
 names(bp_data) <- c("patient", "pre_bp", "post_bp", "diff_bp")
 
@@ -104,3 +104,65 @@ knitr::kable(bp_data)
 
 ## Task 3: List Practice
 
+### 1
+
+We create a data frame as the previous one with the new subjects that received the placebo treatment.
+```{r}
+#Create the vectosr with the data
+pre_p <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+
+post_p <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+#Create the Subjects names
+Sub_p <- paste("Subject", 1:10, sep = "_")
+
+#Create the difference column
+diff_p <- pre_p - post_p
+
+#Create the vector of boolean when post placebo is lower than 120
+low_p <- post_p < 120
+```
+
+And now we put everything in a data frame and print it out.
+```{r}
+bp_pla <- data.frame(Sub_p, pre_p, post_p, diff_p, low_p)
+
+names(bp_pla) <- c("patient", "pre_bp", "post_bp", "diff_bp", "low_bp")
+
+knitr::kable(bp_pla)
+```
+
+### 2
+
+We create a list with the two data frames previously created, and assign name to each one.
+
+```{r}
+bp_study <- list(treatment = bp_data, placebo = bp_pla)
+```
+
+### 3
+
+After creating the list, we will access the first element in three different ways.
+
+```{r}
+# Using the indices in the list
+bp_study[1] 
+
+#Using the names assigned and brackets
+bp_study['treatment']
+
+#Using the operator $
+bp_study$treatment
+```
+
+### 4
+
+And now in one line of code we will access the `pre_bp` column from the `placebo` data frame.
+
+```{r}
+bp_study[["placebo"]]["pre_bp"]
+```
+
+## Task 4: Control Flow Practice
+
+### 1
