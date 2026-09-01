@@ -69,3 +69,38 @@ mean(dec)
 
 ## Task 2: Basic Data Frame Practice
 
+### 1
+
+We are going to create a data frame with the corresponding data for patient, pre, post, and difference in blood pressure.
+```{r}
+bp_data <- data.frame(ns, pre, post, ch)
+
+names(bp_data) <- c("patient", "pre_bp", "post_bp", "diff_bp")
+
+bp_data
+```
+
+### 2
+
+Now we just return the rows when the difference of blood pressure is positive (decrease in blood pressure).
+```{r}
+subset(bp_data, diff_bp > 0) #Returns a new data frame that meet the conditions
+```
+
+### 3
+
+Now we add a column to the data frame of boolean when the post-treatment blood pressure is less than 120.
+```{r}
+bp_data$low_bp <- bp_data$post_bp < 120
+```
+
+### 4 
+
+Finally, we print the data frame nicely.
+
+```{r}
+knitr::kable(bp_data)
+```
+
+## Task 3: List Practice
+
