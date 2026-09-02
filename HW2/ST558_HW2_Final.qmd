@@ -1,0 +1,277 @@
+---
+title: "Homework 2 - ST558 Group 1"
+author: "Ryan Mersereau, Kayla Nowak, Yefrid Cordoba Ortiz, Will Carter"
+format: html
+editor: visual
+---
+
+# Task 1: Basic Vector Practice
+
+## 1.
+
+First, we create two vectors corresponding to the blood pressure of 20 subjects. The first, `pre_bp` is pre-treatment measurements, and the second, `post_bp` is post-treatment measurements.
+
+```{r}
+pre_bp <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 
+            128, 140, 137, 131, 120, 128, 139, 135)
+
+post_bp <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119,
+             130, 122, 106, 106, 124, 102, 117, 113)
+```
+
+## 2.
+
+Next, we will assign `names` to the vector elements using this `paste()` function
+
+```{r}
+# Initialize vector of names
+patient <- paste("Subject", 1:20, sep = "_")
+patient
+```
+
+```{r}
+# Update vector attributes
+names(pre_bp) <- patient
+names(post_bp) <- patient
+
+# Confirm change
+print(head(pre_bp))
+print(head(post_bp))
+```
+
+## 3.
+
+We can calculate the change in blood pressure by subtracting post-treatment measurements from pre-treatment measurements.
+
+- Note: Specified as subtracting post-treatment from pre-treatment. Therefore, a positive value of `diff_bp` is a decrease in blood pressure post-treatment (negative = increase).
+
+```{r}
+diff_bp <- pre_bp - post_bp
+diff_bp
+```
+
+## 4.
+
+Now, we can calculate the average decrease in blood pressure across all patients
+
+```{r}
+mean(diff_bp)
+```
+
+From this data, blood pressure decreased 17 bpm, on average, after treatment.
+
+## 5.
+
+We can specifically determine which patients experienced a decrease in blood pressure after treatment (positive change) using the `which()` function
+
+```{r}
+is_pos <- which(diff_bp > 0)
+is_pos # values are the indeces, names are preserved
+```
+
+## 6.
+
+We can see that all patients experienced a decrease in blood pressure after treatment except for subject 9, 13, and 17. Therefore, we can make a vector that is a subset of the differences to only include subjects whose blood pressure decreased.
+
+```{r}
+positive_diff_bp <- diff_bp[is_pos]
+print(positive_diff_bp)
+```
+
+## 7.
+
+Finally, we can recalculate the average decrease in blood pressure from this subset
+
+```{r}
+mean(positive_diff_bp)
+```
+
+From this subset of only subjects who experienced a decrease in blood pressure after treatment, the average decrease for this sample was 20.647 bpm
+
+# Task 2: Basic Data Frame Practice
+
+## 1.
+
+Continuing from task 1, we'll create a data frame object with four columns corresponding to: `patient`, `pre_bp`, `post_bp`, and `diff_bp`
+
+```{r}
+bp_df <- data.frame(patient, pre_bp, post_bp, diff_bp)
+bp_df
+```
+
+## 2.
+
+Next, let's return only rows where `diff_bp` is negative. We'll use the`[` function for this.
+
+Using `bp_df[ , ]`, we can subset rows (first argument) or columns. By specifying `bp_df[4] < 0` in the rows argument, we are subsetting for rows where the **fourth** column of our dataframe, `diff_bp` is less than 0.
+
+```{r}
+bp_df[bp_df[4] < 0, ]
+```
+
+## 3.
+
+Next, let's add a new boolean column to our dataframe that returns TRUE if `post_bp` is less than 120. We can do this by using `$` to reference a column.
+
+```{r}
+bp_df$low_post <- bp_df$post_bp < 120
+bp_df
+```
+
+Here we referenced the `post_bp`, column, and by giving it the argument of \< 120, this returns TRUE if the conditions are met for this column, and FALSE if not. We then can assign these boolean values to a new column in our dataframe, which I've named `low_post`
+
+## 4.
+
+Finally, let's print the data frame out nicely in our final document
+
+```{r}
+knitr::kable(bp_df, caption = "Blood Pressure by Subject (Treatment)",
+             row.names = FALSE, 
+             align = c("l", "c", "c", "c", "r") # column alignment
+             )
+```
+
+# Task 3: List Practice
+
+## 1.
+
+Now, we have similar data from another experiment where the treatment was actually a placebo.
+
+We'll have new data for pre and post treatment values for 10 subjects, which we'll store in a dataframe structured similarly to the dataframe from task 2
+
+```{r}
+# Initial placebo data
+placebo_pre_bp <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+placebo_post_bp <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+# Create difference vector
+placebo_diff_bp <- placebo_pre_bp - placebo_post_bp
+
+# Vector of placebo names, assign names to placebo pre and post
+placebo_patient <- paste("Subject", 1:10, sep = "_")
+names(placebo_pre_bp) <- placebo_patient
+names(placebo_post_bp) <- placebo_patient
+
+```
+
+```{r}
+# Combine as dataframe
+placebo_bp_df <- data.frame(placebo_patient, placebo_pre_bp, placebo_post_bp, placebo_diff_bp)
+
+# Add column for flagging low post bp
+placebo_bp_df$low_post <- placebo_bp_df$placebo_post_bp < 120
+
+knitr::kable(placebo_bp_df, caption = "Blood Pressure by Subject (Placebo)",
+             row.names = FALSE, 
+             align = c("l", "c", "c", "c", "r") # column alignment
+             )
+```
+
+## 2.
+
+Now, we can create and store a list with two elements:
+
+- 1st element: `treatment`, our data frame from task 2
+- 2nd element: `placebo`, our data frame created above
+
+```{r}
+my_list <- list(treatment = bp_df, placebo = placebo_bp_df)
+
+# Look at list structure
+str(my_list)
+```
+
+## 3.
+
+We can access the first list element in three different ways:
+
+First, using single brackets
+
+```{r}
+my_list[1] # by index, returned as a list
+```
+
+Second, using double brackets
+
+```{r}
+my_list[[1]] # by index, returned at itself (dataframe)
+```
+
+And third, using `$`
+
+```{r}
+my_list$treatment # by name, returned as itself
+```
+
+## 4.
+
+Finally, let's access the `pre_bp` column from the `placebo` dataframe. We can do this via multiple bracket subsets.
+
+```{r}
+my_list[[2]][2] # list within a list, pre_bp is column 2 of our dataframe
+```
+
+# Task 4: Control Flow Practice
+
+## 1.
+
+Working *within* the list, let's characterize the post-treatment (or placebo) bp measurement as one of the following: \* Optimal (\<=120) \* Borderline (120 \< bp \<= 130) \* High (\>130)
+
+We can do this by first creating a new `status` column
+
+```{r}
+my_list$treatment$status <- character(20) # Create a new empty character column for treatment
+
+my_list$placebo$status <- character(10) # For placebo
+```
+
+## 2.
+
+Now, we'll use a loop with if/then/else logic to fill this column
+
+```{r}
+for (i in 1:length(my_list$treatment$post_bp)) { #Reference my_list, not the original object
+  if (my_list$treatment$post_bp[i] <= 120) {
+    my_list$treatment$status[i] <- "Optimal"   # Assign values to the empty character column within the loop
+  } else if (my_list$treatment$post_bp[i] <= 130) {
+    my_list$treatment$status[i] <- "Borderline"
+  } else if (my_list$treatment$post_bp[i] > 130){
+    my_list$treatment$status[i] <- "High"
+  } else {
+    cat("Something broke at", i) # Error tracking if nothing fits these conditions 
+                                #(e.g a non-number is passed into the loop)
+  }
+}
+```
+
+## 3.
+
+Now, we can do the same for the placebo dataframe in our list. Here we create a new empty character column with 10 observations instead of 20.
+
+```{r}
+for (i in 1:length(my_list$placebo$placebo_post_bp)) {
+  if (my_list$placebo$placebo_post_bp[i] <= 120) {
+    my_list$placebo$status[i] <- "Optimal"
+  } else if (my_list$placebo$placebo_post_bp[i] <= 130) {
+    my_list$placebo$status[i] <- "Borderline"
+  } else if (my_list$placebo$placebo_post_bp[i] > 130){
+    my_list$placebo$status[i] <- "High"
+  } else {
+    cat("Something broke at", i) # Error tracking
+  }
+}
+```
+
+Finally, let's view the results
+
+- Treatment group
+
+```{r}
+my_list$treatment # Review results
+```
+
+- Placebo group
+
+```{r}
+my_list$placebo # Review results
+```
