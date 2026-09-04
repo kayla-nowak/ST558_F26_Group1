@@ -1,0 +1,6 @@
+---
+title: "ST558_HW3_Yefrid"
+author: "Yefrid Cordoba"
+format: html
+editor: visual
+---
