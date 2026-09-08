@@ -89,7 +89,7 @@ Source: [https://www4.stat.ncsu.edu/online/ datasets/white-wine.xlsx](https://ww
 ```{r}
 library("readxl")
 
-#read data (Sheet 1), saved in repo/HW3 folder
+#read data (Sheet 1), saved in repo/HW3 folder (same as .qmd)
 white_wine <- read_xlsx(path="white-wine.xlsx",
                         sheet="white-wine")
 
@@ -103,7 +103,7 @@ Convert to standard variable names (found on Sheet 2).
 
 ```{r}
 
-#read data (Sheet 2), saved in repo/HW3 folder
+#read data (Sheet 2), saved in repo/HW3 folder (same as .qmd)
 white_wine_vars <- read_xlsx(path="white-wine.xlsx",
                              sheet="variables")
 
