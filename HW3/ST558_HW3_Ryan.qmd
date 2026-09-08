@@ -1,0 +1,46 @@
+---
+title: "ST558 Homework 3"
+author: "Ryan Mersereau"
+format: html
+editor: visual
+---
+
+# Task 1: Conceptual Questions
+
+1.  If your working directory is `myfolder/homework/`, what relative path would you specify to get the file located at `myfolder/MyData.csv`?
+
+    We can use `../MyData.csv`, typically inside a `read.csv()` function. The `..` prefix means we go up one level from our current working directory, putting us inside `myfolder`
+
+2.  What are the major benefits of using R projects?
+
+    When an R project is created, it gets associated with a directory (folder or repo) and uses this as the projects working directory. This is very useful, because if we have this repo shared (via Github), other users can pick up the same R project and all the paths should work. This allows for organization and seamless collaboration.
+
+3.  What is Git and what is GitHub?
+
+    Git is the actual software that performs version contolling. whereas Github is the online hosting service for projects that utilize Git software. Version controlling allows us to save every change that occurs in our project folder, and revert back to previous saves.
+
+4.  What are the two main differences between a tibble and a dataframe?
+
+    Tibbles are a modern re-imagining of the data frame. When printing a tibble, we only see the first few rows/columns, whereas printing a dataframe prints everything to the console. Tibbles also force you to confront problems earlier when subsetting, as they dont do partial matching. `df$colnam` on a dataframe will match a column named `colname`, whereas with a tibble it warns you explicitly the column doesn't exist
+
+## Task 2: Reading Delimited Data
+
+The first data set we'll work with is called `glass.data`, from the UCI machine learning repository. We'll read this data into R directly from the URL using `tidyverse` functions. The delimiter for this data are commas, so we will have to specify that
+
+```{r}
+# Load tidyverse library
+#| message: False
+#| Warning: False
+
+library(tidyverse)
+```
+
+```{r}
+# Read in the file using the read_csv() function from the tidyverse `readr` package
+
+glass <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
+                       col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K",
+                                   "Ca", "Ba", "Fe", "Type"))
+# Print tibble
+glass
+```
