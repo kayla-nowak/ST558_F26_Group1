@@ -22,10 +22,12 @@ editor: visual
 First we load the `tidyverse` library
 
 ```{r}
-#| show: False
+#| message: False
+#| warning: False
 
 library(tidyverse)
 ```
+
 And now we read the file, adding column names, from the link, the data is separated by comma, therefore, we use `read_csv()` from the `tidyverse`
 
 ```{r}
@@ -34,4 +36,3 @@ glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
                                      "Ca", "Ba", "Fe", "Type"))
 glass_data
 ```
-
