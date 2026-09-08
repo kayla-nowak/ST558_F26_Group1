@@ -109,10 +109,17 @@ ul.task-list li input[type="checkbox"] {
 <section id="task-1-conceptual-questions" class="level1">
 <h1>Task 1: Conceptual Questions</h1>
 <ol type="1">
-<li><p>If your working directory is <code>myfolder/homework/</code>, what <em>relative</em> path would you specify to get the file located at <code>myfolder/MyData.csv</code>?</p></li>
-<li><p>What are the major benefits of using R projects?**</p></li>
-<li><p>What is <code>Git</code> and what is <code>GitHub</code>?</p></li>
-<li><p>What are the two main differences between a <code>tibble</code> and a <code>data.frame</code>?</p></li>
+<li><p><strong>If your working directory is <code>myfolder/homework/</code>, what <em>relative</em> path would you specify to get the file located at <code>myfolder/MyData.csv</code>?</strong></p>
+<p>Since the file we want is only one folder above the current working directory, we can simply specify <code>../MyData.csv</code> as the relative file path. The <code>../</code> path prefix points to one folder above the current working directory.</p></li>
+<li><p><strong>What are the major benefits of using R projects?</strong></p>
+<p>R projects support the use of working directories and version control software. Working directories establish relative paths, which eliminate the need for each user to hard-code file paths specific to their machine. Relative paths are very helpful for code sharing, and version control is also helpful for code sharing. Through an R project for version control we can clone a Git repository and manage that repository through R Studio’s terminal.</p></li>
+<li><p><strong>What is <code>Git</code> and what is <code>GitHub</code>?</strong></p>
+<p>Git a type of version control software. GitHub is an online platform for hosting and sharing Git-based projects (the actual version control actions still happen within Git).</p></li>
+<li><p><strong>What are the two main differences between a <code>tibble</code> and a <code>data.frame</code>?</strong></p>
+<ol type="1">
+<li>Fancy print. A data frame prints in its entirety vs.&nbsp;a tibble prints the first few rows of data and a size summary (#rows x #cols).</li>
+<li>Limited type coercion. A single column of a tibble can be accessed by <code>[</code> <em>without</em> coercing to a vector.</li>
+</ol></li>
 </ol>
 </section>
 <section id="task-2-reading-delimited-data" class="level1">
