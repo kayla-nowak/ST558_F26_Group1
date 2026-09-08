@@ -78,4 +78,56 @@ The default data types look good.
 
 # Task 3: Combining Excel and Delimited Data
 
+Working with the Portuguese “Vinho Verde” wine data.
+
+## 3.
+
+Import white wine data from excel.
+
+Source: [https://www4.stat.ncsu.edu/online/ datasets/white-wine.xlsx](https://www4.stat.ncsu.edu/online/datasets/white-wine.xlsx)
+
+```{r}
+library("readxl")
+
+#read data (Sheet 1), saved in repo/HW3 folder
+white_wine <- read_xlsx(path="white-wine.xlsx",
+                        sheet="white-wine")
+
+#print
+white_wine
+```
+
+## 4.
+
+Convert to standard variable names (found on Sheet 2).
+
+```{r}
+
+#read data (Sheet 2), saved in repo/HW3 folder
+white_wine_vars <- read_xlsx(path="white-wine.xlsx",
+                             sheet="variables")
+
+#view structure/contents
+str(white_wine_vars)
+
+#update col names on white_wine
+colnames(white_wine) <- white_wine_vars$Variables
+
+#confirm update
+white_wine
+
+```
+
+## 5.
+
+Add a column identifying all records as white wine.
+
+```{r}
+white_wine$wine_type <- "white"
+
+#confirm update
+xtabs(~wine_type, white_wine)
+
+```
+
 # Task 4: Writing a Function
