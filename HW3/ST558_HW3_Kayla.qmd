@@ -176,3 +176,155 @@ xtabs(~type, all_wine)
 ```
 
 # Task 4: Writing a Function
+
+## 8.
+
+Write a function that returns the interquartile range (P75 - P25) for a numeric vector input.
+
+```{r}
+
+getIQR <- function(x) {
+  
+  if(!is.vector(x) | !is.numeric(x)){   
+    #check for valid input before proceeding
+    stop("Invalid input, requires numeric vector.")
+  }
+  else {
+    
+    #q stores P25 and P75 as vector elements, names disabled
+    q <- quantile(x, probs = c(0.25, 0.75), names=FALSE)
+    
+    #iqr captures the calculated difference:  P75 - P25
+    iqr <- q[2] - q[1]
+    return(iqr)
+    
+  }
+}
+
+## Function tests (uncomment to run):
+
+#getIQR(c(1:10))                     #should return 4.5
+#test2 <- c(1:10); getIQR(test2)     #should return 4.5
+
+#getIQR(c("A","B"))                  #should stop (character vector)
+#test3 <- c("A","B"); getIQR(test3)  #should stop (character vector) 
+#getIQR(iris)                        #should stop (not a vector)
+
+```
+
+## 9.
+
+Apply `getIQR()` to the `fixed_acidity` and `citric_acid` columns of the combined wine dataset from question #7.
+
+```{r}
+getIQR(all_wine$fixed_acidity)
+getIQR(all_wine$citric_acid)
+```
+
+## 10.
+
+Write a function that returns the sample coefficient of variation (sample SD / absolute(sample mean)).
+
+```{r}
+
+getCoefVar <- function(x){
+    
+  if(!is.vector(x) | !is.numeric(x)){   
+    stop("Invalid input, requires numeric vector.")
+  }
+  else {
+    coefVar <- sd(x) / abs( mean(x) )
+    return(coefVar)
+  }
+}
+
+## Function tests (uncomment to run):
+#getCoefVar(c(1:10))                     #should return 0.55
+#test4 <- c(1:10); getCoefVar(test4)     #should return 0.55
+
+```
+
+## 11.
+
+Apply `getCoefVar()` to the `fixed_acidity` and `citric_acid` columns of the combined wine dataset from question #7.
+
+```{r}
+getCoefVar(all_wine$fixed_acidity)
+getCoefVar(all_wine$citric_acid)
+```
+
+## 12.
+
+Write a wrapper function that returns both IQR and coefficient of variation.
+
+```{r}
+
+getSummaries <- function(x){
+    
+  if(!is.vector(x) | !is.numeric(x)){   
+    stop("Invalid input, requires numeric vector.")
+  }
+  else {
+    
+    #calculate summaries
+    IQR <- getIQR(x)
+    CoefVar <- getCoefVar(x)
+    
+    #combine, name, and return
+    summaries <- c(IQR=IQR, CoefVar=CoefVar)
+    return(summaries)
+  }
+}
+
+## Function tests (uncomment to run):
+#getSummaries(c(1:10))                     #should return IQR=4.5, CoefVar=0.55
+#test5 <- c(1:10); getSummaries(test5)     #should return IQR=4.5, CoefVar=0.55
+
+```
+
+## 13.
+
+Apply `getCoefVar()` to the `fixed_acidity` and `citric_acid` columns of the combined wine dataset from question #7.
+
+*Note: Assuming the instructions meant to reference question 9 activities (re: question 7 data) since question 2 was about importing the yeast data.*
+
+```{r}
+getSummaries(all_wine$fixed_acidity)
+getSummaries(all_wine$citric_acid)
+```
+
+
+## 14.
+
+Create a custom infix function to replace `cbind`. (OK to call cbind within the infix function)
+
+```{r}
+`%+%` <- function(a, b) cbind(a, b)
+```
+
+Test function with the provided objects.
+
+```{r}
+#provided test objects
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+
+#view test objects
+df1
+df2
+vec1
+```
+
+Bind df1 + df2:
+
+```{r}
+df1 %+% df2
+```
+
+Bind df1, df2, and vec1:
+
+```{r}
+df1 %+% df2 %+% vec1
+```
+
