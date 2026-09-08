@@ -286,11 +286,45 @@ getSummaries <- function(x){
 
 Apply `getCoefVar()` to the `fixed_acidity` and `citric_acid` columns of the combined wine dataset from question #7.
 
-```         
-Note: Assuming the instructions meant to reference question 9 activities (re: question 7 data) since question 2 was about importing the yeast data.
-```
+*Note: Assuming the instructions meant to reference question 9 activities (re: question 7 data) since question 2 was about importing the yeast data.*
 
 ```{r}
 getSummaries(all_wine$fixed_acidity)
 getSummaries(all_wine$citric_acid)
 ```
+
+
+## 14.
+
+Create a custom infix function to replace `cbind`. (OK to call cbind within the infix function)
+
+```{r}
+`%+%` <- function(a, b) cbind(a, b)
+```
+
+Test function with the provided objects.
+
+```{r}
+#provided test objects
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+
+#view test objects
+df1
+df2
+vec1
+```
+
+Bind df1 + df2:
+
+```{r}
+df1 %+% df2
+```
+
+Bind df1, df2, and vec1:
+
+```{r}
+df1 %+% df2 %+% vec1
+```
+

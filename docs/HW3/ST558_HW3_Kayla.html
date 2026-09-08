@@ -563,17 +563,100 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <section id="section-12" class="level2">
 <h2 class="anchored" data-anchor-id="section-12">13.</h2>
 <p>Apply <code>getCoefVar()</code> to the <code>fixed_acidity</code> and <code>citric_acid</code> columns of the combined wine dataset from question #7.</p>
-<pre><code>Note: Assuming the instructions meant to reference question 9 activities (re: question 7 data) since question 2 was about importing the yeast data.</code></pre>
+<p><em>Note: Assuming the instructions meant to reference question 9 activities (re: question 7 data) since question 2 was about importing the yeast data.</em></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(all_wine<span class="sc">$</span>fixed_acidity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(all_wine<span class="sc">$</span>fixed_acidity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      IQR   CoefVar 
 1.3000000 0.1796783 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(all_wine<span class="sc">$</span>citric_acid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(all_wine<span class="sc">$</span>citric_acid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      IQR   CoefVar 
 0.1400000 0.4560663 </code></pre>
+</div>
+</div>
+</section>
+<section id="section-13" class="level2">
+<h2 class="anchored" data-anchor-id="section-13">14.</h2>
+<p>Create a custom infix function to replace <code>cbind</code>. (OK to call cbind within the infix function)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">%+%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) <span class="fu">cbind</span>(a, b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Test function with the provided objects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#provided test objects</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">unif =</span> <span class="fu">runif</span>(<span class="dv">10</span>), <span class="at">norm =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>))</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">gamma =</span> <span class="fu">rgamma</span>(<span class="dv">10</span>, <span class="at">shape =</span> <span class="dv">1</span>), <span class="at">beta =</span> <span class="fu">rbeta</span>(<span class="dv">10</span>, <span class="at">shape1 =</span> <span class="dv">5</span>, <span class="at">shape2 =</span> <span class="dv">1</span>))</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>vec1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">10</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co">#view test objects</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         unif       norm
+1  0.13786317 -0.8976033
+2  0.94531316 -0.3977947
+3  0.25300417 -0.7959268
+4  0.44680177 -1.0484177
+5  0.45622214  0.3758241
+6  0.30020128 -0.3173784
+7  0.09114022  0.6426344
+8  0.63236946 -1.9931135
+9  0.57639464 -0.4429493
+10 0.19180663  0.8968752</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       gamma      beta
+1  0.3667522 0.7723499
+2  1.5893764 0.7623145
+3  0.8619799 0.9241822
+4  0.2270479 0.9284976
+5  0.5534556 0.7899163
+6  0.2952490 0.7790392
+7  1.1676276 0.8302460
+8  0.5177013 0.8297623
+9  0.5120879 0.8056655
+10 0.3289068 0.5227267</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  9.624231  9.515047 12.092720 10.312009 11.037687  8.522132 11.339690
+ [8] 10.497130 11.859014  9.210021</code></pre>
+</div>
+</div>
+<p>Bind df1 + df2:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         unif       norm     gamma      beta
+1  0.13786317 -0.8976033 0.3667522 0.7723499
+2  0.94531316 -0.3977947 1.5893764 0.7623145
+3  0.25300417 -0.7959268 0.8619799 0.9241822
+4  0.44680177 -1.0484177 0.2270479 0.9284976
+5  0.45622214  0.3758241 0.5534556 0.7899163
+6  0.30020128 -0.3173784 0.2952490 0.7790392
+7  0.09114022  0.6426344 1.1676276 0.8302460
+8  0.63236946 -1.9931135 0.5177013 0.8297623
+9  0.57639464 -0.4429493 0.5120879 0.8056655
+10 0.19180663  0.8968752 0.3289068 0.5227267</code></pre>
+</div>
+</div>
+<p>Bind df1, df2, and vec1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2 <span class="sc">%+%</span> vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         unif       norm     gamma      beta         b
+1  0.13786317 -0.8976033 0.3667522 0.7723499  9.624231
+2  0.94531316 -0.3977947 1.5893764 0.7623145  9.515047
+3  0.25300417 -0.7959268 0.8619799 0.9241822 12.092720
+4  0.44680177 -1.0484177 0.2270479 0.9284976 10.312009
+5  0.45622214  0.3758241 0.5534556 0.7899163 11.037687
+6  0.30020128 -0.3173784 0.2952490 0.7790392  8.522132
+7  0.09114022  0.6426344 1.1676276 0.8302460 11.339690
+8  0.63236946 -1.9931135 0.5177013 0.8297623 10.497130
+9  0.57639464 -0.4429493 0.5120879 0.8056655 11.859014
+10 0.19180663  0.8968752 0.3289068 0.5227267  9.210021</code></pre>
 </div>
 </div>
 
