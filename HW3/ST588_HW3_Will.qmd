@@ -1,0 +1,69 @@
+---
+title: "ST558_HW3_Will"
+author: "Will Carter"
+format: html
+editor: visual
+---
+
+# Task 1: Conceptual Questions
+
+1.  **If your working directory is `myfolder/homework/`, what *relative* path would you specify to get the file located at `myfolder/MyData.csv`?**
+
+You would need to specify '../MyData.csv' as this is located one level up from the working directory.
+
+2. **What are the major benefits of using R projects?**
+
+The working directory for R projects is set to the project's root folder. This makes it easy for when you have multiple users working on the project due to the relative file paths being consistent between machines. Pathing does not break between machines. Related files are self contained.
+
+
+3.  **What is `Git` and what is `GitHub`?**
+
+Git is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.
+
+
+4.  **What are the two main differences between a `tibble` and a `data.frame`?**
+
+Printing a tibble only prints the first several rows whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with '$' whereas a data.frame can partially match a column name.
+
+
+# Task 2: Reading Delimited Data
+
+Using 'tidyverse' we will read in data into R directly from the URL.
+
+```{r}
+# Load tidyverse library
+#| message: False
+#| Warning: False
+
+library(tidyverse)
+```
+
+### 1. 
+
+Glass. Read in the file and add column names from the link. Use 'read_csv()' as it is delimited by ','.
+
+```{r}
+glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
+                       col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K",
+                                     "Ca", "Ba", "Fe", "Type"))
+glass_data
+```
+
+### 2.
+
+Yeast. Use 'read_table()' as it is delimited by variable white space.
+
+```{r}
+yeast_data <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data",
+                       col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", "pox", "vac", "nuc", "class"))
+yeast_data
+```
+
+
+
+
+
+
+
+
+
