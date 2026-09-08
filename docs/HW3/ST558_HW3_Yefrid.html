@@ -429,6 +429,154 @@ dbl (12): fixed_acidity, volatile_acidity, citric_acid, residual_sugar, chlo...
 #   type &lt;chr&gt;</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="task-4-writing-a-function" class="level2">
+<h2 class="anchored" data-anchor-id="task-4-writing-a-function">Task 4: Writing a function</h2>
+<section id="section-7" class="level3">
+<h3 class="anchored" data-anchor-id="section-7">8.</h3>
+<p>We are going to write a function to get the interquartile range of a vector, we use <code>names = F</code> to remove the percentages names. And add <code>...</code> to allow unamed arguments for the quantile function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>getIQR <span class="ot">&lt;-</span> <span class="cf">function</span>(v, ...){</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quantile</span>(v, <span class="at">names =</span> F, ...)[<span class="dv">4</span>] <span class="sc">-</span> <span class="fu">quantile</span>(v, <span class="at">names =</span> F, ...)[<span class="dv">2</span>]</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="section-8" class="level3">
+<h3 class="anchored" data-anchor-id="section-8">9.</h3>
+<p>Now, we are going to apply the <code>getIQR()</code> function to the <code>fixed_acidity</code>,</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getIQR</span>(wine_data<span class="sc">$</span>fixed_acidity)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.3</code></pre>
+</div>
+</div>
+<p>and the <code>citric_acid columns</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getIQR</span>(wine_data<span class="sc">$</span>citric_acid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.14</code></pre>
+</div>
+</div>
+</section>
+<section id="section-9" class="level3">
+<h3 class="anchored" data-anchor-id="section-9">10.</h3>
+<p>We are going to write a function to get the coefficient of variation</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>getCoefVar <span class="ot">&lt;-</span> <span class="cf">function</span>(v, ...){</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sd</span>(v, ...) <span class="sc">/</span> <span class="fu">abs</span>(<span class="fu">mean</span>(v, ...))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="section-10" class="level3">
+<h3 class="anchored" data-anchor-id="section-10">11.</h3>
+<p>And we apply to the <code>fixed_acidity</code> column,</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getCoefVar</span>(wine_data<span class="sc">$</span>fixed_acidity)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1796783</code></pre>
+</div>
+</div>
+<p>and to the <code>citric_acid</code> column.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getCoefVar</span>(wine_data<span class="sc">$</span>citric_acid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4560663</code></pre>
+</div>
+</div>
+</section>
+<section id="section-11" class="level3">
+<h3 class="anchored" data-anchor-id="section-11">12.</h3>
+<p>We need to create a wrapper function that return the IQR and the coefficient of variation for a given vector. The output is a list with both of the values calculated.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>getSummaries <span class="ot">&lt;-</span> <span class="cf">function</span>(v, ...){</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">IQR =</span> <span class="fu">getIQR</span>(v, ...), <span class="at">Coef_Var =</span> <span class="fu">getCoefVar</span>(v, ...))</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="section-12" class="level3">
+<h3 class="anchored" data-anchor-id="section-12">13.</h3>
+<p>We apply the new functio to the <code>fixed_acidity</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(wine_data<span class="sc">$</span>fixed_acidity)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$IQR
+[1] 1.3
+
+$Coef_Var
+[1] 0.1796783</code></pre>
+</div>
+</div>
+<p>And to the <code>citric_acid</code> columns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getSummaries</span>(wine_data<span class="sc">$</span>citric_acid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$IQR
+[1] 0.14
+
+$Coef_Var
+[1] 0.4560663</code></pre>
+</div>
+</div>
+</section>
+<section id="section-13" class="level3">
+<h3 class="anchored" data-anchor-id="section-13">14.</h3>
+<p>We need to write an infix function that replace the <code>cbind</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">%cb%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(v1, v2){</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(v1, v2)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We generate some <code>df</code> to apply the infix function</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">unif =</span> <span class="fu">runif</span>(<span class="dv">10</span>), <span class="at">norm =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>))</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">gamma =</span> <span class="fu">rgamma</span>(<span class="dv">10</span>, <span class="at">shape =</span> <span class="dv">1</span>), <span class="at">beta =</span> <span class="fu">rbeta</span>(<span class="dv">10</span>, <span class="at">shape1 =</span> <span class="dv">5</span>, <span class="at">shape2 =</span> <span class="dv">1</span>))</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>vec1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>And finally we use the infix function with 2 data frames</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          unif        norm     gamma      beta
+1  0.069360916 -0.27229604 0.1262911 0.8604273
+2  0.817775199 -0.31534871 1.3307735 0.8632236
+3  0.942621732 -0.62825524 2.2173925 0.8994075
+4  0.269381876 -0.10646388 1.4689493 0.9374495
+5  0.169348123  0.42801480 0.3236690 0.9961143
+6  0.033895622 -0.77771958 2.9265202 0.6758089
+7  0.178785004 -1.29388230 1.4716027 0.7332801
+8  0.641665366 -0.77956651 0.3089994 0.6957137
+9  0.022877743  0.01195176 1.1758033 0.8858908
+10 0.008324827 -0.15241624 0.2807920 0.9488228</code></pre>
+</div>
+</div>
+<p>And with 2 data frames and 1 vector</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2 <span class="sc">%cb%</span> vec1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          unif        norm     gamma      beta        v2
+1  0.069360916 -0.27229604 0.1262911 0.8604273  8.995549
+2  0.817775199 -0.31534871 1.3307735 0.8632236 10.104984
+3  0.942621732 -0.62825524 2.2173925 0.8994075  8.844007
+4  0.269381876 -0.10646388 1.4689493 0.9374495 10.578135
+5  0.169348123  0.42801480 0.3236690 0.9961143  8.404374
+6  0.033895622 -0.77771958 2.9265202 0.6758089  9.691496
+7  0.178785004 -1.29388230 1.4716027 0.7332801 10.449466
+8  0.641665366 -0.77956651 0.3089994 0.6957137  9.022947
+9  0.022877743  0.01195176 1.1758033 0.8858908 10.189998
+10 0.008324827 -0.15241624 0.2807920 0.9488228 10.731453</code></pre>
+</div>
+</div>
 
 
 </section>

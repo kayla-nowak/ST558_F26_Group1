@@ -4,7 +4,7 @@ author: "Yefrid Cordoba"
 format: html
 editor: visual
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Task 1: Conceptual questions
@@ -132,4 +132,112 @@ wine_data
 ```
 
 ## Task 4: Writing a function
+
+### 8.
+
+We are going to write a function to get the interquartile range of a vector, we use `names = F` to remove the percentages names. And add `...` to allow unamed arguments for the quantile function.
+```{r}
+getIQR <- function(v, ...){
+  
+  quantile(v, names = F, ...)[4] - quantile(v, names = F, ...)[2]
+  
+  
+}
+
+```
+
+### 9.
+
+Now, we are going to apply the `getIQR()` function to the `fixed_acidity`, 
+
+```{r}
+getIQR(wine_data$fixed_acidity)
+```
+and the `citric_acid columns`.
+```{r}
+getIQR(wine_data$citric_acid)
+```
+
+### 10.
+
+We are going to write a function to get the coefficient of variation
+
+```{r}
+getCoefVar <- function(v, ...){
+  
+  sd(v, ...) / abs(mean(v, ...))
+  
+}
+```
+
+### 11.
+
+And we apply to the `fixed_acidity` column,
+
+```{r}
+getCoefVar(wine_data$fixed_acidity)
+```
+and to the `citric_acid` column.
+
+```{r}
+getCoefVar(wine_data$citric_acid)
+```
+
+### 12.
+
+We need to create a wrapper function that return the IQR and the coefficient of variation for a given vector. The output is a list with both of the values calculated.
+
+```{r}
+getSummaries <- function(v, ...){
+  
+  list(IQR = getIQR(v, ...), Coef_Var = getCoefVar(v, ...))
+  
+}
+```
+
+### 13.
+
+We apply the new functio to the `fixed_acidity`
+```{r}
+getSummaries(wine_data$fixed_acidity)
+```
+
+And to the `citric_acid` columns.
+
+```{r}
+getSummaries(wine_data$citric_acid)
+```
+
+### 14.
+
+We need to write an infix function that replace the `cbind` function.
+
+```{r}
+`%cb%` <- function(v1, v2){
+  
+  cbind(v1, v2)
+  
+}
+```
+
+We generate some `df` to apply the infix function
+
+```{r}
+set.seed(12)
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+```
+
+And finally we use the infix function with 2 data frames
+
+```{r}
+df1 %cb% df2
+```
+
+And with 2 data frames and 1 vector
+
+```{r}
+df1 %cb% df2 %cb% vec1
+```
 
