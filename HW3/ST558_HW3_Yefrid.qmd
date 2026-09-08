@@ -4,3 +4,14 @@ author: "Yefrid Cordoba"
 format: html
 editor: visual
 ---
+
+## Task 1: Conceptual questions
+
+1.  If my working directory is `myfolder/homework/`, and I need to reference a file located at `myfolder/MyData.csv`, I need to go one level above `(using ..)`my working directory followed by the file name in this order: `../MyData.csv`
+
+2.  The primary benefit of using `R` projects is the ease to keeping different workflows separate, ensuring that each project maintains its own working directory, workspace, history, folder structure, and source documents.
+
+3.  Git is an open source version control software which uses snapshots of the work to keep track of changes rather than creating multiple copies of the files.\
+    Github is the cloud base platform that host Git repositories, from which you can collaborate and share your repository.
+
+4.  
