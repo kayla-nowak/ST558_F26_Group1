@@ -14,4 +14,8 @@ editor: visual
 3.  Git is an open source version control software which uses snapshots of the work to keep track of changes rather than creating multiple copies of the files.\
     Github is the cloud base platform that host Git repositories, from which you can collaborate and share your repository.
 
-4.  
+4.  A tibble has multiple classes and one of that is a `data.frame`, which is open when methods apply for different classes, being first `tbl_df`, then `tbl`, and finally `data.frame`.   
+They are very similar in functionality, however, when the method `print()` is called, we get more information of the tibble like number of rows, and columns, and are actually are printed just the first few.
+
+## Task 2: Reading delimited data
+

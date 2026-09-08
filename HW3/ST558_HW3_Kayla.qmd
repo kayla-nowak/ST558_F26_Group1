@@ -1,0 +1,31 @@
+---
+title: "ST558_HW3_Kayla"
+author: "Kayla Nowak"
+format: html
+editor: visual
+---
+
+# Task 1: Conceptual Questions
+
+1.  **If your working directory is `myfolder/homework/`, what *relative* path would you specify to get the file located at `myfolder/MyData.csv`?**
+
+    Since the file we want is only one folder above the current working directory, we can simply specify `../MyData.csv` as the relative file path. The `../` path prefix points to one folder above the current working directory.
+
+2.  **What are the major benefits of using R projects?**
+
+    R projects support the use of working directories and version control software. Working directories establish relative paths, which eliminate the need for each user to hard-code file paths specific to their machine. Relative paths are very helpful for code sharing, and version control is also helpful for code sharing. Through an R project for version control we can clone a Git repository and manage that repository through R Studio's terminal.
+
+3.  **What is `Git` and what is `GitHub`?**
+
+    Git a type of version control software. GitHub is an online platform for hosting and sharing Git-based projects (the actual version control actions still happen within Git).
+
+4.  **What are the two main differences between a `tibble` and a `data.frame`?**
+
+    1)  Fancy print. A data frame prints in its entirety vs. a tibble prints the first few rows of data and a size summary (#rows x #cols).
+    2)  Limited type coercion. A single column of a tibble can be accessed by `[` *without* coercing to a vector.
+
+# Task 2: Reading Delimited Data
+
+# Task 3: Combining Excel and Delimited Data
+
+# Task 4: Writing a Function
