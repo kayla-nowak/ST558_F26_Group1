@@ -26,6 +26,56 @@ editor: visual
 
 # Task 2: Reading Delimited Data
 
+For both data sets, directly read the data into R directly from the URL using functions from the tidyverse. Add column names and print out the tibble.
+
+## 1.
+
+The Glass data file is comma delimited and has 11 columns:
+
+-   column 1 is a numeric ID value (1-214)
+-   columns 2:10 are numeric measurements
+-   column 11 is a numeric code for type of glass
+
+Source: <https://www4.stat.ncsu.edu/online/datasets/glass.data>
+
+```{r}
+library(readr)
+
+#read from URL, as tibble
+glass <- read_delim("https://www4.stat.ncsu.edu/online/datasets/glass.data",
+                    delim = ",",
+                    col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", 
+                                  "K", "Ca", "Ba", "Fe", "TypeOfGlass"))
+
+#print for review
+glass
+```
+
+The default data types look good.
+
+## 2.
+
+The Yeast data file has a fixed-width format with 10 columns:
+
+-   column 1 is an alphanumeric ID value
+-   columns 2:9 are numeric measurements
+-   column 10 is a character site ID
+
+Source: <https://www4.stat.ncsu.edu/online/datasets/yeast.data>
+
+```{r}
+#read from URL, as tibble
+yeast <- read_fwf("https://www4.stat.ncsu.edu/online/datasets/yeast.data",
+                  fwf_widths(c(12, 6, 6, 6, 6, 6, 6, 6, 6, 3),
+                  c("seq_name", "mcg", "gvh", "alm", "mit",
+                                "erl", "pox", "vac", "nuc", "class")))
+
+#print for review
+yeast
+```
+
+The default data types look good.
+
 # Task 3: Combining Excel and Delimited Data
 
 # Task 4: Writing a Function
