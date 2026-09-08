@@ -130,4 +130,14 @@ xtabs(~wine_type, white_wine)
 
 ```
 
+## 6.
+
+Import red wine data from excel.
+
+Source: [https://www4.stat.ncsu. edu/online/datasets/red-wine.csv](https://www4.stat.ncsu.edu/online/datasets/red-wine.csv)
+
+```{r}
+
+```
+
 # Task 4: Writing a Function

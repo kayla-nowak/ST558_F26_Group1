@@ -306,5 +306,12 @@
     "title": "ST558_HW3_Kayla",
     "section": "5.",
     "text": "5.\nAdd a column identifying all records as white wine.\n\nwhite_wine$wine_type &lt;- \"white\"\n\n#confirm update\nxtabs(~wine_type, white_wine)\n\nwine_type\nwhite \n 4898"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Kayla.html#section-5",
+    "href": "HW3/ST558_HW3_Kayla.html#section-5",
+    "title": "ST558_HW3_Kayla",
+    "section": "6.",
+    "text": "6.\nImport red wine data from excel.\nSource: https://www4.stat.ncsu. edu/online/datasets/red-wine.csv"
   }
 ]
