@@ -59,11 +59,68 @@ yeast_data <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data
 yeast_data
 ```
 
+# Task 3: Combining Excel and Delimited Data
 
+Import package `readxl`
+```{r}
+#| message: False
+#| warning: False
 
+library(readxl)
+```
 
+### 3.
 
+Import the white wine data.
 
+```{r}
+white_wine <- read_excel("white-wine.xlsx", sheet=1)
 
+white_wine
+```
 
+### 4.
 
+Read sheet 2 for variable names and overwrite our colnames.
+
+```{r}
+white_wine_var_names <- read_excel("white-wine.xlsx",
+                       sheet = excel_sheets("white-wine.xlsx")[2])
+
+colnames(white_wine) <- white_wine_var_names$Variables 
+
+white_wine
+```
+
+### 5. 
+
+Add `type` column.
+
+```{r}
+white_wine <- white_wine |> mutate(type = "white")
+
+white_wine
+```
+
+### 6.
+
+Read in the red wine data. Replace variable names. Add 'red' type column for all records.
+```{r}
+red_wine <- read_delim(file="red-wine.csv",
+                       delim=";")
+
+colnames(red_wine) <- white_wine_var_names$Variables
+
+red_wine <- red_wine |> mutate(type = "red")
+
+red_wine
+```
+
+### 7
+Combine wine data sets.
+
+```{r}
+all_wine <- bind_rows(white_wine, red_wine)
+
+all_wine
+```
