@@ -1,0 +1,11 @@
+---
+title: "Group 1 Homework ST 558"
+format: html
+author: "Kayla Nowak(A), Ryan Merserau(B), Will Carter(C), Yefrid Cordoba(D)"
+---
+
+- [Homework 2](/HW2/ST558_HW2_Final.qmd)
+
+- Homework 3
+
+- Homework 4
