@@ -123,20 +123,55 @@ white_wine
 Add a column identifying all records as white wine.
 
 ```{r}
-white_wine$wine_type <- "white"
+white_wine$type <- "white"
 
 #confirm update
-xtabs(~wine_type, white_wine)
+xtabs(~type, white_wine)
 
 ```
 
 ## 6.
 
-Import red wine data from excel.
+Import red wine data from excel (semicolon delimited csv). Again, clean variable names and add wine type identifier.
 
 Source: [https://www4.stat.ncsu. edu/online/datasets/red-wine.csv](https://www4.stat.ncsu.edu/online/datasets/red-wine.csv)
 
 ```{r}
+library("readr")
+
+#read data, saved in repo/HW3 folder (same as .qmd)
+red_wine <- read_delim(file="red-wine.csv",
+                       delim=";")
+
+#print - confirm all doubles
+red_wine
+
+#confirm columns/order are the same in both sources
+colnames(white_wine)
+colnames(red_wine)
+
+#update column names
+colnames(red_wine) <- white_wine_vars$Variables 
+
+#add type column
+red_wine$type <- "red"
+
+#confirm update
+xtabs(~type, red_wine)
+```
+
+## 7.
+
+Combine white and red wine data in a single data set.
+
+```{r}
+
+#row bind since shared structure
+all_wine <- dplyr::bind_rows(white_wine, red_wine)
+
+#review
+all_wine
+xtabs(~type, all_wine)
 
 ```
 
