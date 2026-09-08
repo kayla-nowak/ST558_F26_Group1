@@ -131,3 +131,5 @@ wine_data <- dplyr::bind_rows(white_data, red_data)
 wine_data
 ```
 
+## Task 4: Writing a function
+
