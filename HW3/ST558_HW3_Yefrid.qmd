@@ -3,6 +3,8 @@ title: "ST558_HW3_Yefrid"
 author: "Yefrid Cordoba"
 format: html
 editor: visual
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Task 1: Conceptual questions
@@ -53,3 +55,79 @@ yeast_data <- read_delim("https://www4.stat.ncsu.edu/~online/datasets/yeast.data
                        col_names = n_yeast)
 yeast_data
 ```
+
+## Task 3: Combining Excel and delimited data
+
+First we import the package `readxl`
+```{r}
+#| message: False
+#| warning: False
+
+library(readxl)
+```
+
+### 3.
+
+And now we read the data from the first sheet of the excel file
+
+```{r}
+#by default reads from the first sheet of the document
+white_data <- read_excel("white-wine.xlsx")
+
+white_data
+```
+
+### 4.
+
+Now we read just the first column of names from the sheet two to get the tibble with variable names.
+
+```{r}
+var_wine <- read_excel("white-wine.xlsx",
+                       sheet = excel_sheets("white-wine.xlsx")[2])
+#And we re-assign the colnames to the tibble with the data
+
+colnames(white_data) <- var_wine$Variables #it is necessary to get the varaible column as a vector of characters
+
+white_data
+
+```
+
+### 5. 
+
+And we add a column `type` for all the rows of this tibble using the `$` operator
+
+```{r}
+white_data$type <- "white"
+
+white_data
+```
+
+### 6.
+
+Now we need to read the red wine data set
+```{r}
+red_data <- read_delim("https://www4.stat.ncsu.edu/~online/datasets/red-wine.csv",
+                       delim = ";",
+                       col_names = var_wine$Variables,
+                       skip = 1
+                      )
+red_data
+```
+
+And add the column of `red` for all the observations
+
+```{r}
+red_data$type <- "red"
+
+red_data
+```
+
+### 7. 
+
+Finally we combine the two tibbles
+
+```{r}
+wine_data <- dplyr::bind_rows(white_data, red_data)
+wine_data
+```
+
