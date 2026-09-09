@@ -10,6 +10,6 @@ author:
 
 - [Homework 2](/HW2/ST558_HW2_Final.qmd)
 
-- Homework 3
+- [Homework 3](/HW3/ST558_HW3_Final.qmd)
 
 - Homework 4
