@@ -1,0 +1,224 @@
+---
+title: "ST558_HW3_Final"
+author: "Ryan Mersereau, Kayla Nowak, Yefrid Cordoba Ortiz, Will Carter"
+format: html
+editor: visual
+---
+
+# Task 1: Conceptual Questions
+
+1.  **If your working directory is `myfolder/homework/`, what *relative* path would you specify to get the file located at `myfolder/MyData.csv`?**
+
+    You would need to specify '../MyData.csv' as this is located one level up from the working directory. The '../' prefix moves you up one level from current into 'myfolder/' where 'MyData.csv' lives.
+
+2. **What are the major benefits of using R projects?**
+
+    The working directory for R projects is set to the project's root folder. Relative file paths stay consistent no matter whose machine is being used for the project. This makes collaboration more seamless without paths breaking. Relative paths are very helpful for code sharing, and version control is also helpful for code sharing. Through an R project for version control we can clone a Git repository and manage that repository through R Studio’s terminal. Related files are self contained.
+
+3.  **What is `Git` and what is `GitHub`?**
+
+    Git is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.
+
+
+4.  **What are the two main differences between a `tibble` and a `data.frame`?**
+
+    Printing a tibble only prints the first several rows and size summary (#rows x #cols), whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with '$' whereas a data.frame can partially match a column name.
+
+
+# Task 2: Reading Delimited Data
+
+Using 'tidyverse' we will read in data into R directly from the URL.
+
+```{r}
+#| message: False
+#| Warning: False
+
+# Load tidyverse library
+library(tidyverse)
+```
+
+## 1. 
+
+Glass. Read in the file and add column names from the link. Use 'read_csv()' as it is delimited by ','.
+
+```{r}
+glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
+                       col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K",
+                                     "Ca", "Ba", "Fe", "Type"))
+glass_data
+```
+
+## 2.
+
+Yeast. Use 'read_table()' as it is delimited by variable white space.
+
+```{r}
+yeast_data <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data",
+                       col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", "pox", "vac", "nuc", "class"))
+yeast_data
+```
+
+# Task 3: Combining Excel and Delimited Data
+
+Import package `readxl`
+```{r}
+#| message: False
+#| warning: False
+
+library(readxl)
+```
+
+## 3.
+
+Import the white wine data.
+
+```{r}
+# reads first sheet by default
+white_wine <- read_excel("white-wine.xlsx")
+
+white_wine
+```
+
+## 4.
+
+Read sheet 2 for variable names and overwrite our colnames.
+
+```{r}
+white_wine_var_names <- read_excel("white-wine.xlsx", sheet = "variables")
+
+colnames(white_wine) <- white_wine_var_names$Variables 
+
+white_wine
+```
+
+## 5. 
+
+Add `type` column.
+
+```{r}
+white_wine <- white_wine |> mutate(type = "white")
+
+white_wine
+```
+
+## 6.
+
+Read in the red wine data. Replace variable names. Add 'red' type column for all records.
+```{r}
+red_wine <- read_delim(file="red-wine.csv",
+                       delim=";")
+
+colnames(red_wine) <- white_wine_var_names$Variables
+
+red_wine <- red_wine |> mutate(type = "red")
+
+red_wine
+```
+
+## 7.
+
+Combine wine data sets.
+
+```{r}
+all_wine <- bind_rows(white_wine, red_wine)
+
+all_wine
+```
+
+# Task 4: Writing Functions
+
+## 8.
+
+IQR function.
+
+```{r}
+getIQR <- function(x, ...) {
+    #q stores P25 and P75 as vector elements, names disabled
+    q <- quantile(x, probs = c(0.25, 0.75), names=FALSE)
+    
+    #iqr captures the calculated difference:  P75 - P25
+    iqr <- q[2] - q[1]
+    return(iqr)
+}
+```
+
+## 9.
+
+Apply the `getIQR()` function to the `fixed_acidity` as well as the `citric_acid` column.
+
+```{r}
+getIQR(all_wine$fixed_acidity)
+getIQR(all_wine$citric_acid)
+```
+
+
+## 10.
+
+Sample coefficient of variation.
+
+```{r}
+getCoefVar <- function(x, ...) {
+  sd(x, ...) / abs(mean(x, ...))
+}
+```
+
+## 11.
+
+Apply the `getCoefVar()` function to the `fixed_acidity` as well as the `citric_acid` column.
+
+```{r}
+getCoefVar(all_wine$fixed_acidity)
+getCoefVar(all_wine$citric_acid)
+```
+
+## 12.
+
+Wrapper function that takes a vector and returns the IQR and coefficient of variation.
+
+```{r}
+getSummaries <- function(x, ...) {
+  c(IQR = getIQR(x, ...), 
+  CoeVar = getCoefVar(x, ...))
+}
+```
+
+## 13.
+
+Apply the `getSummaries()` function to the `fixed_acidity` as well as the `citric_acid` column.
+
+```{r}
+getSummaries(all_wine$fixed_acidity)
+getSummaries(all_wine$citric_acid)
+```
+
+## 14.
+
+Write infix function to replace `cbind()`.
+
+```{r}
+`%+%` <- function(a, v){
+  
+  cbind(a, v)
+  
+}
+```
+
+Create the tester df's and vector.
+
+```{r}
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+```
+
+Check that this function works on the two data frames.
+
+```{r}
+df1 %+% df2
+```
+
+Check that this function works on the two dataframs and vector (3 objects).
+
+```{r}
+df1 %+% df2 %+% vec1
+```
