@@ -494,6 +494,419 @@
     "href": "HW3/ST588_HW3_Will.html",
     "title": "ST558_HW3_Will",
     "section": "",
-    "text": "Task 1: Conceptual Questions\n\nIf your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?\n\nYou would need to specify ‘../MyData.csv’ as this is located one level up from the working directory.\n\nWhat are the major benefits of using R projects?\n\nThe working directory for R projects is set to the project’s root folder. This makes it easy for when you have multiple users working on the project due to the relative file paths being consistent between machines. Pathing does not break between machines. Related files are self contained.\n\nWhat is Git and what is GitHub?\n\nGit is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.\n\nWhat are the two main differences between a tibble and a data.frame?\n\nPrinting a tibble only prints the first several rows whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with ‘$’ whereas a data.frame can partially match a column name.\n\n\nTask 2: Reading Delimited Data\nUsing ‘tidyverse’ we will read in data into R directly from the URL.\n\n# Load tidyverse library\n#| message: False\n#| Warning: False\n\nlibrary(tidyverse)\n\nWarning: package 'tidyverse' was built under R version 4.5.2\n\n\nWarning: package 'ggplot2' was built under R version 4.5.1\n\n\nWarning: package 'tidyr' was built under R version 4.5.2\n\n\nWarning: package 'readr' was built under R version 4.5.1\n\n\nWarning: package 'purrr' was built under R version 4.5.2\n\n\nWarning: package 'stringr' was built under R version 4.5.2\n\n\nWarning: package 'forcats' was built under R version 4.5.2\n\n\nWarning: package 'lubridate' was built under R version 4.5.2\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   3.5.2     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.2\n✔ purrr     1.2.1     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\n\n1.\nGlass. Read in the file and add column names from the link. Use ‘read_csv()’ as it is delimited by ‘,’.\n\nglass_data &lt;- read_csv(\"https://www4.stat.ncsu.edu/~online/datasets/glass.data\",\n                       col_names = c(\"Id\", \"RI\", \"Na\", \"Mg\", \"Al\", \"Si\", \"K\",\n                                     \"Ca\", \"Ba\", \"Fe\", \"Type\"))\n\nRows: 214 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\ndbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglass_data\n\n# A tibble: 214 × 11\n      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe  Type\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1     1  1.52  13.6  4.49  1.1   71.8  0.06  8.75     0  0        1\n 2     2  1.52  13.9  3.6   1.36  72.7  0.48  7.83     0  0        1\n 3     3  1.52  13.5  3.55  1.54  73.0  0.39  7.78     0  0        1\n 4     4  1.52  13.2  3.69  1.29  72.6  0.57  8.22     0  0        1\n 5     5  1.52  13.3  3.62  1.24  73.1  0.55  8.07     0  0        1\n 6     6  1.52  12.8  3.61  1.62  73.0  0.64  8.07     0  0.26     1\n 7     7  1.52  13.3  3.6   1.14  73.1  0.58  8.17     0  0        1\n 8     8  1.52  13.2  3.61  1.05  73.2  0.57  8.24     0  0        1\n 9     9  1.52  14.0  3.58  1.37  72.1  0.56  8.3      0  0        1\n10    10  1.52  13    3.6   1.36  73.0  0.57  8.4      0  0.11     1\n# ℹ 204 more rows\n\n\n\n\n2.\nYeast. Use ‘read_table()’ as it is delimited by variable white space.\n\nyeast_data &lt;- read_table(\"https://www4.stat.ncsu.edu/~online/datasets/yeast.data\",\n                       col_names = c(\"seq_name\", \"mcg\", \"gvh\", \"alm\", \"mit\", \"erl\", \"pox\", \"vac\", \"nuc\", \"class\"))\n\n\n── Column specification ────────────────────────────────────────────────────────\ncols(\n  seq_name = col_character(),\n  mcg = col_double(),\n  gvh = col_double(),\n  alm = col_double(),\n  mit = col_double(),\n  erl = col_double(),\n  pox = col_double(),\n  vac = col_double(),\n  nuc = col_double(),\n  class = col_character()\n)\n\nyeast_data\n\n# A tibble: 1,484 × 10\n   seq_name     mcg   gvh   alm   mit   erl   pox   vac   nuc class\n   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;\n 1 ADT1_YEAST  0.58  0.61  0.47  0.13   0.5   0    0.48  0.22 MIT  \n 2 ADT2_YEAST  0.43  0.67  0.48  0.27   0.5   0    0.53  0.22 MIT  \n 3 ADT3_YEAST  0.64  0.62  0.49  0.15   0.5   0    0.53  0.22 MIT  \n 4 AAR2_YEAST  0.58  0.44  0.57  0.13   0.5   0    0.54  0.22 NUC  \n 5 AATM_YEAST  0.42  0.44  0.48  0.54   0.5   0    0.48  0.22 MIT  \n 6 AATC_YEAST  0.51  0.4   0.56  0.17   0.5   0.5  0.49  0.22 CYT  \n 7 ABC1_YEAST  0.5   0.54  0.48  0.65   0.5   0    0.53  0.22 MIT  \n 8 BAF1_YEAST  0.48  0.45  0.59  0.2    0.5   0    0.58  0.34 NUC  \n 9 ABF2_YEAST  0.55  0.5   0.66  0.36   0.5   0    0.49  0.22 MIT  \n10 ABP1_YEAST  0.4   0.39  0.6   0.15   0.5   0    0.58  0.3  CYT  \n# ℹ 1,474 more rows\n\n\n\n\n\nTask 3: Combining Excel and Delimited Data\nImport package readxl\n\nlibrary(readxl)\n\n\n3.\nImport the white wine data.\n\nwhite_wine &lt;- read_excel(\"white-wine.xlsx\", sheet=1)\n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides\n             &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n 1             7                 0.27          0.36             20.7     0.045\n 2             6.3               0.3           0.34              1.6     0.049\n 3             8.1               0.28          0.4               6.9     0.05 \n 4             7.2               0.23          0.32              8.5     0.058\n 5             7.2               0.23          0.32              8.5     0.058\n 6             8.1               0.28          0.4               6.9     0.05 \n 7             6.2               0.32          0.16              7       0.045\n 8             7                 0.27          0.36             20.7     0.045\n 9             6.3               0.3           0.34              1.6     0.049\n10             8.1               0.22          0.43              1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,\n#   `total sulfur dioxide` &lt;dbl&gt;, density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;,\n#   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;\n\n\n\n\n4.\nRead sheet 2 for variable names and overwrite our colnames.\n\nwhite_wine_var_names &lt;- read_excel(\"white-wine.xlsx\",\n                       sheet = excel_sheets(\"white-wine.xlsx\")[2])\n\ncolnames(white_wine) &lt;- white_wine_var_names$Variables \n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;\n\n\n\n\n5.\nAdd type column.\n\nwhite_wine &lt;- white_wine |&gt; mutate(type = \"white\")\n\nwhite_wine\n\n# A tibble: 4,898 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;\n\n\n\n\n6.\nRead in the red wine data. Replace variable names. Add ‘red’ type column for all records.\n\nred_wine &lt;- read_delim(file=\"red-wine.csv\",\n                       delim=\";\")\n\nRows: 1599 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \";\"\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\ncolnames(red_wine) &lt;- white_wine_var_names$Variables\n\nred_wine &lt;- red_wine |&gt; mutate(type = \"red\")\n\nred_wine\n\n# A tibble: 1,599 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7.4             0.7         0               1.9     0.076\n 2           7.8             0.88        0               2.6     0.098\n 3           7.8             0.76        0.04            2.3     0.092\n 4          11.2             0.28        0.56            1.9     0.075\n 5           7.4             0.7         0               1.9     0.076\n 6           7.4             0.66        0               1.8     0.075\n 7           7.9             0.6         0.06            1.6     0.069\n 8           7.3             0.65        0               1.2     0.065\n 9           7.8             0.58        0.02            2       0.073\n10           7.5             0.5         0.36            6.1     0.071\n# ℹ 1,589 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;\n\n\n\n\n7\nCombine wine data sets.\n\nall_wine &lt;- bind_rows(white_wine, red_wine)\n\nall_wine\n\n# A tibble: 6,497 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 6,487 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+    "text": "If your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?\nYou would need to specify ‘../MyData.csv’ as this is located one level up from the working directory.\nWhat are the major benefits of using R projects?\nThe working directory for R projects is set to the project’s root folder. This makes it easy for when you have multiple users working on the project due to the relative file paths being consistent between machines. Pathing does not break between machines. Related files are self contained.\nWhat is Git and what is GitHub?\nGit is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.\nWhat are the two main differences between a tibble and a data.frame?\nPrinting a tibble only prints the first several rows whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with ‘$’ whereas a data.frame can partially match a column name."
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section",
+    "href": "HW3/ST588_HW3_Will.html#section",
+    "title": "ST558_HW3_Will",
+    "section": "1.",
+    "text": "1.\nGlass. Read in the file and add column names from the link. Use ‘read_csv()’ as it is delimited by ‘,’.\n\nglass_data &lt;- read_csv(\"https://www4.stat.ncsu.edu/~online/datasets/glass.data\",\n                       col_names = c(\"Id\", \"RI\", \"Na\", \"Mg\", \"Al\", \"Si\", \"K\",\n                                     \"Ca\", \"Ba\", \"Fe\", \"Type\"))\n\nRows: 214 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\ndbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglass_data\n\n# A tibble: 214 × 11\n      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe  Type\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1     1  1.52  13.6  4.49  1.1   71.8  0.06  8.75     0  0        1\n 2     2  1.52  13.9  3.6   1.36  72.7  0.48  7.83     0  0        1\n 3     3  1.52  13.5  3.55  1.54  73.0  0.39  7.78     0  0        1\n 4     4  1.52  13.2  3.69  1.29  72.6  0.57  8.22     0  0        1\n 5     5  1.52  13.3  3.62  1.24  73.1  0.55  8.07     0  0        1\n 6     6  1.52  12.8  3.61  1.62  73.0  0.64  8.07     0  0.26     1\n 7     7  1.52  13.3  3.6   1.14  73.1  0.58  8.17     0  0        1\n 8     8  1.52  13.2  3.61  1.05  73.2  0.57  8.24     0  0        1\n 9     9  1.52  14.0  3.58  1.37  72.1  0.56  8.3      0  0        1\n10    10  1.52  13    3.6   1.36  73.0  0.57  8.4      0  0.11     1\n# ℹ 204 more rows"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-1",
+    "href": "HW3/ST588_HW3_Will.html#section-1",
+    "title": "ST558_HW3_Will",
+    "section": "2.",
+    "text": "2.\nYeast. Use ‘read_table()’ as it is delimited by variable white space.\n\nyeast_data &lt;- read_table(\"https://www4.stat.ncsu.edu/~online/datasets/yeast.data\",\n                       col_names = c(\"seq_name\", \"mcg\", \"gvh\", \"alm\", \"mit\", \"erl\", \"pox\", \"vac\", \"nuc\", \"class\"))\n\n\n── Column specification ────────────────────────────────────────────────────────\ncols(\n  seq_name = col_character(),\n  mcg = col_double(),\n  gvh = col_double(),\n  alm = col_double(),\n  mit = col_double(),\n  erl = col_double(),\n  pox = col_double(),\n  vac = col_double(),\n  nuc = col_double(),\n  class = col_character()\n)\n\nyeast_data\n\n# A tibble: 1,484 × 10\n   seq_name     mcg   gvh   alm   mit   erl   pox   vac   nuc class\n   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;\n 1 ADT1_YEAST  0.58  0.61  0.47  0.13   0.5   0    0.48  0.22 MIT  \n 2 ADT2_YEAST  0.43  0.67  0.48  0.27   0.5   0    0.53  0.22 MIT  \n 3 ADT3_YEAST  0.64  0.62  0.49  0.15   0.5   0    0.53  0.22 MIT  \n 4 AAR2_YEAST  0.58  0.44  0.57  0.13   0.5   0    0.54  0.22 NUC  \n 5 AATM_YEAST  0.42  0.44  0.48  0.54   0.5   0    0.48  0.22 MIT  \n 6 AATC_YEAST  0.51  0.4   0.56  0.17   0.5   0.5  0.49  0.22 CYT  \n 7 ABC1_YEAST  0.5   0.54  0.48  0.65   0.5   0    0.53  0.22 MIT  \n 8 BAF1_YEAST  0.48  0.45  0.59  0.2    0.5   0    0.58  0.34 NUC  \n 9 ABF2_YEAST  0.55  0.5   0.66  0.36   0.5   0    0.49  0.22 MIT  \n10 ABP1_YEAST  0.4   0.39  0.6   0.15   0.5   0    0.58  0.3  CYT  \n# ℹ 1,474 more rows"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-2",
+    "href": "HW3/ST588_HW3_Will.html#section-2",
+    "title": "ST558_HW3_Will",
+    "section": "3.",
+    "text": "3.\nImport the white wine data.\n\nwhite_wine &lt;- read_excel(\"white-wine.xlsx\", sheet=1)\n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides\n             &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n 1             7                 0.27          0.36             20.7     0.045\n 2             6.3               0.3           0.34              1.6     0.049\n 3             8.1               0.28          0.4               6.9     0.05 \n 4             7.2               0.23          0.32              8.5     0.058\n 5             7.2               0.23          0.32              8.5     0.058\n 6             8.1               0.28          0.4               6.9     0.05 \n 7             6.2               0.32          0.16              7       0.045\n 8             7                 0.27          0.36             20.7     0.045\n 9             6.3               0.3           0.34              1.6     0.049\n10             8.1               0.22          0.43              1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,\n#   `total sulfur dioxide` &lt;dbl&gt;, density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;,\n#   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-3",
+    "href": "HW3/ST588_HW3_Will.html#section-3",
+    "title": "ST558_HW3_Will",
+    "section": "4.",
+    "text": "4.\nRead sheet 2 for variable names and overwrite our colnames.\n\nwhite_wine_var_names &lt;- read_excel(\"white-wine.xlsx\",\n                       sheet = excel_sheets(\"white-wine.xlsx\")[2])\n\ncolnames(white_wine) &lt;- white_wine_var_names$Variables \n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-4",
+    "href": "HW3/ST588_HW3_Will.html#section-4",
+    "title": "ST558_HW3_Will",
+    "section": "5.",
+    "text": "5.\nAdd type column.\n\nwhite_wine &lt;- white_wine |&gt; mutate(type = \"white\")\n\nwhite_wine\n\n# A tibble: 4,898 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-5",
+    "href": "HW3/ST588_HW3_Will.html#section-5",
+    "title": "ST558_HW3_Will",
+    "section": "6.",
+    "text": "6.\nRead in the red wine data. Replace variable names. Add ‘red’ type column for all records.\n\nred_wine &lt;- read_delim(file=\"red-wine.csv\",\n                       delim=\";\")\n\nRows: 1599 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \";\"\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\ncolnames(red_wine) &lt;- white_wine_var_names$Variables\n\nred_wine &lt;- red_wine |&gt; mutate(type = \"red\")\n\nred_wine\n\n# A tibble: 1,599 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7.4             0.7         0               1.9     0.076\n 2           7.8             0.88        0               2.6     0.098\n 3           7.8             0.76        0.04            2.3     0.092\n 4          11.2             0.28        0.56            1.9     0.075\n 5           7.4             0.7         0               1.9     0.076\n 6           7.4             0.66        0               1.8     0.075\n 7           7.9             0.6         0.06            1.6     0.069\n 8           7.3             0.65        0               1.2     0.065\n 9           7.8             0.58        0.02            2       0.073\n10           7.5             0.5         0.36            6.1     0.071\n# ℹ 1,589 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-6",
+    "href": "HW3/ST588_HW3_Will.html#section-6",
+    "title": "ST558_HW3_Will",
+    "section": "7.",
+    "text": "7.\nCombine wine data sets.\n\nall_wine &lt;- bind_rows(white_wine, red_wine)\n\nall_wine\n\n# A tibble: 6,497 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 6,487 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-7",
+    "href": "HW3/ST588_HW3_Will.html#section-7",
+    "title": "ST558_HW3_Will",
+    "section": "8.",
+    "text": "8.\nIQR function.\n\ngetIQR &lt;- function(x, ...) {\n  q &lt;- quantile(x, probs = c(0.25, 0.75), ...)\n  unname(q[2] - q[1])\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-8",
+    "href": "HW3/ST588_HW3_Will.html#section-8",
+    "title": "ST558_HW3_Will",
+    "section": "9.",
+    "text": "9.\nApply the getIQR() function to the fixed_acidity as well as the citric_acid column.\n\ngetIQR(all_wine$fixed_acidity)\n\n[1] 1.3\n\ngetIQR(all_wine$citric_acid)\n\n[1] 0.14"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-9",
+    "href": "HW3/ST588_HW3_Will.html#section-9",
+    "title": "ST558_HW3_Will",
+    "section": "10.",
+    "text": "10.\nSample coefficient of variation.\n\ngetCoefVar &lt;- function(x, ...) {\n  sd(x, ...) / abs(mean(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-10",
+    "href": "HW3/ST588_HW3_Will.html#section-10",
+    "title": "ST558_HW3_Will",
+    "section": "11.",
+    "text": "11.\nApply the getCoefVar() function to the fixed_acidity as well as the citric_acid column.\n\ngetCoefVar(all_wine$fixed_acidity)\n\n[1] 0.1796783\n\ngetCoefVar(all_wine$citric_acid)\n\n[1] 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-11",
+    "href": "HW3/ST588_HW3_Will.html#section-11",
+    "title": "ST558_HW3_Will",
+    "section": "12.",
+    "text": "12.\nWrapper function that takes a vector and returns the IQR and coefficient of variation.\n\ngetSummaries &lt;- function(x, ...) {\n  c(IQR = getIQR(x, ...), \n  CoeVar = getCoefVar(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-12",
+    "href": "HW3/ST588_HW3_Will.html#section-12",
+    "title": "ST558_HW3_Will",
+    "section": "13.",
+    "text": "13.\nApply the getSummaries() function to the fixed_acidity as well as the citric_acid column.\n\ngetSummaries(all_wine$fixed_acidity)\n\n      IQR    CoeVar \n1.3000000 0.1796783 \n\ngetSummaries(all_wine$citric_acid)\n\n      IQR    CoeVar \n0.1400000 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Will.html#section-13",
+    "href": "HW3/ST588_HW3_Will.html#section-13",
+    "title": "ST558_HW3_Will",
+    "section": "14.",
+    "text": "14.\nWrite infix function to replace cbind().\n\n`%+%` &lt;- function(a, v){\n  \n  cbind(a, v)\n  \n}\n\nCreate the tester df’s and vector.\n\ndf1 &lt;- data.frame(unif = runif(10), norm = rnorm(10))\ndf2 &lt;- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))\nvec1 &lt;- rnorm(10, mean = 10)\n\nCheck that this function works on the two data frames.\n\ndf1 %+% df2\n\n         unif       norm     gamma      beta\n1  0.77095689  0.5184573 0.0966876 0.7917515\n2  0.32960813  0.9018673 0.1321489 0.7249470\n3  0.62346612 -0.6805077 0.6171507 0.8507343\n4  0.12700793  0.3523991 3.2739687 0.4573423\n5  0.92825527  0.7842312 0.6102256 0.7069967\n6  0.04326971 -0.2990956 1.1784798 0.9831795\n7  0.34129957 -0.2775709 0.3427970 0.9278551\n8  0.58720944  0.4928748 0.1010640 0.9404327\n9  0.21585654 -2.1100214 1.4283326 0.9420296\n10 0.13638219 -1.2197644 0.5623165 0.8738351\n\n\nCheck that this function works on the two dataframs and vector (3 objects).\n\ndf1 %+% df2 %+% vec1\n\n         unif       norm     gamma      beta         v\n1  0.77095689  0.5184573 0.0966876 0.7917515 12.140436\n2  0.32960813  0.9018673 0.1321489 0.7249470  8.500820\n3  0.62346612 -0.6805077 0.6171507 0.8507343  8.957070\n4  0.12700793  0.3523991 3.2739687 0.4573423  9.876557\n5  0.92825527  0.7842312 0.6102256 0.7069967 10.756610\n6  0.04326971 -0.2990956 1.1784798 0.9831795 12.634853\n7  0.34129957 -0.2775709 0.3427970 0.9278551 10.606579\n8  0.58720944  0.4928748 0.1010640 0.9404327 10.312369\n9  0.21585654 -2.1100214 1.4283326 0.9420296  9.921201\n10 0.13638219 -1.2197644 0.5623165 0.8738351  8.750114"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html",
+    "href": "HW3/ST588_HW3_Final.html",
+    "title": "ST558_HW3_Final",
+    "section": "",
+    "text": "If your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?\nYou would need to specify ‘../MyData.csv’ as this is located one level up from the working directory. The ‘../’ prefix moves you up one level from current into ‘myfolder/’ where ‘MyData.csv’ lives.\nWhat are the major benefits of using R projects?\nThe working directory for R projects is set to the project’s root folder. Relative file paths stay consistent no matter whose machine is being used for the project. This makes collaboration more seamless without paths breaking. Relative paths are very helpful for code sharing, and version control is also helpful for code sharing. Through an R project for version control we can clone a Git repository and manage that repository through R Studio’s terminal. Related files are self contained.\nWhat is Git and what is GitHub?\nGit is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.\nWhat are the two main differences between a tibble and a data.frame?\nPrinting a tibble only prints the first several rows and size summary (#rows x #cols), whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with ‘$’ whereas a data.frame can partially match a column name."
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section",
+    "href": "HW3/ST588_HW3_Final.html#section",
+    "title": "ST558_HW3_Final",
+    "section": "1.",
+    "text": "1.\nGlass. Read in the file and add column names from the link. Use ‘read_csv()’ as it is delimited by ‘,’.\n\nglass_data &lt;- read_csv(\"https://www4.stat.ncsu.edu/~online/datasets/glass.data\",\n                       col_names = c(\"Id\", \"RI\", \"Na\", \"Mg\", \"Al\", \"Si\", \"K\",\n                                     \"Ca\", \"Ba\", \"Fe\", \"Type\"))\n\nRows: 214 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\ndbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglass_data\n\n# A tibble: 214 × 11\n      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe  Type\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1     1  1.52  13.6  4.49  1.1   71.8  0.06  8.75     0  0        1\n 2     2  1.52  13.9  3.6   1.36  72.7  0.48  7.83     0  0        1\n 3     3  1.52  13.5  3.55  1.54  73.0  0.39  7.78     0  0        1\n 4     4  1.52  13.2  3.69  1.29  72.6  0.57  8.22     0  0        1\n 5     5  1.52  13.3  3.62  1.24  73.1  0.55  8.07     0  0        1\n 6     6  1.52  12.8  3.61  1.62  73.0  0.64  8.07     0  0.26     1\n 7     7  1.52  13.3  3.6   1.14  73.1  0.58  8.17     0  0        1\n 8     8  1.52  13.2  3.61  1.05  73.2  0.57  8.24     0  0        1\n 9     9  1.52  14.0  3.58  1.37  72.1  0.56  8.3      0  0        1\n10    10  1.52  13    3.6   1.36  73.0  0.57  8.4      0  0.11     1\n# ℹ 204 more rows"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-1",
+    "href": "HW3/ST588_HW3_Final.html#section-1",
+    "title": "ST558_HW3_Final",
+    "section": "2.",
+    "text": "2.\nYeast. Use ‘read_table()’ as it is delimited by variable white space.\n\nyeast_data &lt;- read_table(\"https://www4.stat.ncsu.edu/~online/datasets/yeast.data\",\n                       col_names = c(\"seq_name\", \"mcg\", \"gvh\", \"alm\", \"mit\", \"erl\", \"pox\", \"vac\", \"nuc\", \"class\"))\n\n\n── Column specification ────────────────────────────────────────────────────────\ncols(\n  seq_name = col_character(),\n  mcg = col_double(),\n  gvh = col_double(),\n  alm = col_double(),\n  mit = col_double(),\n  erl = col_double(),\n  pox = col_double(),\n  vac = col_double(),\n  nuc = col_double(),\n  class = col_character()\n)\n\nyeast_data\n\n# A tibble: 1,484 × 10\n   seq_name     mcg   gvh   alm   mit   erl   pox   vac   nuc class\n   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;\n 1 ADT1_YEAST  0.58  0.61  0.47  0.13   0.5   0    0.48  0.22 MIT  \n 2 ADT2_YEAST  0.43  0.67  0.48  0.27   0.5   0    0.53  0.22 MIT  \n 3 ADT3_YEAST  0.64  0.62  0.49  0.15   0.5   0    0.53  0.22 MIT  \n 4 AAR2_YEAST  0.58  0.44  0.57  0.13   0.5   0    0.54  0.22 NUC  \n 5 AATM_YEAST  0.42  0.44  0.48  0.54   0.5   0    0.48  0.22 MIT  \n 6 AATC_YEAST  0.51  0.4   0.56  0.17   0.5   0.5  0.49  0.22 CYT  \n 7 ABC1_YEAST  0.5   0.54  0.48  0.65   0.5   0    0.53  0.22 MIT  \n 8 BAF1_YEAST  0.48  0.45  0.59  0.2    0.5   0    0.58  0.34 NUC  \n 9 ABF2_YEAST  0.55  0.5   0.66  0.36   0.5   0    0.49  0.22 MIT  \n10 ABP1_YEAST  0.4   0.39  0.6   0.15   0.5   0    0.58  0.3  CYT  \n# ℹ 1,474 more rows"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-2",
+    "href": "HW3/ST588_HW3_Final.html#section-2",
+    "title": "ST558_HW3_Final",
+    "section": "3.",
+    "text": "3.\nImport the white wine data.\n\n# reads first sheet by default\nwhite_wine &lt;- read_excel(\"white-wine.xlsx\")\n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides\n             &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n 1             7                 0.27          0.36             20.7     0.045\n 2             6.3               0.3           0.34              1.6     0.049\n 3             8.1               0.28          0.4               6.9     0.05 \n 4             7.2               0.23          0.32              8.5     0.058\n 5             7.2               0.23          0.32              8.5     0.058\n 6             8.1               0.28          0.4               6.9     0.05 \n 7             6.2               0.32          0.16              7       0.045\n 8             7                 0.27          0.36             20.7     0.045\n 9             6.3               0.3           0.34              1.6     0.049\n10             8.1               0.22          0.43              1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,\n#   `total sulfur dioxide` &lt;dbl&gt;, density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;,\n#   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-3",
+    "href": "HW3/ST588_HW3_Final.html#section-3",
+    "title": "ST558_HW3_Final",
+    "section": "4.",
+    "text": "4.\nRead sheet 2 for variable names and overwrite our colnames.\n\nwhite_wine_var_names &lt;- read_excel(\"white-wine.xlsx\", sheet = \"variables\")\n\ncolnames(white_wine) &lt;- white_wine_var_names$Variables \n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-4",
+    "href": "HW3/ST588_HW3_Final.html#section-4",
+    "title": "ST558_HW3_Final",
+    "section": "5.",
+    "text": "5.\nAdd type column.\n\nwhite_wine &lt;- white_wine |&gt; mutate(type = \"white\")\n\nwhite_wine\n\n# A tibble: 4,898 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-5",
+    "href": "HW3/ST588_HW3_Final.html#section-5",
+    "title": "ST558_HW3_Final",
+    "section": "6.",
+    "text": "6.\nRead in the red wine data. Replace variable names. Add ‘red’ type column for all records.\n\nred_wine &lt;- read_delim(file=\"red-wine.csv\",\n                       delim=\";\")\n\nRows: 1599 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \";\"\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\ncolnames(red_wine) &lt;- white_wine_var_names$Variables\n\nred_wine &lt;- red_wine |&gt; mutate(type = \"red\")\n\nred_wine\n\n# A tibble: 1,599 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7.4             0.7         0               1.9     0.076\n 2           7.8             0.88        0               2.6     0.098\n 3           7.8             0.76        0.04            2.3     0.092\n 4          11.2             0.28        0.56            1.9     0.075\n 5           7.4             0.7         0               1.9     0.076\n 6           7.4             0.66        0               1.8     0.075\n 7           7.9             0.6         0.06            1.6     0.069\n 8           7.3             0.65        0               1.2     0.065\n 9           7.8             0.58        0.02            2       0.073\n10           7.5             0.5         0.36            6.1     0.071\n# ℹ 1,589 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-6",
+    "href": "HW3/ST588_HW3_Final.html#section-6",
+    "title": "ST558_HW3_Final",
+    "section": "7.",
+    "text": "7.\nCombine wine data sets.\n\nall_wine &lt;- bind_rows(white_wine, red_wine)\n\nall_wine\n\n# A tibble: 6,497 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 6,487 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-7",
+    "href": "HW3/ST588_HW3_Final.html#section-7",
+    "title": "ST558_HW3_Final",
+    "section": "8.",
+    "text": "8.\nIQR function.\n\ngetIQR &lt;- function(x, ...) {\n    #q stores P25 and P75 as vector elements, names disabled\n    q &lt;- quantile(x, probs = c(0.25, 0.75), names=FALSE)\n    \n    #iqr captures the calculated difference:  P75 - P25\n    iqr &lt;- q[2] - q[1]\n    return(iqr)\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-8",
+    "href": "HW3/ST588_HW3_Final.html#section-8",
+    "title": "ST558_HW3_Final",
+    "section": "9.",
+    "text": "9.\nApply the getIQR() function to the fixed_acidity as well as the citric_acid column.\n\ngetIQR(all_wine$fixed_acidity)\n\n[1] 1.3\n\ngetIQR(all_wine$citric_acid)\n\n[1] 0.14"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-9",
+    "href": "HW3/ST588_HW3_Final.html#section-9",
+    "title": "ST558_HW3_Final",
+    "section": "10.",
+    "text": "10.\nSample coefficient of variation.\n\ngetCoefVar &lt;- function(x, ...) {\n  sd(x, ...) / abs(mean(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-10",
+    "href": "HW3/ST588_HW3_Final.html#section-10",
+    "title": "ST558_HW3_Final",
+    "section": "11.",
+    "text": "11.\nApply the getCoefVar() function to the fixed_acidity as well as the citric_acid column.\n\ngetCoefVar(all_wine$fixed_acidity)\n\n[1] 0.1796783\n\ngetCoefVar(all_wine$citric_acid)\n\n[1] 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-11",
+    "href": "HW3/ST588_HW3_Final.html#section-11",
+    "title": "ST558_HW3_Final",
+    "section": "12.",
+    "text": "12.\nWrapper function that takes a vector and returns the IQR and coefficient of variation.\n\ngetSummaries &lt;- function(x, ...) {\n  c(IQR = getIQR(x, ...), \n  CoeVar = getCoefVar(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-12",
+    "href": "HW3/ST588_HW3_Final.html#section-12",
+    "title": "ST558_HW3_Final",
+    "section": "13.",
+    "text": "13.\nApply the getSummaries() function to the fixed_acidity as well as the citric_acid column.\n\ngetSummaries(all_wine$fixed_acidity)\n\n      IQR    CoeVar \n1.3000000 0.1796783 \n\ngetSummaries(all_wine$citric_acid)\n\n      IQR    CoeVar \n0.1400000 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST588_HW3_Final.html#section-13",
+    "href": "HW3/ST588_HW3_Final.html#section-13",
+    "title": "ST558_HW3_Final",
+    "section": "14.",
+    "text": "14.\nWrite infix function to replace cbind().\n\n`%+%` &lt;- function(a, v){\n  \n  cbind(a, v)\n  \n}\n\nCreate the tester df’s and vector.\n\ndf1 &lt;- data.frame(unif = runif(10), norm = rnorm(10))\ndf2 &lt;- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))\nvec1 &lt;- rnorm(10, mean = 10)\n\nCheck that this function works on the two data frames.\n\ndf1 %+% df2\n\n         unif        norm     gamma      beta\n1  0.53835687 -0.05674284 0.3449897 0.6866374\n2  0.65939768 -0.89526162 0.2619774 0.9760249\n3  0.72844088  0.54493078 0.5535028 0.4554240\n4  0.08598688  0.15671369 0.4351762 0.6325391\n5  0.89184392 -1.35060117 1.5522543 0.8789101\n6  0.99858175  1.02321195 1.4392075 0.8124549\n7  0.06311095  0.88869591 1.4812221 0.7940642\n8  0.32761552  0.40044338 1.8376594 0.9507706\n9  0.01450067  0.07484458 0.3942909 0.9359681\n10 0.76284355  1.48985239 0.6747533 0.9670988\n\n\nCheck that this function works on the two dataframs and vector (3 objects).\n\ndf1 %+% df2 %+% vec1\n\n         unif        norm     gamma      beta         v\n1  0.53835687 -0.05674284 0.3449897 0.6866374  9.431078\n2  0.65939768 -0.89526162 0.2619774 0.9760249 10.743886\n3  0.72844088  0.54493078 0.5535028 0.4554240  9.891026\n4  0.08598688  0.15671369 0.4351762 0.6325391  9.174845\n5  0.89184392 -1.35060117 1.5522543 0.8789101  9.814329\n6  0.99858175  1.02321195 1.4392075 0.8124549 10.586133\n7  0.06311095  0.88869591 1.4812221 0.7940642 10.277233\n8  0.32761552  0.40044338 1.8376594 0.9507706 10.129459\n9  0.01450067  0.07484458 0.3942909 0.9359681  7.273075\n10 0.76284355  1.48985239 0.6747533 0.9670988  9.729137"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html",
+    "href": "HW3/ST558_HW3_Will.html",
+    "title": "ST558_HW3_Will",
+    "section": "",
+    "text": "If your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?\nYou would need to specify ‘../MyData.csv’ as this is located one level up from the working directory.\nWhat are the major benefits of using R projects?\nThe working directory for R projects is set to the project’s root folder. This makes it easy for when you have multiple users working on the project due to the relative file paths being consistent between machines. Pathing does not break between machines. Related files are self contained.\nWhat is Git and what is GitHub?\nGit is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.\nWhat are the two main differences between a tibble and a data.frame?\nPrinting a tibble only prints the first several rows whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with ‘$’ whereas a data.frame can partially match a column name."
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section",
+    "href": "HW3/ST558_HW3_Will.html#section",
+    "title": "ST558_HW3_Will",
+    "section": "1.",
+    "text": "1.\nGlass. Read in the file and add column names from the link. Use ‘read_csv()’ as it is delimited by ‘,’.\n\nglass_data &lt;- read_csv(\"https://www4.stat.ncsu.edu/~online/datasets/glass.data\",\n                       col_names = c(\"Id\", \"RI\", \"Na\", \"Mg\", \"Al\", \"Si\", \"K\",\n                                     \"Ca\", \"Ba\", \"Fe\", \"Type\"))\n\nRows: 214 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\ndbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglass_data\n\n# A tibble: 214 × 11\n      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe  Type\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1     1  1.52  13.6  4.49  1.1   71.8  0.06  8.75     0  0        1\n 2     2  1.52  13.9  3.6   1.36  72.7  0.48  7.83     0  0        1\n 3     3  1.52  13.5  3.55  1.54  73.0  0.39  7.78     0  0        1\n 4     4  1.52  13.2  3.69  1.29  72.6  0.57  8.22     0  0        1\n 5     5  1.52  13.3  3.62  1.24  73.1  0.55  8.07     0  0        1\n 6     6  1.52  12.8  3.61  1.62  73.0  0.64  8.07     0  0.26     1\n 7     7  1.52  13.3  3.6   1.14  73.1  0.58  8.17     0  0        1\n 8     8  1.52  13.2  3.61  1.05  73.2  0.57  8.24     0  0        1\n 9     9  1.52  14.0  3.58  1.37  72.1  0.56  8.3      0  0        1\n10    10  1.52  13    3.6   1.36  73.0  0.57  8.4      0  0.11     1\n# ℹ 204 more rows"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-1",
+    "href": "HW3/ST558_HW3_Will.html#section-1",
+    "title": "ST558_HW3_Will",
+    "section": "2.",
+    "text": "2.\nYeast. Use ‘read_table()’ as it is delimited by variable white space.\n\nyeast_data &lt;- read_table(\"https://www4.stat.ncsu.edu/~online/datasets/yeast.data\",\n                       col_names = c(\"seq_name\", \"mcg\", \"gvh\", \"alm\", \"mit\", \"erl\", \"pox\", \"vac\", \"nuc\", \"class\"))\n\n\n── Column specification ────────────────────────────────────────────────────────\ncols(\n  seq_name = col_character(),\n  mcg = col_double(),\n  gvh = col_double(),\n  alm = col_double(),\n  mit = col_double(),\n  erl = col_double(),\n  pox = col_double(),\n  vac = col_double(),\n  nuc = col_double(),\n  class = col_character()\n)\n\nyeast_data\n\n# A tibble: 1,484 × 10\n   seq_name     mcg   gvh   alm   mit   erl   pox   vac   nuc class\n   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;\n 1 ADT1_YEAST  0.58  0.61  0.47  0.13   0.5   0    0.48  0.22 MIT  \n 2 ADT2_YEAST  0.43  0.67  0.48  0.27   0.5   0    0.53  0.22 MIT  \n 3 ADT3_YEAST  0.64  0.62  0.49  0.15   0.5   0    0.53  0.22 MIT  \n 4 AAR2_YEAST  0.58  0.44  0.57  0.13   0.5   0    0.54  0.22 NUC  \n 5 AATM_YEAST  0.42  0.44  0.48  0.54   0.5   0    0.48  0.22 MIT  \n 6 AATC_YEAST  0.51  0.4   0.56  0.17   0.5   0.5  0.49  0.22 CYT  \n 7 ABC1_YEAST  0.5   0.54  0.48  0.65   0.5   0    0.53  0.22 MIT  \n 8 BAF1_YEAST  0.48  0.45  0.59  0.2    0.5   0    0.58  0.34 NUC  \n 9 ABF2_YEAST  0.55  0.5   0.66  0.36   0.5   0    0.49  0.22 MIT  \n10 ABP1_YEAST  0.4   0.39  0.6   0.15   0.5   0    0.58  0.3  CYT  \n# ℹ 1,474 more rows"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-2",
+    "href": "HW3/ST558_HW3_Will.html#section-2",
+    "title": "ST558_HW3_Will",
+    "section": "3.",
+    "text": "3.\nImport the white wine data.\n\nwhite_wine &lt;- read_excel(\"white-wine.xlsx\", sheet=1)\n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides\n             &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n 1             7                 0.27          0.36             20.7     0.045\n 2             6.3               0.3           0.34              1.6     0.049\n 3             8.1               0.28          0.4               6.9     0.05 \n 4             7.2               0.23          0.32              8.5     0.058\n 5             7.2               0.23          0.32              8.5     0.058\n 6             8.1               0.28          0.4               6.9     0.05 \n 7             6.2               0.32          0.16              7       0.045\n 8             7                 0.27          0.36             20.7     0.045\n 9             6.3               0.3           0.34              1.6     0.049\n10             8.1               0.22          0.43              1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,\n#   `total sulfur dioxide` &lt;dbl&gt;, density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;,\n#   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-3",
+    "href": "HW3/ST558_HW3_Will.html#section-3",
+    "title": "ST558_HW3_Will",
+    "section": "4.",
+    "text": "4.\nRead sheet 2 for variable names and overwrite our colnames.\n\nwhite_wine_var_names &lt;- read_excel(\"white-wine.xlsx\",\n                       sheet = excel_sheets(\"white-wine.xlsx\")[2])\n\ncolnames(white_wine) &lt;- white_wine_var_names$Variables \n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-4",
+    "href": "HW3/ST558_HW3_Will.html#section-4",
+    "title": "ST558_HW3_Will",
+    "section": "5.",
+    "text": "5.\nAdd type column.\n\nwhite_wine &lt;- white_wine |&gt; mutate(type = \"white\")\n\nwhite_wine\n\n# A tibble: 4,898 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-5",
+    "href": "HW3/ST558_HW3_Will.html#section-5",
+    "title": "ST558_HW3_Will",
+    "section": "6.",
+    "text": "6.\nRead in the red wine data. Replace variable names. Add ‘red’ type column for all records.\n\nred_wine &lt;- read_delim(file=\"red-wine.csv\",\n                       delim=\";\")\n\nRows: 1599 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \";\"\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\ncolnames(red_wine) &lt;- white_wine_var_names$Variables\n\nred_wine &lt;- red_wine |&gt; mutate(type = \"red\")\n\nred_wine\n\n# A tibble: 1,599 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7.4             0.7         0               1.9     0.076\n 2           7.8             0.88        0               2.6     0.098\n 3           7.8             0.76        0.04            2.3     0.092\n 4          11.2             0.28        0.56            1.9     0.075\n 5           7.4             0.7         0               1.9     0.076\n 6           7.4             0.66        0               1.8     0.075\n 7           7.9             0.6         0.06            1.6     0.069\n 8           7.3             0.65        0               1.2     0.065\n 9           7.8             0.58        0.02            2       0.073\n10           7.5             0.5         0.36            6.1     0.071\n# ℹ 1,589 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-6",
+    "href": "HW3/ST558_HW3_Will.html#section-6",
+    "title": "ST558_HW3_Will",
+    "section": "7.",
+    "text": "7.\nCombine wine data sets.\n\nall_wine &lt;- bind_rows(white_wine, red_wine)\n\nall_wine\n\n# A tibble: 6,497 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 6,487 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-7",
+    "href": "HW3/ST558_HW3_Will.html#section-7",
+    "title": "ST558_HW3_Will",
+    "section": "8.",
+    "text": "8.\nIQR function.\n\ngetIQR &lt;- function(x, ...) {\n  q &lt;- quantile(x, probs = c(0.25, 0.75), ...)\n  unname(q[2] - q[1])\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-8",
+    "href": "HW3/ST558_HW3_Will.html#section-8",
+    "title": "ST558_HW3_Will",
+    "section": "9.",
+    "text": "9.\nApply the getIQR() function to the fixed_acidity as well as the citric_acid column.\n\ngetIQR(all_wine$fixed_acidity)\n\n[1] 1.3\n\ngetIQR(all_wine$citric_acid)\n\n[1] 0.14"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-9",
+    "href": "HW3/ST558_HW3_Will.html#section-9",
+    "title": "ST558_HW3_Will",
+    "section": "10.",
+    "text": "10.\nSample coefficient of variation.\n\ngetCoefVar &lt;- function(x, ...) {\n  sd(x, ...) / abs(mean(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-10",
+    "href": "HW3/ST558_HW3_Will.html#section-10",
+    "title": "ST558_HW3_Will",
+    "section": "11.",
+    "text": "11.\nApply the getCoefVar() function to the fixed_acidity as well as the citric_acid column.\n\ngetCoefVar(all_wine$fixed_acidity)\n\n[1] 0.1796783\n\ngetCoefVar(all_wine$citric_acid)\n\n[1] 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-11",
+    "href": "HW3/ST558_HW3_Will.html#section-11",
+    "title": "ST558_HW3_Will",
+    "section": "12.",
+    "text": "12.\nWrapper function that takes a vector and returns the IQR and coefficient of variation.\n\ngetSummaries &lt;- function(x, ...) {\n  c(IQR = getIQR(x, ...), \n  CoeVar = getCoefVar(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-12",
+    "href": "HW3/ST558_HW3_Will.html#section-12",
+    "title": "ST558_HW3_Will",
+    "section": "13.",
+    "text": "13.\nApply the getSummaries() function to the fixed_acidity as well as the citric_acid column.\n\ngetSummaries(all_wine$fixed_acidity)\n\n      IQR    CoeVar \n1.3000000 0.1796783 \n\ngetSummaries(all_wine$citric_acid)\n\n      IQR    CoeVar \n0.1400000 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Will.html#section-13",
+    "href": "HW3/ST558_HW3_Will.html#section-13",
+    "title": "ST558_HW3_Will",
+    "section": "14.",
+    "text": "14.\nWrite infix function to replace cbind().\n\n`%+%` &lt;- function(a, v){\n  \n  cbind(a, v)\n  \n}\n\nCreate the tester df’s and vector.\n\ndf1 &lt;- data.frame(unif = runif(10), norm = rnorm(10))\ndf2 &lt;- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))\nvec1 &lt;- rnorm(10, mean = 10)\n\nCheck that this function works on the two data frames.\n\ndf1 %+% df2\n\n         unif        norm     gamma      beta\n1  0.67124608  1.02442153 0.3514868 0.7351107\n2  0.07507894 -1.54136933 0.7285837 0.4622946\n3  0.67824890  1.94677393 0.1838174 0.7051510\n4  0.62387713  1.35675141 4.0020022 0.8164773\n5  0.67307786  1.03867326 5.5831777 0.9548817\n6  0.12590944  1.46147067 0.7694215 0.9192166\n7  0.99516128  1.03543300 0.4361298 0.4873545\n8  0.65469544 -0.99724900 0.1375730 0.6118288\n9  0.63325446  1.45215120 0.6276940 0.9551918\n10 0.44729869 -0.03295085 0.8670438 0.9508807\n\n\nCheck that this function works on the two dataframs and vector (3 objects).\n\ndf1 %+% df2 %+% vec1\n\n         unif        norm     gamma      beta         v\n1  0.67124608  1.02442153 0.3514868 0.7351107  8.672053\n2  0.07507894 -1.54136933 0.7285837 0.4622946 10.363306\n3  0.67824890  1.94677393 0.1838174 0.7051510  9.004716\n4  0.62387713  1.35675141 4.0020022 0.8164773  9.649179\n5  0.67307786  1.03867326 5.5831777 0.9548817  8.568341\n6  0.12590944  1.46147067 0.7694215 0.9192166 10.062071\n7  0.99516128  1.03543300 0.4361298 0.4873545  9.980778\n8  0.65469544 -0.99724900 0.1375730 0.6118288  9.661113\n9  0.63325446  1.45215120 0.6276940 0.9551918  9.940889\n10 0.44729869 -0.03295085 0.8670438 0.9508807 11.033552"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html",
+    "href": "HW3/ST558_HW3_Final.html",
+    "title": "ST558_HW3_Final",
+    "section": "",
+    "text": "If your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?\nYou would need to specify ‘../MyData.csv’ as this is located one level up from the working directory. The ‘../’ prefix moves you up one level from current into ‘myfolder/’ where ‘MyData.csv’ lives.\nWhat are the major benefits of using R projects?\nThe working directory for R projects is set to the project’s root folder. Relative file paths stay consistent no matter whose machine is being used for the project. This makes collaboration more seamless without paths breaking. Relative paths are very helpful for code sharing, and version control is also helpful for code sharing. Through an R project for version control we can clone a Git repository and manage that repository through R Studio’s terminal. Related files are self contained.\nWhat is Git and what is GitHub?\nGit is a software that tracks files, changes to those files, allows you to branch to silo work and merge code changes safely. Github is a cloud hosting platform for git repos with some additional tooling for tracking, approvals, permissions policies, etc.\nWhat are the two main differences between a tibble and a data.frame?\nPrinting a tibble only prints the first several rows and size summary (#rows x #cols), whereas printing a data.frame will print all rows of that object. They differ in subsetting. Tibble does not allow for partial matching on column names with ‘$’ whereas a data.frame can partially match a column name."
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section",
+    "href": "HW3/ST558_HW3_Final.html#section",
+    "title": "ST558_HW3_Final",
+    "section": "1.",
+    "text": "1.\nGlass. Read in the file and add column names from the link. Use ‘read_csv()’ as it is delimited by ‘,’.\n\nglass_data &lt;- read_csv(\"https://www4.stat.ncsu.edu/~online/datasets/glass.data\",\n                       col_names = c(\"Id\", \"RI\", \"Na\", \"Mg\", \"Al\", \"Si\", \"K\",\n                                     \"Ca\", \"Ba\", \"Fe\", \"Type\"))\n\nRows: 214 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\ndbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nglass_data\n\n# A tibble: 214 × 11\n      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe  Type\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1     1  1.52  13.6  4.49  1.1   71.8  0.06  8.75     0  0        1\n 2     2  1.52  13.9  3.6   1.36  72.7  0.48  7.83     0  0        1\n 3     3  1.52  13.5  3.55  1.54  73.0  0.39  7.78     0  0        1\n 4     4  1.52  13.2  3.69  1.29  72.6  0.57  8.22     0  0        1\n 5     5  1.52  13.3  3.62  1.24  73.1  0.55  8.07     0  0        1\n 6     6  1.52  12.8  3.61  1.62  73.0  0.64  8.07     0  0.26     1\n 7     7  1.52  13.3  3.6   1.14  73.1  0.58  8.17     0  0        1\n 8     8  1.52  13.2  3.61  1.05  73.2  0.57  8.24     0  0        1\n 9     9  1.52  14.0  3.58  1.37  72.1  0.56  8.3      0  0        1\n10    10  1.52  13    3.6   1.36  73.0  0.57  8.4      0  0.11     1\n# ℹ 204 more rows"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-1",
+    "href": "HW3/ST558_HW3_Final.html#section-1",
+    "title": "ST558_HW3_Final",
+    "section": "2.",
+    "text": "2.\nYeast. Use ‘read_table()’ as it is delimited by variable white space.\n\nyeast_data &lt;- read_table(\"https://www4.stat.ncsu.edu/~online/datasets/yeast.data\",\n                       col_names = c(\"seq_name\", \"mcg\", \"gvh\", \"alm\", \"mit\", \"erl\", \"pox\", \"vac\", \"nuc\", \"class\"))\n\n\n── Column specification ────────────────────────────────────────────────────────\ncols(\n  seq_name = col_character(),\n  mcg = col_double(),\n  gvh = col_double(),\n  alm = col_double(),\n  mit = col_double(),\n  erl = col_double(),\n  pox = col_double(),\n  vac = col_double(),\n  nuc = col_double(),\n  class = col_character()\n)\n\nyeast_data\n\n# A tibble: 1,484 × 10\n   seq_name     mcg   gvh   alm   mit   erl   pox   vac   nuc class\n   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;\n 1 ADT1_YEAST  0.58  0.61  0.47  0.13   0.5   0    0.48  0.22 MIT  \n 2 ADT2_YEAST  0.43  0.67  0.48  0.27   0.5   0    0.53  0.22 MIT  \n 3 ADT3_YEAST  0.64  0.62  0.49  0.15   0.5   0    0.53  0.22 MIT  \n 4 AAR2_YEAST  0.58  0.44  0.57  0.13   0.5   0    0.54  0.22 NUC  \n 5 AATM_YEAST  0.42  0.44  0.48  0.54   0.5   0    0.48  0.22 MIT  \n 6 AATC_YEAST  0.51  0.4   0.56  0.17   0.5   0.5  0.49  0.22 CYT  \n 7 ABC1_YEAST  0.5   0.54  0.48  0.65   0.5   0    0.53  0.22 MIT  \n 8 BAF1_YEAST  0.48  0.45  0.59  0.2    0.5   0    0.58  0.34 NUC  \n 9 ABF2_YEAST  0.55  0.5   0.66  0.36   0.5   0    0.49  0.22 MIT  \n10 ABP1_YEAST  0.4   0.39  0.6   0.15   0.5   0    0.58  0.3  CYT  \n# ℹ 1,474 more rows"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-2",
+    "href": "HW3/ST558_HW3_Final.html#section-2",
+    "title": "ST558_HW3_Final",
+    "section": "3.",
+    "text": "3.\nImport the white wine data.\n\n# reads first sheet by default\nwhite_wine &lt;- read_excel(\"white-wine.xlsx\")\n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides\n             &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n 1             7                 0.27          0.36             20.7     0.045\n 2             6.3               0.3           0.34              1.6     0.049\n 3             8.1               0.28          0.4               6.9     0.05 \n 4             7.2               0.23          0.32              8.5     0.058\n 5             7.2               0.23          0.32              8.5     0.058\n 6             8.1               0.28          0.4               6.9     0.05 \n 7             6.2               0.32          0.16              7       0.045\n 8             7                 0.27          0.36             20.7     0.045\n 9             6.3               0.3           0.34              1.6     0.049\n10             8.1               0.22          0.43              1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,\n#   `total sulfur dioxide` &lt;dbl&gt;, density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;,\n#   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-3",
+    "href": "HW3/ST558_HW3_Final.html#section-3",
+    "title": "ST558_HW3_Final",
+    "section": "4.",
+    "text": "4.\nRead sheet 2 for variable names and overwrite our colnames.\n\nwhite_wine_var_names &lt;- read_excel(\"white-wine.xlsx\", sheet = \"variables\")\n\ncolnames(white_wine) &lt;- white_wine_var_names$Variables \n\nwhite_wine\n\n# A tibble: 4,898 × 12\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 7 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-4",
+    "href": "HW3/ST558_HW3_Final.html#section-4",
+    "title": "ST558_HW3_Final",
+    "section": "5.",
+    "text": "5.\nAdd type column.\n\nwhite_wine &lt;- white_wine |&gt; mutate(type = \"white\")\n\nwhite_wine\n\n# A tibble: 4,898 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 4,888 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-5",
+    "href": "HW3/ST558_HW3_Final.html#section-5",
+    "title": "ST558_HW3_Final",
+    "section": "6.",
+    "text": "6.\nRead in the red wine data. Replace variable names. Add ‘red’ type column for all records.\n\nred_wine &lt;- read_delim(file=\"red-wine.csv\",\n                       delim=\";\")\n\nRows: 1599 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \";\"\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\ncolnames(red_wine) &lt;- white_wine_var_names$Variables\n\nred_wine &lt;- red_wine |&gt; mutate(type = \"red\")\n\nred_wine\n\n# A tibble: 1,599 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7.4             0.7         0               1.9     0.076\n 2           7.8             0.88        0               2.6     0.098\n 3           7.8             0.76        0.04            2.3     0.092\n 4          11.2             0.28        0.56            1.9     0.075\n 5           7.4             0.7         0               1.9     0.076\n 6           7.4             0.66        0               1.8     0.075\n 7           7.9             0.6         0.06            1.6     0.069\n 8           7.3             0.65        0               1.2     0.065\n 9           7.8             0.58        0.02            2       0.073\n10           7.5             0.5         0.36            6.1     0.071\n# ℹ 1,589 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-6",
+    "href": "HW3/ST558_HW3_Final.html#section-6",
+    "title": "ST558_HW3_Final",
+    "section": "7.",
+    "text": "7.\nCombine wine data sets.\n\nall_wine &lt;- bind_rows(white_wine, red_wine)\n\nall_wine\n\n# A tibble: 6,497 × 13\n   fixed_acidity volatile_acidity citric_acid residual_sugar chlorides\n           &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;\n 1           7               0.27        0.36           20.7     0.045\n 2           6.3             0.3         0.34            1.6     0.049\n 3           8.1             0.28        0.4             6.9     0.05 \n 4           7.2             0.23        0.32            8.5     0.058\n 5           7.2             0.23        0.32            8.5     0.058\n 6           8.1             0.28        0.4             6.9     0.05 \n 7           6.2             0.32        0.16            7       0.045\n 8           7               0.27        0.36           20.7     0.045\n 9           6.3             0.3         0.34            1.6     0.049\n10           8.1             0.22        0.43            1.5     0.044\n# ℹ 6,487 more rows\n# ℹ 8 more variables: free_sulfur_dioxide &lt;dbl&gt;, total_sulfur_dioxide &lt;dbl&gt;,\n#   density &lt;dbl&gt;, pH &lt;dbl&gt;, sulphates &lt;dbl&gt;, alcohol &lt;dbl&gt;, quality &lt;dbl&gt;,\n#   type &lt;chr&gt;"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-7",
+    "href": "HW3/ST558_HW3_Final.html#section-7",
+    "title": "ST558_HW3_Final",
+    "section": "8.",
+    "text": "8.\nIQR function.\n\ngetIQR &lt;- function(x, ...) {\n    #q stores P25 and P75 as vector elements, names disabled\n    q &lt;- quantile(x, probs = c(0.25, 0.75), names=FALSE)\n    \n    #iqr captures the calculated difference:  P75 - P25\n    iqr &lt;- q[2] - q[1]\n    return(iqr)\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-8",
+    "href": "HW3/ST558_HW3_Final.html#section-8",
+    "title": "ST558_HW3_Final",
+    "section": "9.",
+    "text": "9.\nApply the getIQR() function to the fixed_acidity as well as the citric_acid column.\n\ngetIQR(all_wine$fixed_acidity)\n\n[1] 1.3\n\ngetIQR(all_wine$citric_acid)\n\n[1] 0.14"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-9",
+    "href": "HW3/ST558_HW3_Final.html#section-9",
+    "title": "ST558_HW3_Final",
+    "section": "10.",
+    "text": "10.\nSample coefficient of variation.\n\ngetCoefVar &lt;- function(x, ...) {\n  sd(x, ...) / abs(mean(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-10",
+    "href": "HW3/ST558_HW3_Final.html#section-10",
+    "title": "ST558_HW3_Final",
+    "section": "11.",
+    "text": "11.\nApply the getCoefVar() function to the fixed_acidity as well as the citric_acid column.\n\ngetCoefVar(all_wine$fixed_acidity)\n\n[1] 0.1796783\n\ngetCoefVar(all_wine$citric_acid)\n\n[1] 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-11",
+    "href": "HW3/ST558_HW3_Final.html#section-11",
+    "title": "ST558_HW3_Final",
+    "section": "12.",
+    "text": "12.\nWrapper function that takes a vector and returns the IQR and coefficient of variation.\n\ngetSummaries &lt;- function(x, ...) {\n  c(IQR = getIQR(x, ...), \n  CoeVar = getCoefVar(x, ...))\n}"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-12",
+    "href": "HW3/ST558_HW3_Final.html#section-12",
+    "title": "ST558_HW3_Final",
+    "section": "13.",
+    "text": "13.\nApply the getSummaries() function to the fixed_acidity as well as the citric_acid column.\n\ngetSummaries(all_wine$fixed_acidity)\n\n      IQR    CoeVar \n1.3000000 0.1796783 \n\ngetSummaries(all_wine$citric_acid)\n\n      IQR    CoeVar \n0.1400000 0.4560663"
+  },
+  {
+    "objectID": "HW3/ST558_HW3_Final.html#section-13",
+    "href": "HW3/ST558_HW3_Final.html#section-13",
+    "title": "ST558_HW3_Final",
+    "section": "14.",
+    "text": "14.\nWrite infix function to replace cbind().\n\n`%+%` &lt;- function(a, v){\n  \n  cbind(a, v)\n  \n}\n\nCreate the tester df’s and vector.\n\ndf1 &lt;- data.frame(unif = runif(10), norm = rnorm(10))\ndf2 &lt;- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))\nvec1 &lt;- rnorm(10, mean = 10)\n\nCheck that this function works on the two data frames.\n\ndf1 %+% df2\n\n        unif        norm      gamma      beta\n1  0.6171558  1.51018305 1.47518538 0.9068231\n2  0.8632141  1.28222773 0.01522743 0.9047820\n3  0.9639315  0.79077551 1.34788727 0.7401642\n4  0.6596127  0.31965450 0.29151511 0.8312480\n5  0.0825157 -0.99605870 0.07999118 0.9041027\n6  0.3498249 -0.91905781 0.34446097 0.7377774\n7  0.8068544 -0.52997745 0.97435518 0.5811213\n8  0.3188547  0.09179806 0.45116771 0.8983651\n9  0.4886985  1.64426801 0.83882959 0.7150938\n10 0.5233383  0.46982062 0.72206616 0.6838936\n\n\nCheck that this function works on the two dataframs and vector (3 objects).\n\ndf1 %+% df2 %+% vec1\n\n        unif        norm      gamma      beta         v\n1  0.6171558  1.51018305 1.47518538 0.9068231  9.478446\n2  0.8632141  1.28222773 0.01522743 0.9047820 10.568677\n3  0.9639315  0.79077551 1.34788727 0.7401642  7.854316\n4  0.6596127  0.31965450 0.29151511 0.8312480  8.687273\n5  0.0825157 -0.99605870 0.07999118 0.9041027 11.039277\n6  0.3498249 -0.91905781 0.34446097 0.7377774 10.954322\n7  0.8068544 -0.52997745 0.97435518 0.5811213  9.811728\n8  0.3188547  0.09179806 0.45116771 0.8983651  8.778394\n9  0.4886985  1.64426801 0.83882959 0.7150938  9.502381\n10 0.5233383  0.46982062 0.72206616 0.6838936  9.674461"
   }
 ]
