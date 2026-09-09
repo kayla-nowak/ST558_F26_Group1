@@ -23,14 +23,17 @@ editor: visual
 
     Tibbles are a modern re-imagining of the data frame. When printing a tibble, we only see the first few rows/columns, whereas printing a dataframe prints everything to the console. Tibbles also force you to confront problems earlier when subsetting, as they dont do partial matching. `df$colnam` on a dataframe will match a column named `colname`, whereas with a tibble it warns you explicitly the column doesn't exist
 
-## Task 2: Reading Delimited Data
+# Task 2: Reading Delimited Data
 
-The first data set we'll work with is called `glass.data`, from the UCI machine learning repository. We'll read this data into R directly from the URL using `tidyverse` functions. The delimiter for this data are commas, so we will have to specify that
+## 1. Glass Data
+
+The first data set we'll work with is called `glass.data`, from the UCI machine learning repository. <https://www4.stat.ncsu.edu/~online/datasets/glass.data.>
+
+We'll read this data into R directly from the URL using `tidyverse` functions. The delimiter for this data are commas, so we will specify that with the `read_csv` function.
 
 ```{r}
-# Load tidyverse library
 #| message: False
-#| Warning: False
+#| warning: False
 
 library(tidyverse)
 ```
@@ -44,3 +47,227 @@ glass <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
 # Print tibble
 glass
 ```
+
+## 2. Yeast Data
+
+<https://www4.stat.ncsu.edu/~online/datasets/yeast.data.>
+
+The second is called `yeast.data`. We'll also read this into R from a url using `tidyverse` functions. This data is white space delimited, so we can use `read_table()` from the `readr` package
+
+```{r}
+yeast <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data", 
+    col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", "pox", "vac",
+             "nuc", "class"))
+
+# Print tibble
+yeast
+```
+
+# Task 3: Combining Excel and Delimited Data
+
+For this step, we'll use two datasets related to red and white wine variants. This data has physicochemical variables and a quality score.
+
+## 3. White wine data
+
+<https://www4.stat.ncsu.edu/~online/datasets/white-wine.xlsx.>
+
+First we'll access an excel version of the white wine dataset placed in the HW3 folder (where this .qmd lives), and read it in using the `readxl` package.
+
+```{r}
+#| message: False
+#| warning: False
+
+library(readxl)
+```
+
+```{r}
+# Reads first sheet by default
+white_wine <- read_excel("white-wine.xlsx")
+
+# Print out tibble
+white_wine
+```
+
+## 4. Variable name standardization
+
+We notice from printing white_wine to the console that the variable names are surrounded by backticks. This is because they are non-standard (include a space). Let's fix this by reading in the variable names on the second sheet of the excel file
+
+```{r}
+# Read variable names from sheet 2 (named variables)
+white_wine_variables <- read_excel("white-wine.xlsx", sheet = "variables")
+
+# Re-assign column names
+colnames(white_wine) <- white_wine_variables$Variables
+
+# Print tibble
+white_wine
+```
+
+## 5. Color indicator column
+
+Now, let's add a column to this data set indicating these wines are white (they all are) using the `$` operator
+
+```{r}
+# Add column, all of them are white wines so this is the only option
+white_wine$type <- "white"
+
+# Check tibble once again
+white_wine
+```
+
+## 6. Red wine data
+
+Now, there is a semi-colon delimited file of red wine data we can read in with the url below. 
+
+<https://www4.stat.ncsu.edu/~online/datasets/red-wine.csv.>
+
+We'll do this with the `read_delim()` function from `readr`, specifying the delimiter type
+
+```{r}
+red_wine <- read_delim("https://www4.stat.ncsu.edu/~online/datasets/red-wine.csv",
+                       delim=";")
+
+red_wine
+```
+
+We'll do the same modifications we did for our white wine data: replacing variable names and appending a `type` column, this time denoting red for all observations
+
+```{r}
+# Rename columns
+colnames(red_wine) <- white_wine_variables$Variables
+
+# Add type column
+red_wine$type <- 'red'
+
+# Print tibble
+red_wine
+```
+
+## 7. Combining data 
+
+Finally, let's combine the white and red wine data sets into one! We can use `dplyr::bind_rows()`
+to create a single tibble containing all the wine data
+
+```{r}
+# Create total wine data sets
+total_wine <- dplyr::bind_rows(white_wine, red_wine)
+
+# Print
+total_wine
+```
+
+# Task 4: Writing a Function
+
+## 8. IQR function
+
+We start this task by writing a basic function to get the IQR from a vector of numbers using the `quantile` function
+
+```{r}
+getIQR <- function(vector, ...) { # ... Allows other unnamed arguments to be passed
+  
+  q <- quantile(vector, probs = c(0.25, 0.75), names = F, ...) 
+  # Saving this as q allows us to only have to use `quantile` once
+  return(q[2] - q[1])
+}
+```
+
+## 9. Applying IQR function
+
+Now, lets take the total_wine dataset and apply the `getIQR` function to `fixed_acidity` and `citric_acid`
+
+```{r}
+getIQR(total_wine$fixed_acidity)
+```
+The IQR for fixed acidity is 1.3
+
+```{r}
+getIQR(total_wine$citric_acid)
+```
+The IQR for citric acid is 0.14
+
+## 10. Coefficient of variation function
+
+Let's write another function that returns the coefficient of variation of a vector, defined as the sample standard deviation divided by the absolute value of the sample mean.
+
+```{r}
+getCoefVar <- function(vector, ...){
+  return((sd(vector, ...)) / abs(mean(vector, ...)))
+  }
+```
+
+
+
+## 11. Applying CoefVar function
+
+Same with step 9, we'll apply our newly created function to the two total wine columns
+
+```{r}
+getCoefVar(total_wine$fixed_acidity)
+```
+The coefficient of variation for fixed acidity is 0.1796
+
+```{r}
+getCoefVar(total_wine$citric_acid)
+```
+
+The coefficient of variation for citric acid is 0.456
+
+## 12. Wrapper function
+
+Now, let's write a function `getSummaries()` that takes in a vector and returns both the 
+IQR and the coefficient of variation by calling both of these previous functions
+
+```{r}
+getSummaries <- function(vector, ...){
+  
+  return(list(IQR = getIQR(vector, ...), Coef_Var = getCoefVar(vector, ...)))
+}
+```
+
+
+## 13. Applying wrapper function
+
+Let's use our new wrapper function on the two columns in total_wine again
+```{r}
+getSummaries(total_wine$fixed_acidity)
+```
+
+```{r}
+getSummaries(total_wine$citric_acid)
+```
+
+## 14. Infix function
+
+Finally, we'll write an **infix** function that can be used in place of the `cbind` function. We'll check that this works with some sample dataframes and a vector.
+
+```{r}
+# Sample dataframes and vector
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+
+# View objects
+df1
+df2
+vec1
+```
+
+```{r}
+# Create function
+`%cb%` <- function(x, y){
+  cbind(x, y)
+}
+```
+
+First, lets test with both dataframes
+```{r}
+df1 %cb% df2
+```
+
+Finally, test with both dataframes and vector
+```{r}
+df1 %cb% df2 %cb% vec1
+```
+
+Creating this infix function lets us cleanly bind these arguments together in one line without the added function notation
+
