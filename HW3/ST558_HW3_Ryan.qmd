@@ -32,9 +32,8 @@ The first data set we'll work with is called `glass.data`, from the UCI machine 
 We'll read this data into R directly from the URL using `tidyverse` functions. The delimiter for this data are commas, so we will specify that with the `read_csv` function.
 
 ```{r}
-# Load tidyverse library
 #| message: False
-#| Warning: False
+#| warning: False
 
 library(tidyverse)
 ```
@@ -157,4 +156,118 @@ total_wine <- dplyr::bind_rows(white_wine, red_wine)
 total_wine
 ```
 
-## Task 4: 
+# Task 4: Writing a Function
+
+## 8. IQR function
+
+We start this task by writing a basic function to get the IQR from a vector of numbers using the `quantile` function
+
+```{r}
+getIQR <- function(vector, ...) { # ... Allows other unnamed arguments to be passed
+  
+  q <- quantile(vector, probs = c(0.25, 0.75), names = F, ...) 
+  # Saving this as q allows us to only have to use `quantile` once
+  return(q[2] - q[1])
+}
+```
+
+## 9. Applying IQR function
+
+Now, lets take the total_wine dataset and apply the `getIQR` function to `fixed_acidity` and `citric_acid`
+
+```{r}
+getIQR(total_wine$fixed_acidity)
+```
+The IQR for fixed acidity is 1.3
+
+```{r}
+getIQR(total_wine$citric_acid)
+```
+The IQR for citric acid is 0.14
+
+## 10. Coefficient of variation function
+
+Let's write another function that returns the coefficient of variation of a vector, defined as the sample standard deviation divided by the absolute value of the sample mean.
+
+```{r}
+getCoefVar <- function(vector, ...){
+  return((sd(vector, ...)) / abs(mean(vector, ...)))
+  }
+```
+
+
+
+## 11. Applying CoefVar function
+
+Same with step 9, we'll apply our newly created function to the two total wine columns
+
+```{r}
+getCoefVar(total_wine$fixed_acidity)
+```
+The coefficient of variation for fixed acidity is 0.1796
+
+```{r}
+getCoefVar(total_wine$citric_acid)
+```
+
+The coefficient of variation for citric acid is 0.456
+
+## 12. Wrapper function
+
+Now, let's write a function `getSummaries()` that takes in a vector and returns both the 
+IQR and the coefficient of variation by calling both of these previous functions
+
+```{r}
+getSummaries <- function(vector, ...){
+  
+  return(list(IQR = getIQR(vector, ...), Coef_Var = getCoefVar(vector, ...)))
+}
+```
+
+
+## 13. Applying wrapper function
+
+Let's use our new wrapper function on the two columns in total_wine again
+```{r}
+getSummaries(total_wine$fixed_acidity)
+```
+
+```{r}
+getSummaries(total_wine$citric_acid)
+```
+
+## 14. Infix function
+
+Finally, we'll write an **infix** function that can be used in place of the `cbind` function. We'll check that this works with some sample dataframes and a vector.
+
+```{r}
+# Sample dataframes and vector
+df1 <- data.frame(unif = runif(10), norm = rnorm(10))
+df2 <- data.frame(gamma = rgamma(10, shape = 1), beta = rbeta(10, shape1 = 5, shape2 = 1))
+vec1 <- rnorm(10, mean = 10)
+
+# View objects
+df1
+df2
+vec1
+```
+
+```{r}
+# Create function
+`%cb%` <- function(x, y){
+  cbind(x, y)
+}
+```
+
+First, lets test with both dataframes
+```{r}
+df1 %cb% df2
+```
+
+Finally, test with both dataframes and vector
+```{r}
+df1 %cb% df2 %cb% vec1
+```
+
+Creating this infix function lets us cleanly bind these arguments together in one line without the added function notation
+
