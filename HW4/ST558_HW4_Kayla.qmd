@@ -1,0 +1,37 @@
+---
+title: "ST558_HW4_Kayla"
+author: "Kayla Nowak"
+format: html
+editor: visual
+---
+
+# Task 1
+
+## 1.
+
+Rewrite the following nested function using baseR's chaining operator:
+
+```{r}
+
+#Original Code:
+library(tidyverse)
+arrange(filter(select(as_tibble(iris), starts_with("Petal"), Species), Petal.Length <
+1.55), Species)
+
+#Rewritten with baseR (as data.frame):
+colnames(iris)
+
+iris[order(iris$Species), 3:5] |>   #arrange, select   
+  subset(Petal.Length < 1.55)       #filter (but row names do not change)
+
+```
+
+## 2.
+
+**What is meant by long format data and wide format data? Which do we generally prefer for statistical analysis?**
+
+Long data has 1 row per observation and 1 col per variable vs. wide data has multiple observations stored as different columns for a single row.
+
+Long format data is preferred for statistical analysis.
+
+# Task 2
