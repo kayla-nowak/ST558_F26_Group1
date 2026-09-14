@@ -101,3 +101,74 @@ yeast |>
 ```
 
 ## Wine Data
+
+In Homework 3 we read in two wine data sets and combine them, here we'll repeat that process.
+
+```{r}
+#| message: False
+#| warning: False
+
+library(readxl)
+```
+
+```{r}
+# Read variable names
+wine_vars  <- read_xlsx(path="../HW3/white-wine.xlsx", sheet = "variables") 
+
+# White wine
+white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="white-wine") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="white")
+
+# Red wine
+red_wine  <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="red")
+
+# Combine data
+total_wine <- bind_rows(white_wine, red_wine)
+total_wine
+```
+
+7. Start a chain on the new combined data object to filter the data to only look at
+high quality wines (quality > 6.5) and wines with a reasonable alcohol value (alcohol < 13.2)
+
+8. Continue the chain to sort the data from highest `quality` to lowest
+
+9. Continue the chain to select only the variables that contain `acid`, the `alcohol` variable, the `type`
+variable, and the `quality` variable
+
+10. Finally, add the mean and standard deviation of the `alchohol` variable to the data set for each setting of the `quality` variable
+
+```{r}
+total_wine |>
+  filter(quality > 6.5, alcohol < 13.2) |> # Step 7
+  arrange(desc(quality)) |> # Step 8
+  select(contains("acid"), alcohol, type, quality) |> # Step 9
+  group_by(quality) |> # Step 10
+    mutate(alcohol_mean = mean(alcohol),
+         alcohol_sd = sd(alcohol))
+```
+
+## Task 3: Database practice
+
+First, let's download the `Lahman.db` file associated with the connecting to databases notes
+
+11. Connect to the database and then look at all of the tables in the database
+
+```{r}
+#| message: False
+#| warning: False
+
+library(RSQLite)
+library(DBI)
+```
+
+
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "https://www4.stat.ncsu.edu/~online/datasets/lahman.db")
+dbListTables(con)
+
+# Need to figure out how to connect to the database, can't add the .db file to github HW4 folder as its too large (31 MB). Do I just need to add It to the Rproject folder locally?
+```
+
