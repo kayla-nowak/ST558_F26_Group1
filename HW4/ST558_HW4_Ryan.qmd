@@ -1,0 +1,103 @@
+---
+title: "ST558 Homework 4"
+format: html
+editor: visual
+---
+
+# Task 1: Conceptual Questions
+
+1.  Rewriting a nested function call using `baseR` chaining
+
+Without chaining, the function looks like this (Have to read from inside out, confusing!)
+
+```{r}
+#| message: False
+#| warning: False
+library(tidyverse)
+```
+
+```{r}
+arrange(filter(select(as_tibble(iris), starts_with("Petal"), Species), Petal.Length <
+1.55), Species)
+```
+
+Using chaining, we can re-write the function like so:
+
+```{r}
+iris |>
+  as_tibble() |>
+  select(starts_with("Petal"), Species) |>
+  filter(Petal.Length < 1.55) |>
+  arrange(Species)
+```
+
+This gives us the same result, and is much easier to follow!
+
+2.  What is meant by long format data and wide format data? Which do we generally prefer for statistical analysis?
+
+    Long format data is structured with more rows, where each row consists of one observation and each column consists of one variable. Wide format data has a single row per subject and may have more than one observation in a given row (more columns). Generally we prefer long format as most software is built to deal with data formatted this way.
+
+# Task 2: Manipulating data
+
+## Glass Data
+
+We'll use the `glass` data from homework 3 again, so let's re-read in that data.
+
+Dataset available here: <https://www4.stat.ncsu.edu/~online/datasets/glass.data.>
+
+```{r}
+glass <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
+                       col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K",
+                                   "Ca", "Ba", "Fe", "Type"))
+# Print tibble
+glass
+```
+
+3.  Start a chain on your data object the overwrites the `Type` variable using `mutate()`
+
+    We'll start by creating a `factor` version the variable that replaces the numbers with string labels.
+
+4. Continue the chain and keep only observations where the `Fe` variable is less than 0.2 and the Type of glass
+is either tableware or headlamp
+```{r}
+glass |>
+  mutate(Type = factor(Type, levels = c(1:7), # 3. Converting type to factor strings
+                       labels=c("building_windows_float_processed",
+                                "building_windows_non_float_processed",
+                                "vehicle_windows_float_processed",
+                                "vehicle_windows_non_float_processed",
+                                "containers",
+                                "tableware",
+                                "headlamps"))) |> 
+  filter(Fe < 0.2, Type %in% c("tableware", "headlamps")) # 4. Filter for select observations
+```
+
+Now we can see the type is displayed as our factor strings ("tableware" instead of 1), and
+only 38 rows are returned after applying these filters (only the first 10 are displayed).
+
+## Yeast Data
+
+We'll use the Yeast data, also from homework 3 and real it into R directly from the URL here: <https://www4.stat.ncsu.edu/~online/datasets/yeast.data.>
+
+```{r}
+yeast <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data", 
+    col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", "pox", "vac",
+             "nuc", "class"))
+
+# Print tibble
+yeast
+```
+
+5. Start a chain that removes the `seq_name` and `nuc` columns
+
+6. Continue your chain to add columns corresponding to the mean and median of each numeric variable
+(mcg, gvh, alm, mit, erl, pox, and vac) at each `class` grouping using the `across()` function
+```{r}
+yeast |>
+  select(-c(seq_name, nuc)) |> # 5. removing columns
+  group_by(class) |>
+  mutate(across(where(is.numeric), list(mean=mean, median=median), # 6. Adding mean and median columns
+                .names= "{.col}_{.fn}"))
+```
+
+## Wine Data
