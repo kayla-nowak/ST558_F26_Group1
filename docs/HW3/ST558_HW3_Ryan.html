@@ -546,36 +546,36 @@ $Coef_Var
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># View objects</span></span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         unif       norm
-1  0.86963062  0.2836375
-2  0.04596712 -1.0039877
-3  0.81017820  0.3511719
-4  0.66781045 -2.4011230
-5  0.68859700 -3.0924584
-6  0.99989152 -0.4756822
-7  0.88633494 -0.4865972
-8  0.76380242 -0.3217555
-9  0.66030018  0.4829334
-10 0.78034775  0.7543566</code></pre>
+<pre><code>         unif        norm
+1  0.22479434  0.84670611
+2  0.54490602 -1.87512445
+3  0.34430105  1.09955641
+4  0.10074501  0.87120965
+5  0.20078115 -0.33041292
+6  0.07160989  1.29589505
+7  0.57824921 -1.42562808
+8  0.83132845 -0.54580198
+9  0.04967955  0.03265319
+10 0.97279133 -1.18289656</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         gamma      beta
-1  4.934804384 0.9231099
-2  0.186916442 0.9216582
-3  1.707680937 0.9910495
-4  0.069611058 0.9448433
-5  0.356024794 0.9545855
-6  0.584320105 0.9590517
-7  0.749381362 0.6146150
-8  0.200420833 0.9317191
-9  0.251141848 0.6014854
-10 0.002773211 0.9109616</code></pre>
+<pre><code>        gamma      beta
+1  0.15614754 0.7047747
+2  1.60128098 0.7864242
+3  1.84081870 0.9356149
+4  0.41221430 0.8562643
+5  0.85411003 0.9204779
+6  1.63996392 0.5133573
+7  0.92091312 0.7825789
+8  0.00708361 0.8898203
+9  0.13297981 0.9785936
+10 0.56857470 0.9355520</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 11.555721 10.777774  8.914951  8.205926 10.086578 11.153480 10.836748
- [8] 12.200306  8.380788 12.026597</code></pre>
+<pre><code> [1]  9.892381 10.094134 10.242034  9.342856  8.961706  9.212391 10.604387
+ [8]  9.910115  8.508267  8.185119</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -588,34 +588,34 @@ $Coef_Var
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         unif       norm       gamma      beta
-1  0.86963062  0.2836375 4.934804384 0.9231099
-2  0.04596712 -1.0039877 0.186916442 0.9216582
-3  0.81017820  0.3511719 1.707680937 0.9910495
-4  0.66781045 -2.4011230 0.069611058 0.9448433
-5  0.68859700 -3.0924584 0.356024794 0.9545855
-6  0.99989152 -0.4756822 0.584320105 0.9590517
-7  0.88633494 -0.4865972 0.749381362 0.6146150
-8  0.76380242 -0.3217555 0.200420833 0.9317191
-9  0.66030018  0.4829334 0.251141848 0.6014854
-10 0.78034775  0.7543566 0.002773211 0.9109616</code></pre>
+<pre><code>         unif        norm      gamma      beta
+1  0.22479434  0.84670611 0.15614754 0.7047747
+2  0.54490602 -1.87512445 1.60128098 0.7864242
+3  0.34430105  1.09955641 1.84081870 0.9356149
+4  0.10074501  0.87120965 0.41221430 0.8562643
+5  0.20078115 -0.33041292 0.85411003 0.9204779
+6  0.07160989  1.29589505 1.63996392 0.5133573
+7  0.57824921 -1.42562808 0.92091312 0.7825789
+8  0.83132845 -0.54580198 0.00708361 0.8898203
+9  0.04967955  0.03265319 0.13297981 0.9785936
+10 0.97279133 -1.18289656 0.56857470 0.9355520</code></pre>
 </div>
 </div>
 <p>Finally, test with both dataframes and vector</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2 <span class="sc">%cb%</span> vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         unif       norm       gamma      beta         y
-1  0.86963062  0.2836375 4.934804384 0.9231099 11.555721
-2  0.04596712 -1.0039877 0.186916442 0.9216582 10.777774
-3  0.81017820  0.3511719 1.707680937 0.9910495  8.914951
-4  0.66781045 -2.4011230 0.069611058 0.9448433  8.205926
-5  0.68859700 -3.0924584 0.356024794 0.9545855 10.086578
-6  0.99989152 -0.4756822 0.584320105 0.9590517 11.153480
-7  0.88633494 -0.4865972 0.749381362 0.6146150 10.836748
-8  0.76380242 -0.3217555 0.200420833 0.9317191 12.200306
-9  0.66030018  0.4829334 0.251141848 0.6014854  8.380788
-10 0.78034775  0.7543566 0.002773211 0.9109616 12.026597</code></pre>
+<pre><code>         unif        norm      gamma      beta         y
+1  0.22479434  0.84670611 0.15614754 0.7047747  9.892381
+2  0.54490602 -1.87512445 1.60128098 0.7864242 10.094134
+3  0.34430105  1.09955641 1.84081870 0.9356149 10.242034
+4  0.10074501  0.87120965 0.41221430 0.8562643  9.342856
+5  0.20078115 -0.33041292 0.85411003 0.9204779  8.961706
+6  0.07160989  1.29589505 1.63996392 0.5133573  9.212391
+7  0.57824921 -1.42562808 0.92091312 0.7825789 10.604387
+8  0.83132845 -0.54580198 0.00708361 0.8898203  9.910115
+9  0.04967955  0.03265319 0.13297981 0.9785936  8.508267
+10 0.97279133 -1.18289656 0.56857470 0.9355520  8.185119</code></pre>
 </div>
 </div>
 <p>Creating this infix function lets us cleanly bind these arguments together in one line without the added function notation</p>

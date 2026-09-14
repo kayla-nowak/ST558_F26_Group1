@@ -89,3 +89,48 @@ Then continue the chain to add columns corresponding to the mean and median of e
                 #list(mean=mean, median=median), 
                 #names= "{.col}_{.fn}") )
 ```
+
+## 7-10.
+
+Revisiting the combined Wine data from HW 3:
+
+```{r}
+library("readxl")
+library("readr")
+
+#read variable names
+wine_vars  <- read_xlsx(path="../HW3/white-wine.xlsx", sheet = "variables") 
+
+#white wine: read and format
+white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="white-wine") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="white")
+
+#red wine: read and format
+red_wine  <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="red")
+
+#stack data
+all_wine <- bind_rows(white_wine, red_wine)
+all_wine
+```
+
+
+Filter to high quality wines (`quality` > 6.5) with reasonable alcohol value (`alcohol` < 132).
+
+Then sort the data from highest quality to lowest.
+
+Then select the variables containing `acid`, the `alcohol` variable, the `type` variable, and the `quality` variable.
+
+Then add mean and standard deviation of `alcohol` at each setting of `quality` to the dataset.
+
+```{r}
+all_wine |>
+  filter(quality > 6.5 & alcohol < 132) |>
+  arrange(desc(quality)) |>   #descending for highest to lowest
+  select(contains("acid"), alcohol, type, quality) |>
+  group_by(quality) |>
+  mutate(alcohol_mean = mean(alcohol),
+         alcohol_sd = sd(alcohol))
+```
