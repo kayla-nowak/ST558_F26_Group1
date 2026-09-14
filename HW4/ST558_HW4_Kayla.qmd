@@ -12,9 +12,9 @@ editor: visual
 Rewrite the following nested function using baseR's chaining operator:
 
 ```{r}
+library(tidyverse)
 
 #Original Code:
-library(tidyverse)
 arrange(filter(select(as_tibble(iris), starts_with("Petal"), Species), Petal.Length <
 1.55), Species)
 
@@ -35,3 +35,57 @@ Long data has 1 row per observation and 1 col per variable vs. wide data has mul
 Long format data is preferred for statistical analysis.
 
 # Task 2
+
+## 3-4.
+
+Revisiting the Glass data from HW 3:
+
+```{r}
+glass <- read_delim("https://www4.stat.ncsu.edu/online/datasets/glass.data",
+                    delim = ",",
+                    col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", 
+                                  "K", "Ca", "Ba", "Fe", "Type_of_glass"))
+```
+
+Overwrite `Type_of_glass` as a factor using mutate().
+
+Then continue the chain to keep only observations where `Fe` \< 0.2 and the type of glass is "tableware" or "headlamps".
+
+```{r}
+glass |>
+  mutate(Type_of_glass = factor(Type_of_glass, levels=c(1:7), 
+                                labels=c("building_windows_float_processed",
+                                         "building_windows_non_float_processed",
+                                         "vehicle_windows_float_processed",
+                                         "vehicle_windows_non_float_processed",
+                                         "containers",
+                                         "tableware",
+                                         "headlamps"))) |>
+  filter(Fe < 0.2, Type_of_glass %in% c("tableware", "headlamps")) |> 
+  print(n=100)
+```
+
+## 5-6.
+
+Revisiting the Yeast data from HW 3:
+
+```{r}
+yeast <- read_table("https://www4.stat.ncsu.edu/online/datasets/yeast.data",
+                    col_names = c("seq_name", "mcg", "gvh", "alm", "mit",
+                                  "erl", "pox", "vac", "nuc", "class"))
+```
+
+Remove `seq_name` and `nuc` columns.
+
+Then continue the chain to add columns corresponding to the mean and median of each numeric variable at each class grouping.
+
+***!! Come back to this later... across() deprecation warning !!***
+
+```{r}
+#yeast |>
+  #select(-c(seq_name, nuc)) |>
+  #group_by(class) |>
+  #mutate(across(where(is.numeric), mean, names= "{.col}_mean"))
+                #list(mean=mean, median=median), 
+                #names= "{.col}_{.fn}") )
+```

@@ -146,8 +146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="section">1.</h2>
 <p>Rewrite the following nested function using baseR’s chaining operator:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Original Code:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
@@ -160,8 +159,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(<span class="fu">filter</span>(<span class="fu">select</span>(<span class="fu">as_tibble</span>(iris), <span class="fu">starts_with</span>(<span class="st">"Petal"</span>), Species), Petal.Length <span class="sc">&lt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fl">1.55</span>), Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Original Code:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(<span class="fu">filter</span>(<span class="fu">select</span>(<span class="fu">as_tibble</span>(iris), <span class="fu">starts_with</span>(<span class="st">"Petal"</span>), Species), Petal.Length <span class="sc">&lt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fl">1.55</span>), Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 37 × 3
    Petal.Length Petal.Width Species
@@ -236,8 +236,121 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="task-2" class="level1">
 <h1>Task 2</h1>
+<section id="section-2" class="level2">
+<h2 class="anchored" data-anchor-id="section-2">3-4.</h2>
+<p>Revisiting the Glass data from HW 3:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>glass <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"https://www4.stat.ncsu.edu/online/datasets/glass.data"</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">delim =</span> <span class="st">","</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"Id"</span>, <span class="st">"RI"</span>, <span class="st">"Na"</span>, <span class="st">"Mg"</span>, <span class="st">"Al"</span>, <span class="st">"Si"</span>, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"K"</span>, <span class="st">"Ca"</span>, <span class="st">"Ba"</span>, <span class="st">"Fe"</span>, <span class="st">"Type_of_glass"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 214 Columns: 11
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (11): Id, RI, Na, Mg, Al, Si, K, Ca, Ba, Fe, Type_of_glass
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>Overwrite <code>Type_of_glass</code> as a factor using mutate().</p>
+<p>Then continue the chain to keep only observations where <code>Fe</code> &lt; 0.2 and the type of glass is “tableware” or “headlamps”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>glass <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Type_of_glass =</span> <span class="fu">factor</span>(Type_of_glass, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>), </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"building_windows_float_processed"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"building_windows_non_float_processed"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"vehicle_windows_float_processed"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"vehicle_windows_non_float_processed"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"containers"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"tableware"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"headlamps"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Fe <span class="sc">&lt;</span> <span class="fl">0.2</span>, Type_of_glass <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"tableware"</span>, <span class="st">"headlamps"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n=</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 38 × 11
+      Id    RI    Na    Mg    Al    Si     K    Ca    Ba    Fe Type_of_glass
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;        
+ 1   177  1.52  14    2.39  1.56  72.4  0     9.57  0     0    tableware    
+ 2   178  1.52  13.8  2.41  1.19  72.8  0     9.77  0     0    tableware    
+ 3   179  1.52  14.5  2.24  1.62  72.4  0     9.26  0     0    tableware    
+ 4   180  1.52  14.1  2.19  1.66  72.7  0     9.32  0     0    tableware    
+ 5   181  1.51  14.4  1.74  1.54  74.6  0     7.59  0     0    tableware    
+ 6   182  1.52  15.0  0.78  1.74  72.5  0     9.95  0     0    tableware    
+ 7   183  1.52  14.2  0     2.09  72.7  0    10.9   0     0    tableware    
+ 8   184  1.52  14.6  0     0.56  73.5  0    11.2   0     0    tableware    
+ 9   185  1.51  17.4  0     0.34  75.4  0     6.65  0     0    tableware    
+10   186  1.51  13.7  3.2   1.81  72.8  1.76  5.43  1.19  0    headlamps    
+11   187  1.52  14.3  3.26  2.22  71.2  1.46  5.79  1.63  0    headlamps    
+12   188  1.52  13.4  3.34  1.23  72.4  0.6   8.83  0     0    headlamps    
+13   189  1.52  14.9  2.2   2.06  70.3  0.76  9.76  0     0    headlamps    
+14   190  1.52  15.8  1.83  1.31  70.4  0.31  8.61  1.68  0    headlamps    
+15   191  1.52  13.9  1.78  1.79  73.1  0     8.67  0.76  0    headlamps    
+16   192  1.52  14.8  0     2.38  73.3  0     8.76  0.64  0.09 headlamps    
+17   193  1.52  14.2  0     2.79  73.5  0.04  9.04  0.4   0.09 headlamps    
+18   194  1.52  14.8  0     2     73.0  0     8.53  1.59  0.08 headlamps    
+19   195  1.52  14.6  0     1.98  73.3  0     8.52  1.57  0.07 headlamps    
+20   196  1.52  14.1  0     2.68  73.4  0.08  9.07  0.61  0.05 headlamps    
+21   197  1.52  13.9  0     2.54  73.2  0.14  9.41  0.81  0.01 headlamps    
+22   198  1.52  14.7  0     2.34  73.3  0     8.95  0.66  0    headlamps    
+23   199  1.52  14.4  0     2.66  73.1  0.04  9.08  0.64  0    headlamps    
+24   200  1.52  15.0  0     2.51  73.0  0.05  8.83  0.53  0    headlamps    
+25   201  1.52  15.2  0     2.25  73.5  0     8.34  0.63  0    headlamps    
+26   202  1.52  12.0  0     1.19  75.2  2.7   8.93  0     0    headlamps    
+27   203  1.52  14.8  0     2.42  73.7  0     8.39  0.56  0    headlamps    
+28   204  1.52  14.8  0     1.99  73.1  0     8.28  1.71  0    headlamps    
+29   205  1.52  15.0  0     2.27  73.3  0     8.71  0.67  0    headlamps    
+30   206  1.52  15.0  0     1.8   73.0  0     8.61  1.55  0    headlamps    
+31   207  1.52  14.9  0     1.87  73.1  0     8.67  1.38  0    headlamps    
+32   208  1.52  14.4  0     1.82  72.9  1.41  6.47  2.88  0    headlamps    
+33   209  1.52  14.4  0     2.74  72.8  0     9.45  0.54  0    headlamps    
+34   210  1.52  14.1  0     2.88  72.6  0.08  9.18  1.06  0    headlamps    
+35   211  1.52  14.9  0     1.99  73.1  0     8.4   1.59  0    headlamps    
+36   212  1.52  14.4  0     2.02  73.4  0     8.44  1.64  0    headlamps    
+37   213  1.52  14.4  0     1.94  73.6  0     8.48  1.57  0    headlamps    
+38   214  1.52  14.2  0     2.08  73.4  0     8.62  1.67  0    headlamps    </code></pre>
+</div>
+</div>
+</section>
+<section id="section-3" class="level2">
+<h2 class="anchored" data-anchor-id="section-3">5-6.</h2>
+<p>Revisiting the Yeast data from HW 3:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>yeast <span class="ot">&lt;-</span> <span class="fu">read_table</span>(<span class="st">"https://www4.stat.ncsu.edu/online/datasets/yeast.data"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"seq_name"</span>, <span class="st">"mcg"</span>, <span class="st">"gvh"</span>, <span class="st">"alm"</span>, <span class="st">"mit"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"erl"</span>, <span class="st">"pox"</span>, <span class="st">"vac"</span>, <span class="st">"nuc"</span>, <span class="st">"class"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  seq_name = col_character(),
+  mcg = col_double(),
+  gvh = col_double(),
+  alm = col_double(),
+  mit = col_double(),
+  erl = col_double(),
+  pox = col_double(),
+  vac = col_double(),
+  nuc = col_double(),
+  class = col_character()
+)</code></pre>
+</div>
+</div>
+<p>Remove <code>seq_name</code> and <code>nuc</code> columns.</p>
+<p>Then continue the chain to add columns corresponding to the mean and median of each numeric variable at each class grouping.</p>
+<p><strong><em>!! Come back to this later… across() deprecation warning !!</em></strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#yeast |&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#select(-c(seq_name, nuc)) |&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#group_by(class) |&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(across(where(is.numeric), mean, names= "{.col}_mean"))</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                <span class="co">#list(mean=mean, median=median), </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                <span class="co">#names= "{.col}_{.fn}") )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
