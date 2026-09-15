@@ -1,0 +1,122 @@
+---
+title: "ST558_HW4_Will"
+author: "Will Carter"
+format: html
+editor: visual
+---
+# Imports
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+# Task 1: Conceptual Questions
+
+## 1. Function Rewrite
+```{r}
+as_tibble(iris) |>
+  select(starts_with("Petal"), Species) |>
+  filter(Petal.Length < 1.55) |>
+  arrange(Species)
+```
+
+## 2. Long Format and Wide Format Data
+
+Wide format gives each variable its own column with one row per unique record. Long format gives each row a single observation so one subject spans multiple rows instead of multiple columns. Long Format is generally preferred for analysis. Modeling functions expect one row per observation so long format is more intuitive for this.
+
+
+# Task 2: Chaining Practice
+
+Glass data read
+
+```{r}
+glass_data <- "https://www4.stat.ncsu.edu/~online/datasets/glass.data" |>     
+    read_csv(col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K", "Ca",
+                            "Ba", "Fe", "Type"))
+```
+
+## 3 & 4 Overwrite Type_of_glass using mutate(), filter
+```{r}
+glass_result <- glass_data |> 
+    mutate(Type_of_glass = factor(Type, levels = 1:7, 
+        labels = c("building_windows_float_processed",
+                    "building_windows_non_float_processed",
+                    "vehicle_windows_float_processed",
+                    "vehicle_windows_non_float_processed",
+                    "containers",
+                    "tableware",
+                    "headlamps"))) |> 
+  filter(Fe < 0.2, Type_of_glass %in% c("tableware", "headlamps"))
+```
+
+
+```{r}
+glass_result
+```
+
+
+## 5-6
+
+Yeast data read
+```{r}
+yeast_data <- "https://www4.stat.ncsu.edu/~online/datasets/yeast.data" |>
+  read_table(col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", 
+                              "pox", "vac", "nuc", "class"))
+```
+
+Remove 'seq_name' and 'nuc' columns.
+```{r}
+yeast_result <- yeast_data |>
+  select(-seq_name, -nuc) |>
+  group_by(class) |>
+  mutate(across(where(is.numeric), list(mean=mean, median=median),
+                  .names = "{.col}_{.fn}"))
+```
+
+
+```{r}
+yeast_result
+```
+
+# 7-10
+
+
+Column names
+```{r}
+white_wine_var_names <- read_xlsx(path="../HW3/white-wine.xlsx", sheet = "variables") 
+```
+
+White wine data read
+```{r}
+white_wine <- white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="white-wine") |>
+  setNames(white_wine_var_names$Variables) |>
+  mutate(type="white")
+```
+
+Red wine data read
+```{r}
+red_wine <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
+  setNames(white_wine_var_names$Variables) |>
+  mutate(type="red")
+```
+
+Combine wine data
+```{r}
+wine_data <- bind_rows(white_wine, red_wine)
+```
+
+
+```{r}
+wine_result <- wine_data |> 
+                filter(quality > 6.5, alcohol < 13.2) |>
+                arrange(desc(quality)) |> 
+                select(contains("acid"), alcohol, type, quality) |>
+                group_by(quality) |>
+                mutate(alcohol_mean = mean(alcohol, na.rm = TRUE),
+                alcohol_sd = sd(alcohol, na.rm = TRUE)) 
+```
+
+```{r}
+wine_result
+```
+
