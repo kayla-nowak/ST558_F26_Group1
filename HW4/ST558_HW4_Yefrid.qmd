@@ -42,7 +42,7 @@ For statistical analysis is preferred to use the long format data, since  we can
 We copy the code from HW3
 ```{r}
 #| message: False
-#| 
+
 library(tidyverse)
 glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data",
                        col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", "K",
@@ -140,3 +140,109 @@ wine_data |>
 ```
 
 ## Task 3: Database practice
+
+### 11.
+
+First we need to connect to the database using `DBI` package, and also we are going to see the tables in the database.
+
+```{r}
+#| message: False
+
+library(DBI)
+library(RSQLite)
+con <- dbConnect(RSQLite::SQLite(), "lahman.db")
+dbListTables(con) #see the list of tables in the database
+```
+
+### 12.
+
+We are going to use the `tbl()` function to return all the data from the Teams table for 2015.
+
+```{r}
+tbl(con, "Teams") |>
+  filter(yearID == 2015) |>
+  show()
+  
+```
+
+### 13.
+
+Now we do the same but using SQL
+
+```{r}
+tbl(con, sql(
+  "SELECT *
+FROM `Teams`
+WHERE (`yearID` = 2015.0)")
+)
+```
+
+### 14.
+
+WE need to select the players that were inducted in the hall of fame, the year and the category.
+```{r}
+
+tbl(con, "HallOfFame") |>
+  filter(inducted == "Y") |>
+  select(playerID, yearID, category)
+  
+
+```
+
+### 15.
+
+Now we need to inner join this table and the one with first and last name from the `People` table.
+```{r}
+
+Ind_HOF <-tbl(con, "HallOfFame") |>
+  filter(inducted == "Y") |>
+  inner_join(tbl(con, "People"), 
+             by = join_by(playerID)) |>
+  select(nameFirst, nameLast, playerID, yearID, category)
+
+show(Ind_HOF)
+```
+
+### 16.
+
+We need to work now on the managers
+
+```{r}
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |>
+  show()
+```
+
+Now we need to determine the the overall win/loss records.
+
+```{r}
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |>
+  group_by(playerID) |>
+  summarize(G_managed = as.double(sum(G, na.rm = TRUE)),
+            Total_W = as.double(sum(W, na.rm = TRUE)),
+            Total_L = as.double(sum(L, na.rm = TRUE))) |>
+  mutate(win_loss_per = Total_W/G_managed) |>
+  arrange(desc(win_loss_per)) |>
+  show()
+```
+
+### 17.
+
+For this we need to do an inner join. The table of the inducted to the hall of fame is called `Ind_HOF`, and it is used as the `y` table. 
+
+```{r}
+
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |>
+  group_by(playerID) |>
+  summarize(G_managed = as.double(sum(G, na.rm = TRUE)),
+            Total_W = as.double(sum(W, na.rm = TRUE)),
+            Total_L = as.double(sum(L, na.rm = TRUE))) |>
+  mutate(win_loss_per = Total_W/G_managed) |>
+  inner_join(Ind_HOF, by = join_by(playerID)) |>
+  arrange(desc(win_loss_per)) |>
+  show()
+
+```
+

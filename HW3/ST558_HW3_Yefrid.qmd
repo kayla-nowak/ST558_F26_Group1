@@ -197,7 +197,7 @@ getSummaries <- function(v, ...){
 
 ### 13.
 
-We apply the new functio to the `fixed_acidity`
+We apply the new function to the `fixed_acidity`
 ```{r}
 getSummaries(wine_data$fixed_acidity)
 ```
