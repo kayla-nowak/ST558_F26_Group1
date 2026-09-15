@@ -57,8 +57,8 @@ glass
 
     We'll start by creating a `factor` version the variable that replaces the numbers with string labels.
 
-4. Continue the chain and keep only observations where the `Fe` variable is less than 0.2 and the Type of glass
-is either tableware or headlamp
+4.  Continue the chain and keep only observations where the `Fe` variable is less than 0.2 and the Type of glass is either tableware or headlamp
+
 ```{r}
 glass |>
   mutate(Type = factor(Type, levels = c(1:7), # 3. Converting type to factor strings
@@ -72,8 +72,7 @@ glass |>
   filter(Fe < 0.2, Type %in% c("tableware", "headlamps")) # 4. Filter for select observations
 ```
 
-Now we can see the type is displayed as our factor strings ("tableware" instead of 1), and
-only 38 rows are returned after applying these filters (only the first 10 are displayed).
+Now we can see the type is displayed as our factor strings ("tableware" instead of 1), and only 38 rows are returned after applying these filters (only the first 10 are displayed).
 
 ## Yeast Data
 
@@ -88,10 +87,10 @@ yeast <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data",
 yeast
 ```
 
-5. Start a chain that removes the `seq_name` and `nuc` columns
+5.  Start a chain that removes the `seq_name` and `nuc` columns
 
-6. Continue your chain to add columns corresponding to the mean and median of each numeric variable
-(mcg, gvh, alm, mit, erl, pox, and vac) at each `class` grouping using the `across()` function
+6.  Continue your chain to add columns corresponding to the mean and median of each numeric variable (mcg, gvh, alm, mit, erl, pox, and vac) at each `class` grouping using the `across()` function
+
 ```{r}
 yeast |>
   select(-c(seq_name, nuc)) |> # 5. removing columns
@@ -130,13 +129,11 @@ total_wine <- bind_rows(white_wine, red_wine)
 total_wine
 ```
 
-7. Start a chain on the new combined data object to filter the data to only look at
-high quality wines (quality > 6.5) and wines with a reasonable alcohol value (alcohol < 13.2)
+7.  Start a chain on the new combined data object to filter the data to only look at high quality wines (quality \> 6.5) and wines with a reasonable alcohol value (alcohol \< 13.2)
 
-8. Continue the chain to sort the data from highest `quality` to lowest
+8.  Continue the chain to sort the data from highest `quality` to lowest
 
-9. Continue the chain to select only the variables that contain `acid`, the `alcohol` variable, the `type`
-variable, and the `quality` variable
+9.  Continue the chain to select only the variables that contain `acid`, the `alcohol` variable, the `type` variable, and the `quality` variable
 
 10. Finally, add the mean and standard deviation of the `alchohol` variable to the data set for each setting of the `quality` variable
 
@@ -164,11 +161,84 @@ library(RSQLite)
 library(DBI)
 ```
 
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "../HW4/lahman.db")
+dbListTables(con)
+```
+
+12. Use the `tbl()` function and `dplyr` to return all of the data from the Teams table for the year 2015
 
 ```{r}
-con <- dbConnect(RSQLite::SQLite(), "https://www4.stat.ncsu.edu/~online/datasets/lahman.db")
-dbListTables(con)
+tbl(con, "Teams") |>
+  filter(yearID == 2015)
+```
 
-# Need to figure out how to connect to the database, can't add the .db file to github HW4 folder as its too large (31 MB). Do I just need to add It to the Rproject folder locally?
+13. Repeat the above by using the `sql()` function within `tbl()`
+
+```{r}
+tbl(con, sql(
+  "SELECT *
+  FROM `Teams`
+  WHERE (`yearID` = 2015.0)")
+)
+```
+
+We can see both these methods return the same table. We can use either method for the following questions
+
+14. Return all of the players in the hall of fame, the year they were voted into the hall of fame, and their category (3 variables)
+
+```{r}
+tbl(con, "HallOfFame") |>
+  filter(inducted == "Y") |>
+  select(playerID, yearID, category)
+```
+
+15. Combine the table from the previous question with the `People` table in order to have the `nameFirst` and `nameLast` names added
+
+```{r}
+HOF <- tbl(con, "HallOfFame") |>
+  filter(inducted == "Y") |>
+  inner_join(tbl(con, "People"), 
+             by = join_by(playerID)) |>
+  select(nameFirst, nameLast, playerID, yearID, category)
+
+HOF
+```
+
+16. Now, Return only the `playerID`, `G`, `W`, and `L` columns from the `Managers` table. Then, chain to:
+
+- Determine the overall win/loss records for each of these hall of fame managers
+- Create a new variable that is the career win/loss percentage
+- Sort the resulting data by the win/loss percentage
+
+```{r}
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |> collect() |>
+  group_by(playerID) |>
+  summarize(G_managed = sum(G, na.rm = TRUE),
+            Total_W = sum(W, na.rm = TRUE),
+            Total_L = sum(L, na.rm = TRUE),
+            Career_WinLoss = Total_W/G_managed) |>
+  arrange(desc(Career_WinLoss))
+```
+
+17. Use these results to return information for only the people that managed a team and were
+inducted into the hall of fame. 
+```{r}
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |>
+  group_by(playerID) |>
+  summarize(G_managed = as.double(sum(G, na.rm = TRUE)),
+            Total_W = as.double(sum(W, na.rm = TRUE)),
+            Total_L = as.double(sum(L, na.rm = TRUE))) |>
+  mutate(Manager_WL = Total_W/G_managed) |>
+  inner_join(HOF, by = join_by(playerID)) |>
+  arrange(desc(Manager_WL))
+```
+
+
+```{r}
+# Disconnect from database
+dbDisconnect(con)
 ```
 
