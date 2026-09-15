@@ -1,0 +1,12 @@
+---
+title: "ST558_HW4_Final"
+format: html
+author: 
+  - name: Kayla Nowak
+  - name: Ryan Merserau
+  - name: Will Carter
+  - name: Yefrid Cordoba
+---
+
+## Task 1:
+
