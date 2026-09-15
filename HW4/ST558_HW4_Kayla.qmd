@@ -79,15 +79,16 @@ Remove `seq_name` and `nuc` columns.
 
 Then continue the chain to add columns corresponding to the mean and median of each numeric variable at each class grouping.
 
-***!! Come back to this later... across() deprecation warning !!***
+*Note: switched to separate mean() and median() calls due to the across() deprecation warning. Using the `\(x) fn(x, na.rm=TRUE)` alternative code from the warning message.*
 
 ```{r}
-#yeast |>
-  #select(-c(seq_name, nuc)) |>
-  #group_by(class) |>
-  #mutate(across(where(is.numeric), mean, names= "{.col}_mean"))
-                #list(mean=mean, median=median), 
-                #names= "{.col}_{.fn}") )
+yeast |>
+  select(-seq_name, -nuc) |>
+  group_by(class) |>
+  mutate(across(where(is.numeric), 
+                .fns = list(mean = \(x) mean(x, na.rm=TRUE), 
+                            median = \(x) median(x, na.rm=TRUE)), 
+                .names = "{.col}_{.fn}") ) #|> view()
 ```
 
 ## 7-10.
@@ -116,8 +117,7 @@ all_wine <- bind_rows(white_wine, red_wine)
 all_wine
 ```
 
-
-Filter to high quality wines (`quality` > 6.5) with reasonable alcohol value (`alcohol` < 132).
+Filter to high quality wines (`quality` \> 6.5) with reasonable alcohol value (`alcohol` \< 132).
 
 Then sort the data from highest quality to lowest.
 
@@ -133,4 +133,139 @@ all_wine |>
   group_by(quality) |>
   mutate(alcohol_mean = mean(alcohol),
          alcohol_sd = sd(alcohol))
+```
+
+# Task 3.
+
+Working with the `Lahman.db`
+
+## 11.
+
+Connect to the database and look at all the tables in the database.
+
+```{r}
+library(DBI)
+con <- dbConnect(RSQLite::SQLite(), "lahman.db")
+
+#list all the tables
+dbListTables(con)
+```
+
+## 12.
+
+Return all of the data from the `Teams` table for the year 2015 using `tbl()` and `dplyr`.
+
+```{r}
+tbl(con, "Teams") |> 
+  filter(yearID == 2015) |>
+  collect() #force full return
+```
+
+## 13.
+
+Repeat this process using `sql()` code within `tbl()`.
+
+```{r}
+tbl(con, sql(
+"SELECT *
+FROM `Teams`
+WHERE (`yearID` = 2015.0)")
+) |>
+  collect()
+```
+
+## 14.
+
+Return all of the players in the hall of fame, the year they were voted into the hall of fame, and their category.
+
+```{r}
+tbl(con, "HallOfFame") |>
+  filter(inducted=="Y") |>                  #only those inducted
+  select(playerID, yearID, category) |>     #fields to keep
+  collect()
+```
+
+## 15.
+
+Combine the table from the previous question with the `People` table in order to have the `nameFirst` and `nameLast` names added to what was returned above.
+
+```{r}
+left_join(tbl(con, "HallOfFame") |> filter(inducted=="Y"),
+          tbl(con,"People"), 
+          by= c("playerID")) |>
+  select(nameFirst, nameLast, playerID, yearID, category) |>
+  collect()
+```
+
+## 16.
+
+Return only the `playerID` (manager ID in this case), `G`, `W`, and `L` columns from the `Managers` table.
+
+Then determine the overall win/loss records (sum of wins and sum of losses) for each of these hall of fame managers.
+
+Create a new variable that is the career win/loss percentage.
+
+Sort the resulting data by win/loss percentage variable (from largest to smallest).
+
+```{r}
+tbl(con, "Managers") |>
+  select(playerID, G, W, L) |> collect() |>
+  group_by(playerID) |>
+  summarize(G_managed = sum(G, na.rm = TRUE),
+            Total_W = sum(W, na.rm = TRUE),
+            Total_L = sum(L, na.rm = TRUE),
+            Career_WL_Pct = Total_W/G_managed) |>
+  arrange(desc(Career_WL_Pct))
+```
+
+## 17.
+
+Return people who managed a team and were inducted into the hall of fame (regardless of their hall of fame category). Return all 9 columns used in the previous 2 questions.
+
+*Note: Summarize function drops anything not in the group_by() statement. As such, tackle the Manager data first, then join with People and Hall of Fame data. Summarize also requires collect() to be called prior to to summarizing. This means that each data element for the join must \|\> collect() to ensure X:Y source agreement.*
+
+*Note: This code completes the full return in one big, nested join. Alternatively, each database return could be saved as its own R object (tibble), and then dplyr join could simply reference the objects.*
+
+```{r}
+
+inner_join(
+  
+  #Top X = Managers + names from People
+  left_join(#Nested X = Managers, fully processed 
+            tbl(con, "Managers") |>
+              select(playerID, G, W, L) |> collect() |>
+              group_by(playerID) |>
+              summarize(G_managed = sum(G, na.rm = TRUE),
+                        Total_W = sum(W, na.rm = TRUE),
+                        Total_L = sum(L, na.rm = TRUE),
+                        Career_WL_Pct = Total_W/G_managed) |>
+              arrange(desc(Career_WL_Pct)),
+            #Nested Y = People, just to pick up names
+            tbl(con,"People") |> 
+              select(playerID, nameFirst, nameLast) |> 
+              collect(),
+            #Nested by playerID (for left join)
+            by="playerID"),
+  
+  #Top Y = Hall of Fame, fully processed
+  tbl(con, "HallOfFame") |> 
+    filter(inducted=="Y") |> 
+    select(playerID, yearID, category) |>
+    collect(),
+  
+  #Top By playerID (for inner join)
+  by="playerID") |>
+  #Order Variables
+  select(nameFirst, nameLast, playerID, yearID, category, everything())
+
+
+## Example alternate code (if objects had been created):
+#inner_join(inducted_people, managers, by="playerID")
+
+```
+
+Disconnect from database.
+
+```{r}
+dbDisconnect(con)
 ```
