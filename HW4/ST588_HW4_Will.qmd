@@ -8,6 +8,8 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(readxl)
+library(DBI)
+library(RSQLite)
 ```
 
 # Task 1: Conceptual Questions
@@ -105,7 +107,7 @@ Combine wine data
 wine_data <- bind_rows(white_wine, red_wine)
 ```
 
-
+Filter wine data for wines with quality > 6.5 and alcohol < 13.2. Sort highest to lowest quality. Filter to select only records that contain variables acid, alcohol, tyoe, and quality. Add mean and std dev for alcohol for each setting of quality.
 ```{r}
 wine_result <- wine_data |> 
                 filter(quality > 6.5, alcohol < 13.2) |>
@@ -119,4 +121,92 @@ wine_result <- wine_data |>
 ```{r}
 wine_result
 ```
+
+
+# Task 3: Database Practice
+
+## 11-13
+
+Connect to Lahman db. List the tables.
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "Lahman.db")
+dbListTables(con)
+```
+
+Teams data for year 2015 using dplyr.
+```{r}
+teams_2015_dplyr <- tbl(con, "Teams") |> 
+                      filter(yearID == 2015)
+```
+
+```{r}
+teams_2015_dplyr
+```
+
+Teams data for year 2015 using sql.
+```{r}
+teams_2015_sql <- tbl(con, sql("SELECT * FROM Teams WHERE yearID = 2015")) 
+```
+
+```{r}
+teams_2015_sql
+```
+
+## 14-17
+
+Players inducted into HOF.
+```{r}
+hof_inducted <- tbl(con, "HallOfFame") |> 
+                  filter(inducted == "Y") |>
+                  select(playerID, yearID, category)
+```
+
+```{r}
+hof_inducted
+```
+
+
+Join with People table to grab names.
+```{r}
+hof_names <- tbl(con, "HallOfFame") |> filter(inducted == "Y") |> 
+                select(playerID, yearID, category) |> 
+                left_join(tbl(con, "People") |> 
+                select(playerID, nameFirst, nameLast), by = "playerID") |>
+  collect()
+```
+
+```{r}
+hof_names
+```
+
+
+Managers win-loss records.
+```{r}
+manager_records <- tbl(con, "Managers") |> 
+                      select(playerID, G, W, L) |>
+                      group_by(playerID) |>
+                      summarize(G_managed = sum(G, na.rm = TRUE),
+                                Total_W = sum(W, na.rm = TRUE),
+                                Total_L = sum(L, na.rm = TRUE)) |> 
+                      collect() |>
+                      mutate(win_loss = Total_W / G_managed) |>
+                      arrange(desc(win_loss))
+```
+
+```{r}                  
+manager_records
+```
+
+Combine results to get HOF manager names.
+```{r}                  
+hof_managers <- hof_names |>
+  inner_join(manager_records, by = "playerID")
+```
+
+```{r}                  
+hof_managers
+```
+
+
+
 
