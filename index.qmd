@@ -1,5 +1,5 @@
 ---
-title: "Homework - Group 1 - ST558"
+title: "ST558 Homework - Group 1"
 format: html
 author: 
   - name: Kayla Nowak(A)
