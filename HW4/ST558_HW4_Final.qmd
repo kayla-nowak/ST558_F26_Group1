@@ -1,5 +1,5 @@
 ---
-title: "ST558_HW4_Final"
+title: "ST558 HW4 Final"
 format: html
 author: 
   - name: Kayla Nowak
@@ -8,5 +8,145 @@ author:
   - name: Yefrid Cordoba
 ---
 
-## Task 1:
+## Task 1:Conceptual Questions
 
+### 1.
+Rewriting a nested function call using `baseR` chaining
+
+Without chaining, the function looks like this (Have to read from inside out, confusing!)
+
+```{r}
+#| message: False
+#| warning: False
+library(tidyverse)
+library(readxl)
+library(DBI)
+library(RSQLite)
+library(readr)
+```
+
+```{r}
+arrange(filter(select(as_tibble(iris), starts_with("Petal"), Species), Petal.Length <
+1.55), Species)
+```
+
+Using chaining, we can re-write the function like so:
+
+```{r}
+iris |>
+  as_tibble() |>
+  select(starts_with("Petal"), Species) |>
+  filter(Petal.Length < 1.55) |>
+  arrange(Species)
+```
+
+This gives us the same result, and is much easier to follow!
+
+### 2. 
+
+Wide format gives each variable its own column with one row per unique record. Long format gives each row a single observation so one subject spans multiple rows instead of multiple columns. Long Format is generally preferred for analysis. Modeling functions expect one row per observation so long format is more intuitive for this.
+
+## Task 2: Chaining Practice
+
+### Glass data
+
+We'll use the `glass` data from homework 3 again, so let's re-read in that data.
+
+Dataset available here: <https://www4.stat.ncsu.edu/~online/datasets/glass.data.>
+
+```{r}
+glass <- read_delim("https://www4.stat.ncsu.edu/online/datasets/glass.data",
+                    delim = ",",
+                    col_names = c("Id", "RI", "Na", "Mg", "Al", "Si", 
+                                  "K", "Ca", "Ba", "Fe", "Type_of_glass"))
+```
+
+#### 3 & 4
+
+Overwrite `Type_of_glass` as a factor using mutate().
+
+Then continue the chain to keep only observations where `Fe` \< 0.2 and the type of glass is "tableware" or "headlamps".
+
+```{r}
+glass |>
+  mutate(Type_of_glass = factor(Type_of_glass, levels = c(1:7), # 3. Converting type to factor strings
+                       labels=c("building_windows_float_processed",
+                                "building_windows_non_float_processed",
+                                "vehicle_windows_float_processed",
+                                "vehicle_windows_non_float_processed",
+                                "containers",
+                                "tableware",
+                                "headlamps"))) |> 
+  filter(Fe < 0.2, Type_of_glass %in% c("tableware", "headlamps")) # 4. Filter for select observations
+```
+
+Now we can see the type is displayed as our factor strings ("tableware" instead of 1), and only 38 rows are returned after applying these filters (only the first 10 are displayed).
+
+### Yeast data
+
+We'll use the Yeast data, also from homework 3 and real it into R directly from the URL here: <https://www4.stat.ncsu.edu/~online/datasets/yeast.data.>
+
+```{r}
+yeast_data <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data",
+                       col_names = c("seq_name", "mcg", "gvh", "alm", "mit", 
+                                     "erl", "pox", "vac", "nuc", "class"))
+```
+
+#### 5 & 6
+
+Remove `seq_name` and `nuc` columns.
+
+Then continue the chain to add columns corresponding to the mean and median of each numeric variable at each class grouping.
+
+```{r}
+yeast_data |>
+  group_by(class) |>
+  mutate(seq_name = NULL,
+         nuc = NULL,
+         across(where(is.numeric), 
+                list(mean = mean, median = median),
+                .names = "{.col}_{.fn}"))
+```
+
+### Wine data
+
+In Homework 3 we read in two wine data sets and combine them, here we’ll repeat that process.
+
+```{r}
+# Read variable names
+wine_vars  <- read_xlsx(path="../HW3/white-wine.xlsx", sheet = "variables") 
+
+# White wine
+white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="white-wine") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="white")
+
+# Red wine
+red_wine  <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
+  setNames(wine_vars$Variables) |>
+  mutate(type="red")
+
+# Combine data
+wine_data <- bind_rows(white_wine, red_wine)
+wine_data
+```
+
+#### 7 - 10
+
+Filter to high quality wines (`quality` \> 6.5) with reasonable alcohol value (`alcohol` \< 132).
+
+Then sort the data from highest quality to lowest.
+
+Then select the variables containing `acid`, the `alcohol` variable, the `type` variable, and the `quality` variable.
+
+Then add mean and standard deviation of `alcohol` at each setting of `quality` to the dataset.
+
+```{r}
+wine_data |>
+  filter(quality > 6.5 & alcohol < 132) |>
+  arrange(desc(quality)) |>   #descending for highest to lowest
+  select(contains("acid"), alcohol, type, quality) |>
+  group_by(quality) |>
+  mutate(alcohol_mean = mean(alcohol),
+         alcohol_sd = sd(alcohol))
+```

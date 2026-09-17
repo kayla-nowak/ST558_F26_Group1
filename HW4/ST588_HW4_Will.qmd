@@ -4,7 +4,9 @@ author: "Will Carter"
 format: html
 editor: visual
 ---
+
 # Imports
+
 ```{r}
 library(tidyverse)
 library(readxl)
@@ -15,6 +17,7 @@ library(RSQLite)
 # Task 1: Conceptual Questions
 
 ## 1. Function Rewrite
+
 ```{r}
 as_tibble(iris) |>
   select(starts_with("Petal"), Species) |>
@@ -25,7 +28,6 @@ as_tibble(iris) |>
 ## 2. Long Format and Wide Format Data
 
 Wide format gives each variable its own column with one row per unique record. Long format gives each row a single observation so one subject spans multiple rows instead of multiple columns. Long Format is generally preferred for analysis. Modeling functions expect one row per observation so long format is more intuitive for this.
-
 
 # Task 2: Chaining Practice
 
@@ -38,6 +40,7 @@ glass_data <- "https://www4.stat.ncsu.edu/~online/datasets/glass.data" |>
 ```
 
 ## 3 & 4 Overwrite Type_of_glass using mutate(), filter
+
 ```{r}
 glass_result <- glass_data |> 
     mutate(Type_of_glass = factor(Type, levels = 1:7, 
@@ -51,15 +54,14 @@ glass_result <- glass_data |>
   filter(Fe < 0.2, Type_of_glass %in% c("tableware", "headlamps"))
 ```
 
-
 ```{r}
 glass_result
 ```
 
-
 ## 5-6
 
 Yeast data read
+
 ```{r}
 yeast_data <- "https://www4.stat.ncsu.edu/~online/datasets/yeast.data" |>
   read_table(col_names = c("seq_name", "mcg", "gvh", "alm", "mit", "erl", 
@@ -67,6 +69,7 @@ yeast_data <- "https://www4.stat.ncsu.edu/~online/datasets/yeast.data" |>
 ```
 
 Remove 'seq_name' and 'nuc' columns.
+
 ```{r}
 yeast_result <- yeast_data |>
   select(-seq_name, -nuc) |>
@@ -75,20 +78,20 @@ yeast_result <- yeast_data |>
                   .names = "{.col}_{.fn}"))
 ```
 
-
 ```{r}
 yeast_result
 ```
 
 # 7-10
 
-
 Column names
+
 ```{r}
 white_wine_var_names <- read_xlsx(path="../HW3/white-wine.xlsx", sheet = "variables") 
 ```
 
 White wine data read
+
 ```{r}
 white_wine <- white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="white-wine") |>
   setNames(white_wine_var_names$Variables) |>
@@ -96,6 +99,7 @@ white_wine <- white_wine <- read_xlsx(path="../HW3/white-wine.xlsx", sheet="whit
 ```
 
 Red wine data read
+
 ```{r}
 red_wine <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
   setNames(white_wine_var_names$Variables) |>
@@ -103,11 +107,13 @@ red_wine <- read_delim(file="../HW3/red-wine.csv", delim=";") |>
 ```
 
 Combine wine data
+
 ```{r}
 wine_data <- bind_rows(white_wine, red_wine)
 ```
 
-Filter wine data for wines with quality > 6.5 and alcohol < 13.2. Sort highest to lowest quality. Filter to select only records that contain variables acid, alcohol, tyoe, and quality. Add mean and std dev for alcohol for each setting of quality.
+Filter wine data for wines with quality \> 6.5 and alcohol \< 13.2. Sort highest to lowest quality. Filter to select only records that contain variables acid, alcohol, tyoe, and quality. Add mean and std dev for alcohol for each setting of quality.
+
 ```{r}
 wine_result <- wine_data |> 
                 filter(quality > 6.5, alcohol < 13.2) |>
@@ -122,18 +128,19 @@ wine_result <- wine_data |>
 wine_result
 ```
 
-
 # Task 3: Database Practice
 
 ## 11-13
 
 Connect to Lahman db. List the tables.
+
 ```{r}
 con <- dbConnect(RSQLite::SQLite(), "Lahman.db")
 dbListTables(con)
 ```
 
 Teams data for year 2015 using dplyr.
+
 ```{r}
 teams_2015_dplyr <- tbl(con, "Teams") |> 
                       filter(yearID == 2015)
@@ -144,6 +151,7 @@ teams_2015_dplyr
 ```
 
 Teams data for year 2015 using sql.
+
 ```{r}
 teams_2015_sql <- tbl(con, sql("SELECT * FROM Teams WHERE yearID = 2015")) 
 ```
@@ -155,6 +163,7 @@ teams_2015_sql
 ## 14-17
 
 Players inducted into HOF.
+
 ```{r}
 hof_inducted <- tbl(con, "HallOfFame") |> 
                   filter(inducted == "Y") |>
@@ -165,8 +174,8 @@ hof_inducted <- tbl(con, "HallOfFame") |>
 hof_inducted
 ```
 
-
 Join with People table to grab names.
+
 ```{r}
 hof_names <- tbl(con, "HallOfFame") |> filter(inducted == "Y") |> 
                 select(playerID, yearID, category) |> 
@@ -179,8 +188,8 @@ hof_names <- tbl(con, "HallOfFame") |> filter(inducted == "Y") |>
 hof_names
 ```
 
-
 Managers win-loss records.
+
 ```{r}
 manager_records <- tbl(con, "Managers") |> 
                       select(playerID, G, W, L) |>
@@ -193,20 +202,17 @@ manager_records <- tbl(con, "Managers") |>
                       arrange(desc(win_loss))
 ```
 
-```{r}                  
+```{r}
 manager_records
 ```
 
 Combine results to get HOF manager names.
-```{r}                  
+
+```{r}
 hof_managers <- hof_names |>
   inner_join(manager_records, by = "playerID")
 ```
 
-```{r}                  
+```{r}
 hof_managers
 ```
-
-
-
-
