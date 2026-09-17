@@ -464,7 +464,7 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">==</span> <span class="dv">2015</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [?? x 48]
-# Database: sqlite 3.53.3 [C:\Users\gemer\OneDrive\Documents\ST558_F26_Group1\HW4\lahman.db]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    yearID lgID  teamID franchID divID  Rank     G Ghome     W     L DivWin WCWin
     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;
  1   2015 NL    ARI    ARI      W         3   162    81    79    83 N      N    
@@ -497,7 +497,7 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [?? x 48]
-# Database: sqlite 3.53.3 [C:\Users\gemer\OneDrive\Documents\ST558_F26_Group1\HW4\lahman.db]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    yearID lgID  teamID franchID divID  Rank     G Ghome     W     L DivWin WCWin
     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;
  1   2015 NL    ARI    ARI      W         3   162    81    79    83 N      N    
@@ -529,7 +529,7 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(playerID, yearID, category)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [?? x 3]
-# Database: sqlite 3.53.3 [C:\Users\gemer\OneDrive\Documents\ST558_F26_Group1\HW4\lahman.db]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    playerID  yearID category         
    &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;            
  1 cobbty01    1936 Player           
@@ -558,7 +558,7 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>HOF</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [?? x 5]
-# Database: sqlite 3.53.3 [C:\Users\gemer\OneDrive\Documents\ST558_F26_Group1\HW4\lahman.db]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    nameFirst nameLast  playerID  yearID category         
    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;            
  1 Ty        Cobb      cobbty01    1936 Player           
@@ -623,7 +623,7 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Manager_WL))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:     SQL [?? x 9]
-# Database:   sqlite 3.53.3 [C:\Users\gemer\OneDrive\Documents\ST558_F26_Group1\HW4\lahman.db]
+# Database:   sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
 # Ordered by: desc(Manager_WL)
    playerID  G_managed Total_W Total_L Manager_WL nameFirst nameLast   yearID
    &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;int&gt;

@@ -602,70 +602,70 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="co">#view test objects</span></span>
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>df1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif       norm
-1  0.9993367  0.7910386
-2  0.5278809 -1.0874640
-3  0.9782616  0.9796875
-4  0.3391475 -0.4729682
-5  0.4360098 -0.3274069
-6  0.6530358 -1.7553285
-7  0.6804151 -1.1785450
-8  0.1927613 -0.3611135
-9  0.9477684  0.6338572
-10 0.2046421  1.6644360</code></pre>
+<pre><code>         unif         norm
+1  0.84768044  0.005742973
+2  0.28586667  1.433058119
+3  0.39539280  0.005313759
+4  0.57794160 -0.791118172
+5  0.99372952  0.266956519
+6  0.02618504 -0.349413174
+7  0.89174693 -1.098202648
+8  0.67923383  0.019804621
+9  0.93222697 -0.486485586
+10 0.86657771 -0.357792687</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        gamma      beta
-1  0.23417257 0.9572854
-2  0.23916219 0.8122045
-3  0.12958910 0.9853029
-4  1.75469664 0.9716659
-5  0.41868218 0.7932950
-6  0.40387659 0.6557157
-7  0.04496925 0.5910011
-8  0.89753525 0.8509140
-9  2.79652605 0.6756033
-10 1.84527430 0.9761934</code></pre>
+1  0.51493979 0.8786100
+2  0.97367417 0.7180195
+3  1.75428577 0.7694962
+4  1.21205833 0.8730382
+5  6.77673493 0.9160897
+6  5.53612148 0.9019168
+7  0.52872072 0.8713708
+8  0.57763782 0.9215546
+9  0.04705187 0.8088748
+10 0.44782036 0.9290450</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>vec1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 11.589443 11.420537  9.499110  9.336135  9.357179 11.250049  9.626599
- [8] 10.736215 10.474708  9.538407</code></pre>
+<pre><code> [1]  9.856738 11.094416 11.377358  8.049917  9.347868 10.300033  9.500351
+ [8] 10.234438  9.844717 11.003855</code></pre>
 </div>
 </div>
 <p>Bind df1 + df2:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif       norm      gamma      beta
-1  0.9993367  0.7910386 0.23417257 0.9572854
-2  0.5278809 -1.0874640 0.23916219 0.8122045
-3  0.9782616  0.9796875 0.12958910 0.9853029
-4  0.3391475 -0.4729682 1.75469664 0.9716659
-5  0.4360098 -0.3274069 0.41868218 0.7932950
-6  0.6530358 -1.7553285 0.40387659 0.6557157
-7  0.6804151 -1.1785450 0.04496925 0.5910011
-8  0.1927613 -0.3611135 0.89753525 0.8509140
-9  0.9477684  0.6338572 2.79652605 0.6756033
-10 0.2046421  1.6644360 1.84527430 0.9761934</code></pre>
+<pre><code>         unif         norm      gamma      beta
+1  0.84768044  0.005742973 0.51493979 0.8786100
+2  0.28586667  1.433058119 0.97367417 0.7180195
+3  0.39539280  0.005313759 1.75428577 0.7694962
+4  0.57794160 -0.791118172 1.21205833 0.8730382
+5  0.99372952  0.266956519 6.77673493 0.9160897
+6  0.02618504 -0.349413174 5.53612148 0.9019168
+7  0.89174693 -1.098202648 0.52872072 0.8713708
+8  0.67923383  0.019804621 0.57763782 0.9215546
+9  0.93222697 -0.486485586 0.04705187 0.8088748
+10 0.86657771 -0.357792687 0.44782036 0.9290450</code></pre>
 </div>
 </div>
 <p>Bind df1, df2, and vec1:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2 <span class="sc">%+%</span> vec1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif       norm      gamma      beta         b
-1  0.9993367  0.7910386 0.23417257 0.9572854 11.589443
-2  0.5278809 -1.0874640 0.23916219 0.8122045 11.420537
-3  0.9782616  0.9796875 0.12958910 0.9853029  9.499110
-4  0.3391475 -0.4729682 1.75469664 0.9716659  9.336135
-5  0.4360098 -0.3274069 0.41868218 0.7932950  9.357179
-6  0.6530358 -1.7553285 0.40387659 0.6557157 11.250049
-7  0.6804151 -1.1785450 0.04496925 0.5910011  9.626599
-8  0.1927613 -0.3611135 0.89753525 0.8509140 10.736215
-9  0.9477684  0.6338572 2.79652605 0.6756033 10.474708
-10 0.2046421  1.6644360 1.84527430 0.9761934  9.538407</code></pre>
+<pre><code>         unif         norm      gamma      beta         b
+1  0.84768044  0.005742973 0.51493979 0.8786100  9.856738
+2  0.28586667  1.433058119 0.97367417 0.7180195 11.094416
+3  0.39539280  0.005313759 1.75428577 0.7694962 11.377358
+4  0.57794160 -0.791118172 1.21205833 0.8730382  8.049917
+5  0.99372952  0.266956519 6.77673493 0.9160897  9.347868
+6  0.02618504 -0.349413174 5.53612148 0.9019168 10.300033
+7  0.89174693 -1.098202648 0.52872072 0.8713708  9.500351
+8  0.67923383  0.019804621 0.57763782 0.9215546 10.234438
+9  0.93222697 -0.486485586 0.04705187 0.8088748  9.844717
+10 0.86657771 -0.357792687 0.44782036 0.9290450 11.003855</code></pre>
 </div>
 </div>
 

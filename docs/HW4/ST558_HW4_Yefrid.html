@@ -180,22 +180,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Warning: package 'tidyverse' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'ggplot2' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'ggplot2' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'tibble' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'tibble' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'tidyr' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'tidyr' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'readr' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'readr' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'purrr' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'purrr' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'dplyr' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'dplyr' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'stringr' was built under R version 4.5.2</code></pre>
@@ -204,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Warning: package 'forcats' was built under R version 4.5.2</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'lubridate' was built under R version 4.5.3</code></pre>
+<pre><code>Warning: package 'lubridate' was built under R version 4.5.2</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>glass_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://www4.stat.ncsu.edu/~online/datasets/glass.data"</span>,</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"Id"</span>, <span class="st">"RI"</span>, <span class="st">"Na"</span>, <span class="st">"Mg"</span>, <span class="st">"Al"</span>, <span class="st">"Si"</span>, <span class="st">"K"</span>,</span>
@@ -401,8 +401,8 @@ cols(
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">==</span> <span class="dv">2015</span>) <span class="sc">|&gt;</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:  ?? x 48
-# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:   SQL [?? x 48]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    yearID lgID  teamID franchID divID  Rank     G Ghome     W     L DivWin WCWin
     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;
  1   2015 NL    ARI    ARI      W         3   162    81    79    83 N      N    
@@ -435,8 +435,8 @@ cols(
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE (`yearID` = 2015.0)"</span>)</span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:  ?? x 48
-# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:   SQL [?? x 48]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    yearID lgID  teamID franchID divID  Rank     G Ghome     W     L DivWin WCWin
     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;
  1   2015 NL    ARI    ARI      W         3   162    81    79    83 N      N    
@@ -467,8 +467,8 @@ cols(
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(inducted <span class="sc">==</span> <span class="st">"Y"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(playerID, yearID, category)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:  ?? x 3
-# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:   SQL [?? x 3]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    playerID  yearID category         
    &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;            
  1 cobbty01    1936 Player           
@@ -497,8 +497,8 @@ cols(
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(Ind_HOF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:  ?? x 5
-# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:   SQL [?? x 5]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    nameFirst nameLast  playerID  yearID category         
    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;            
  1 Ty        Cobb      cobbty01    1936 Player           
@@ -523,8 +523,8 @@ cols(
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(playerID, G, W, L) <span class="sc">|&gt;</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:  ?? x 4
-# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:   SQL [?? x 4]
+# Database: sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
    playerID      G     W     L
    &lt;chr&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt;
  1 wrighha01    31    20    10
@@ -552,8 +552,8 @@ cols(
 <span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(win_loss_per)) <span class="sc">|&gt;</span></span>
 <span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:    ?? x 5
-# Database:   sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:     SQL [?? x 5]
+# Database:   sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
 # Ordered by: desc(win_loss_per)
    playerID  G_managed Total_W Total_L win_loss_per
    &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;
@@ -586,8 +586,8 @@ cols(
 <span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(win_loss_per)) <span class="sc">|&gt;</span></span>
 <span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A query:    ?? x 9
-# Database:   sqlite 3.53.3 [C:\Users\yacordob\Documents\GitHub\ST558_F26_Group1\HW4\lahman.db]
+<pre><code># Source:     SQL [?? x 9]
+# Database:   sqlite 3.53.3 [C:\Users\yacordob\Documents\R projects\ST_558_Data_science\ST558_F26_Group1\HW4\lahman.db]
 # Ordered by: desc(win_loss_per)
    playerID  G_managed Total_W Total_L win_loss_per nameFirst nameLast   yearID
    &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;int&gt;
