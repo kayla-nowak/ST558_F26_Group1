@@ -151,3 +151,103 @@ wine_data |>
   mutate(alcohol_mean = mean(alcohol),
          alcohol_sd = sd(alcohol))
 ```
+
+## Task 3: Database Practice
+
+First, let's download the `Lahman.db` file associated with the connecting to databases notes.
+
+### 11.
+
+We connect to the database and then look at all of the tables in the database.
+
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "lahman.db")
+
+#list all the tables
+dbListTables(con)
+```
+
+### 12.
+
+Return all of the data from the `Teams` table for the year 2015 using `tbl()` and `dplyr`.
+
+```{r}
+tbl(con, "Teams") |>
+  filter(yearID == 2015)
+```
+
+### 13. 
+
+Repeat this process using `sql()` code within `tbl()`.
+
+```{r}
+tbl(con, sql(
+  "SELECT *
+  FROM `Teams`
+  WHERE (`yearID` = 2015.0)")
+)
+```
+
+### 14.
+
+Return all of the players in the hall of fame, the year they were voted into the hall of fame, and their category.
+
+```{r}
+tbl(con, "HallOfFame") |>
+  filter(inducted == "Y") |>
+  select(playerID, yearID, category)
+```
+
+### 15.
+
+Combine the table from the previous question with the `People` table in order to have the `nameFirst` and `nameLast` names added
+
+```{r}
+hof_names <- tbl(con, "HallOfFame") |> 
+                filter(inducted == "Y") |> 
+                select(playerID, yearID, category) |> 
+                left_join(tbl(con, "People") |> 
+                select(playerID, nameFirst, nameLast), by = "playerID") |>
+                collect()
+hof_names
+```
+
+### 16.
+
+Return only the `playerID` (manager ID in this case), `G`, `W`, and `L` columns from the `Managers` table.
+
+Then determine the overall win/loss records (sum of wins and sum of losses) for each of these hall of fame managers.
+
+Create a new variable that is the career win/loss percentage.
+
+Sort the resulting data by win/loss percentage variable (from largest to smallest).
+
+```{r}
+manager_records <- tbl(con, "Managers") |> 
+                      select(playerID, G, W, L) |>
+                      group_by(playerID) |>
+                      summarize(G_managed = sum(G, na.rm = TRUE),
+                                Total_W = sum(W, na.rm = TRUE),
+                                Total_L = sum(L, na.rm = TRUE)) |>
+                      collect() |>
+                      mutate(win_loss = Total_W / G_managed) |>
+                      arrange(desc(win_loss))
+manager_records
+```
+
+### 17.
+
+Return people who managed a team and were inducted into the hall of fame (regardless of their hall of fame category). Return all 9 columns used in the previous 2 questions.
+
+```{r}
+hof_managers <- hof_names |>
+  inner_join(manager_records, by = "playerID")
+
+hof_managers
+```
+
+Disconnect from database.
+
+```{r}
+dbDisconnect(con)
+```
