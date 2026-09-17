@@ -1,16 +1,17 @@
 ---
-title: "ST558 HW4 Final"
-format: html
+title: "ST558 Homework 4 - Group 1"
 author: 
   - name: Kayla Nowak
   - name: Ryan Merserau
   - name: Will Carter
   - name: Yefrid Cordoba
+format: html
 ---
 
 ## Task 1:Conceptual Questions
 
 ### 1.
+
 Rewriting a nested function call using `baseR` chaining
 
 Without chaining, the function looks like this (Have to read from inside out, confusing!)
@@ -42,7 +43,7 @@ iris |>
 
 This gives us the same result, and is much easier to follow!
 
-### 2. 
+### 2.
 
 Wide format gives each variable its own column with one row per unique record. Long format gives each row a single observation so one subject spans multiple rows instead of multiple columns. Long Format is generally preferred for analysis. Modeling functions expect one row per observation so long format is more intuitive for this.
 
