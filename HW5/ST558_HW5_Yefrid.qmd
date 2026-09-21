@@ -6,3 +6,76 @@ format: html
 
 ## Task 1: Querying an API and a Tidy-Style Function
 
+### 1.
+
+We need to use the `GET()` function from the topic trade
+
+```{r}
+#| message: False
+#| warning: False
+
+library(httr)
+library(jsonlite)
+library(tidyverse)
+```
+
+Now we obtain the info from the API.
+
+```{r}
+
+info_news <- GET("https://newsapi.org/v2/everything?q=trade&from=2026-08-21&language=en&pageSize=50&apiKey=b83cc47afb8e4f47a5ff9dafee63d05c")
+```
+
+We explore the info to determine the actual data that we need to extract.
+
+```{r}
+str(info_news)
+```
+
+### 2.
+
+We see that the data is under the name `content`.   
+We use the `jsonlite` package to get a tibble.
+
+```{r}
+parsed <- fromJSON(rawToChar(info_news$content))
+team_info <- as_tibble(parsed$articles)
+team_info
+```
+
+### 3.
+
+Now we will create a funstion that will create the URL to get data from the `News` API.
+
+```{r}
+get_news <- function(title, period, key){
+  url <- paste(paste0("https://newsapi.org/v2/everything?q=", title),
+               paste0("from=", as.character(period)),
+               paste0("apiKey=", key),
+               sep = "&"
+               )
+  
+  
+  info_news <- GET(url = url)
+  
+  parsed <- fromJSON(rawToChar(info_news$content))
+  
+  team_info <- as_tibble(parsed$articles)
+  
+  team_info
+  
+}
+```
+
+Now we can test the function with two different topics and dates
+
+```{r}
+get_news("macklemore", "2026-09-15", "b83cc47afb8e4f47a5ff9dafee63d05c")
+```
+
+```{r}
+get_news("gas", "2026-09-10", "b83cc47afb8e4f47a5ff9dafee63d05c")
+```
+
+## Task 2: Summarizing Roller Coaster Data
+
