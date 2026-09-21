@@ -1,0 +1,143 @@
+---
+title: "ST558 Homework 5"
+author: Ryan Mersereau
+format: html
+editor: visual
+---
+
+# Task 1: Querying an API and a Tidy-Style Function
+
+For this task, we'll need to connect to the news API here: <https://newsapi.org>
+
+1. Use `GET()` from the `httr` package to return information about a topic that has been in the news 
+lately
+
+Here I chose to search for articles from last Monday regarding Panthers quarterback Bryce Young
+```{r}
+#| message: FALSE
+#| warning: FALSE
+library(httr)
+library(jsonlite)
+library(tidyverse)
+```
+
+```{r}
+# Store personal news api key
+my_key <- "48e8f55cb8e74372b534d5595a576d81"
+
+# Building the url
+id_info <- GET(
+  url = "https://newsapi.org/v2/everything",
+  query = list(
+    q = "bryce-young",
+    from = "2026-09-14",
+    language = "en",
+    pageSize = 50,
+    apiKey = my_key
+  )
+)
+
+str(id_info, max.level = 1)
+```
+
+2. Parse what is returned and find your way to the data frame that has the actual article information in it (content). The first column should be a list column!
+
+```{r}
+parsed <- fromJSON(rawToChar(id_info$content))
+
+str(parsed, max.level = 1)
+```
+This returns a list with 3 elements. To specifically look at the articles published,
+we can store this as a tibble below.
+
+```{r}
+parsed_articles <- as_tibble(parsed$articles)
+parsed_articles
+```
+
+3. Now write a quick function that allows the user to easily query this API. The inputs
+to the function should be the title/subject to search for, a time period to search from, and an
+API key.
+
+```{r}
+query_function <- function(subject, date, api_key) {
+  response <- GET(
+    url = "https://newsapi.org/v2/everything",
+    query = list(
+      q = subject,
+      from = date,
+      language = "en",
+      pageSize = 50,
+      apiKey = api_key
+    )
+  )
+  
+  parsed <- fromJSON(rawToChar(response$content))
+  as_tibble(parsed$articles)
+}
+```
+
+Lets call this a couple times to show it works
+
+```{r}
+bojangles <- query_function("Bojangles", "2026-09-10", my_key)
+bojangles
+```
+
+```{r}
+israel <- query_function("Israel", "2026-08-31", my_key)
+israel
+```
+
+# Task 2: Summarizing Roller Coaster Data
+
+For this part, we'll use roller coaster data found here: <https://www4.stat.ncsu.edu/online/datasets/635USrollercoasters.csv>
+
+Let's read in this data and convert variables to factors as needed
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+library(readr)
+library(psych)
+```
+
+
+```{r}
+rollercoasters <- read_csv("../HW5/635USrollercoasters.csv")
+```
+
+
+```{r}
+rollercoasters |>
+  mutate(AgeGroup = factor(AgeGroup, levels = c("1:Older", "2:Recent", "3:Newest"),
+         labels = c("Older", "Recent", "Newest")),
+         Scale = as.factor(Scale),
+         Type = as.factor(Type),
+         Design = as.factor(Design))
+```
+
+## Basic EDA
+
+4. Look at how the data is stored and see if everything makes sense.
+
+```{r}
+str(rollercoasters)
+```
+
+```{r}
+psych::describe(rollercoasters)
+```
+
+
+5. Document any missing values in the data
+
+```{r}
+colSums(is.na(rollercoasters))
+```
+
+## Categorical variables
+
+6. Create a one-way contingency table, a two-way contingency table, and a three-way contingency table for some of the factor variables created using `table()`
+
+- Interpret a number from each resulting table
