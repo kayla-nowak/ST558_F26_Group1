@@ -1,0 +1,76 @@
+---
+title: "ST558_HW5_Will"
+author: "Will Carter"
+format: html
+editor: visual
+---
+
+
+
+
+# Task 1: Querying an API and a Tidy-Style Function
+
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+```
+
+## GET() call for an interesting topic in news
+```{r}
+results = GET("https://newsapi.org/v2/everything?q=Iran&from=2026-08-21&language=en&pageSize=50&apiKey=8bc29bd8879e49e9940d1a64d5532623")
+```
+
+## parse results for actual article
+```{r}
+parsed_results <- fromJSON(content(results, as = "text", encoding = "UTF-8"))
+
+articles <- parsed_results$articles
+```
+
+```{r}
+articles
+```
+
+## function to easily query API
+```{r}
+get_news_article <- function(query, from_date, api_key) {
+  url <- paste0("https://newsapi.org/v2/everything?q=", URLencode(query),
+  "&from=", from_date,
+  "&language=en&pageSize=50&apiKey=", api_key)
+  
+  result <- GET(url)
+  
+  parsed_result <- fromJSON(content(result, as = "text", encoding = "UTF-8"))
+  
+  parsed_result$articles
+}
+```
+
+```{r}
+api_key = "8bc29bd8879e49e9940d1a64d5532623"
+```
+
+## clean energy article
+```{r}
+articles_energy <- get_news_article("clean energy", "2026-08-21", api_key)
+```
+
+```{r}
+articles_energy
+```
+
+## biotech article
+```{r}
+articles_biotech <- get_news_article("biotech", "2026-08-21", api_key)
+```
+
+```{r}
+articles_biotech
+```
+
+
+# Task 2: Summarizing Roller Coaster Data
+
+
+
