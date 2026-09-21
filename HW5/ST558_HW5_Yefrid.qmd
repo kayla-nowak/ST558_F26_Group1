@@ -1,0 +1,8 @@
+---
+title: "ST558_HW5_Yefrid"
+author: "Yefrid Cordoba"
+format: html
+---
+
+## Task 1: Querying an API and a Tidy-Style Function
+
