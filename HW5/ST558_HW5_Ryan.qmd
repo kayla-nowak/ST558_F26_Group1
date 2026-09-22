@@ -110,11 +110,17 @@ rollercoasters <- read_csv("../HW5/635USrollercoasters.csv")
 
 ```{r}
 rollercoasters |>
-  mutate(AgeGroup = factor(AgeGroup, levels = c("1:Older", "2:Recent", "3:Newest"),
-         labels = c("Older", "Recent", "Newest")),
+  select(-c(Boundary, Latitude, Longitude)) |>
+  mutate(AgeGroup = factor(AgeGroup, 
+                           levels = c("1:Older", "2:Recent", "3:Newest"),
+                           labels = c("Older", "Recent", "Newest")),
          Scale = as.factor(Scale),
          Type = as.factor(Type),
-         Design = as.factor(Design))
+         Design = as.factor(Design)) |>
+  rename(CensusRegion = `Census Region`,
+         YearOpened = `Year Opened`,
+         Inversion_YN = `Inversions?`,
+         Inversion_Num = `# of Inversions`) 
 ```
 
 ## Basic EDA
@@ -141,3 +147,91 @@ colSums(is.na(rollercoasters))
 6. Create a one-way contingency table, a two-way contingency table, and a three-way contingency table for some of the factor variables created using `table()`
 
 - Interpret a number from each resulting table
+
+- One-way
+```{r}
+table(rollercoasters$Type)
+```
+There are 530 Steel roller coasters in this dataset
+
+- Two-way
+
+```{r}
+table(rollercoasters$Type, rollercoasters$Scale)
+```
+
+There are 53 Extreme-scale wooden roller coasters in this data
+
+- Three-way
+```{r}
+table(rollercoasters$Type, rollercoasters$Scale, rollercoasters$AgeGroup)
+```
+
+There are 21 Extreme-scale wooden roller coasters in the 'newest' age group.
+
+7. Create a conditional two-way table using `table()`, conditioning on one variables setting
+
+First, we'll do this by subsetting the data (with `filter()`) and then creating the two-way table 
+
+```{r}
+filtered_coasters <- rollercoasters |>
+  filter(AgeGroup == "3:Newest")
+
+filtered_coasters
+```
+
+```{r}
+table(filtered_coasters$Type, filtered_coasters$Scale)
+```
+
+Here we get the same result as the bottom of the three-way table. Since the data is
+filtered for only new coasters, this is a two-way table on Type and Scale filtered on the coaster being new.
+
+We can create a conditional two-way table another way by directly subsetting a three-way table
+
+```{r}
+table(rollercoasters$Type, rollercoasters$Scale, rollercoasters$AgeGroup)[, ,3]
+```
+
+This is another way to get the same result.
+
+8. Create a two-way contingency table using `group_by` and `summarize()` from `dplyr`. Then use `pivot_wider()` to make the result look more like the output from `table()`
+
+```{r}
+rollercoasters |>
+  drop_na(Type, Scale) |>
+  group_by(Type, Scale) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = Type, values_from = Scale)
+```
+
+Still doesn't quite look like the results from `table()`, but the values are consistent with our two-way table in **7.**
+
+9. Create a stacked bar graph and a side-by-side bar graph. Give relevant x and y labels, and a title for the plots.
+
+```{r}
+#|message: FALSE
+#|warning: FALSE
+
+library(ggplot2)
+```
+
+**Stacked**
+
+```{r}
+g1 <- ggplot(data = rollercoasters |>
+               drop_na(Type, Scale), aes(x = Scale, fill = Type))
+g1 + geom_bar() + labs(x = "Type", y = "Count", title = "Rollercoaster Types by Scale") 
+```
+
+**Side-by-side**
+
+```{r}
+ggplot(data = rollercoasters |> drop_na(Type, Scale), aes(x = Scale, fill = Type)) +
+  geom_bar(position = "dodge") + 
+  labs(x = "Scale", title = "Roller Coaster Types by Scale", y = "Count") +
+  scale_fill_discrete("Type")
+```
+
+This is better (although the scales should be ordered) From most to least intense it goes:
+Extreme, Thrill, Family, Kiddie
