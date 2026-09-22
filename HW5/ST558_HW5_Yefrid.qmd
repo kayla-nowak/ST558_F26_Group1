@@ -18,6 +18,7 @@ library(httr)
 library(jsonlite)
 library(tidyverse)
 library(readr)
+library(gt)
 ```
 
 Now we obtain the info from the API.
@@ -101,5 +102,105 @@ rc_data <- read.csv("635USrollercoasters.csv") |>
 
 ```{r}
 rc_data
+```
+
+### 4.
+
+First we need to determine how the data is stored, for that we are going to use `str()` function
+
+```{r}
+str(rc_data)
+```
+
+As previously transformed, the data that required to be factor were transformed, and the numeric variables are correctly stores as numeric variables
+
+### 5.
+
+And we determine the number of missing values for each of the variables
+
+```{r}
+colSums(is.na(rc_data))
+```
+
+We can observe that there are missing values for `Drop`, `TopSpeed`, `Duration`, and `Length`, listed in descending order of their missig value counts.
+
+### 6.
+
+- We need to create first a one-way contingency table using the `Type` variable.
+
+```{r}
+table(rc_data$Type)
+```
+
+Base on the census data, there are 530 roller coasters made of steel.
+
+- Now a two-way contingency table.
+
+```{r}
+table(rc_data$Type, rc_data$Scale)
+```
+
+Out of the 530 steel roller coasters, 216 are categorized as extreme.
+
+- Now a three-way contingency table
+
+```{r}
+table(rc_data$Type, rc_data$Scale, rc_data$AgeGroup)
+```
+
+From the older roller coasters, 9 are made of wood and categorized as extreme.
+
+### 7.
+
+First a conditional two-way contingency table, using a subset of the data, and then creating the two-way table
+```{r}
+sub_rc <- filter(rc_data, Census.Region == "South")
+table(sub_rc$Type, sub_rc$Scale)
+```
+
+And then, creating first a three way contingency table, and sub setting it.
+
+```{r}
+table(rc_data$Type, rc_data$Scale, rc_data$Census.Region)[ , , "South"]
+```
+
+### 8.
+
+In this step we need to create a two-way contingency table using tidyverse.
+
+```{r}
+rc_data |>
+  group_by(Inversions., Type) |>
+  summarise(count = n(), .groups = "drop") |>
+  pivot_wider(names_from = Inversions., values_from = count) 
+```
+
+### 9.
+
+Now we need to create a stacked bar plot.
+
+```{r}
+ggplot(data = rc_data |>
+         group_by(Inversions., Type) |>
+         summarise(count = n()),
+    aes(x = Type, 
+        y = count,
+        fill = Inversions.)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Roller Coaster Materials and Presence of Inversions",
+       x = "Material") +
+  scale_fill_discrete("Inversions")
+```
+
+And side by side bar
+
+```{r}
+ggplot(data = rc_data,
+    aes(x = Type,
+        fill = Inversions.)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Roller Coaster Materials and Presence of Inversions",
+       x = "Material") +
+  scale_fill_discrete("Inversions")
 ```
 
