@@ -170,8 +170,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  $ all_headers:List of 1
  $ cookies    :'data.frame':    0 obs. of  7 variables:
  $ content    : raw [1:42090] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2026-09-22 01:12:43"
- $ times      : Named num [1:6] 0 0.0619 0.0779 0.1137 0.1531 ...
+ $ date       : POSIXct[1:1], format: "2026-09-22 02:00:36"
+ $ times      : Named num [1:6] 0 0.0272 0.0407 0.0703 0.1345 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..- attr(*, "class")= chr "request"
@@ -184,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 3
  $ status      : chr "ok"
- $ totalResults: int 1757
+ $ totalResults: int 1773
  $ articles    :'data.frame':   49 obs. of  8 variables:</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Select articles</span></span>
@@ -278,6 +278,203 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pullFromNews</span>(<span class="at">subject=</span><span class="st">"Apple"</span>, <span class="at">startdt=</span> <span class="st">"2026-09-01"</span>, <span class="at">key=</span><span class="st">"123ABC"</span>) <span class="co">#Bad Key</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Something broke, check requirements."</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="task-2-summarizing-roller-coaster-data" class="level2">
+<h2 class="anchored" data-anchor-id="task-2-summarizing-roller-coaster-data">Task 2: Summarizing Roller Coaster Data</h2>
+<p>Working with the roller coaster data. Source: <a href="https://www4.stat.ncsu.edu/online/datasets/635USrollercoasters.csv" class="uri">https://www4.stat.ncsu.edu/online/datasets/635USrollercoasters.csv</a></p>
+<p>Read-in data and convert variables to factors as needed. No need to use the <code>Boundary</code> variable or the <code>Latitude</code> and <code>Longitude</code> variables in the EDA.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rollercoasters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"635USrollercoasters.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 635 Columns: 21
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (12): Coaster, Park, City, State, Census Region, AgeGroup, Scale, Type, ...
+dbl  (9): Year Opened, TopSpeed, MaxHeight, Drop, Length, Duration, # of Inv...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rollercoasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Coaster"         "Park"            "City"            "State"          
+ [5] "Census Region"   "Year Opened"     "AgeGroup"        "TopSpeed"       
+ [9] "MaxHeight"       "Scale"           "Type"            "Design"         
+[13] "Drop"            "Length"          "Duration"        "Inversions?"    
+[17] "# of Inversions" "Make"            "Latitude"        "Longitude"      
+[21] "Boundary"       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Preliminary Cleaning:</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rollercoasters <span class="ot">&lt;-</span> rollercoasters <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop variables we don't need:</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(Boundary, Latitude, Longitude)) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#enforce valid column names:</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">CensusRegion =</span> <span class="st">`</span><span class="at">Census Region</span><span class="st">`</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">YearOpened =</span> <span class="st">`</span><span class="at">Year Opened</span><span class="st">`</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">Inversion_YN =</span> <span class="st">`</span><span class="at">Inversions?</span><span class="st">`</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">Inversion_Num =</span> <span class="st">`</span><span class="at"># of Inversions</span><span class="st">`</span> ) </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rollercoasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Coaster"       "Park"          "City"          "State"        
+ [5] "CensusRegion"  "YearOpened"    "AgeGroup"      "TopSpeed"     
+ [9] "MaxHeight"     "Scale"         "Type"          "Design"       
+[13] "Drop"          "Length"        "Duration"      "Inversion_YN" 
+[17] "Inversion_Num" "Make"         </code></pre>
+</div>
+</div>
+<section id="section-3" class="level3">
+<h3 class="anchored" data-anchor-id="section-3">4.</h3>
+<p>Look at how the data is stored and see if everything makes sense.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rollercoasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [635 × 18] (S3: tbl_df/tbl/data.frame)
+ $ Coaster      : chr [1:635] "Adrenaline Peak" "Adventure Express" "Afterburn" "Aftershock" ...
+ $ Park         : chr [1:635] "Oaks Amusement Park" "Kings Island" "Carowinds" "Silverwood Theme Park" ...
+ $ City         : chr [1:635] "Portland" "Mason" "Charlotte" "Athol" ...
+ $ State        : chr [1:635] "Oregon" "Ohio" "North Carolina" "Idaho" ...
+ $ CensusRegion : chr [1:635] "West" "Midwest" "South" "West" ...
+ $ YearOpened   : num [1:635] 2018 1991 1999 2008 2010 ...
+ $ AgeGroup     : chr [1:635] "3:Newest" "2:Recent" "2:Recent" "3:Newest" ...
+ $ TopSpeed     : num [1:635] 45 35 62 65.6 22 67 35 66 48 50 ...
+ $ MaxHeight    : num [1:635] 72 63 113 192 25 ...
+ $ Scale        : chr [1:635] "Extreme" "Thrill" "Extreme" "Extreme" ...
+ $ Type         : chr [1:635] "Steel" "Steel" "Steel" "Steel" ...
+ $ Design       : chr [1:635] "Sit Down" "Sit Down" "Inverted" "Inverted" ...
+ $ Drop         : num [1:635] 70 47 110 177 22.5 170 20 147 80 144 ...
+ $ Length       : num [1:635] 1050 2963 2956 1204 628 ...
+ $ Duration     : num [1:635] 66 140 167 92 47 190 100 143 110 110 ...
+ $ Inversion_YN : chr [1:635] "Yes" "No" "Yes" "Yes" ...
+ $ Inversion_Num: num [1:635] 3 0 6 3 0 6 0 0 0 4 ...
+ $ Make         : chr [1:635] "Gerstlauer Amusement Rides GmbH" "Arrow Dynamics" "Bolliger &amp; Mabillard" "Vekoma" ...</code></pre>
+</div>
+</div>
+<ul>
+<li><code>Coaster</code>, <code>Park</code>, <code>City</code>, <code>State</code>, and <code>Make</code> are fine to store as character</li>
+<li><code>YearOpened</code>, <code>TopSpeed</code>, <code>MaxHeight</code>, <code>Drop</code>, <code>Length</code>, <code>Duration</code>, and <code>Inversion_Num</code> are appropriately stored as numeric</li>
+<li>All other variables are likely categorical and may be better as factors.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vars_cat <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CensusRegion"</span>, <span class="st">"AgeGroup"</span>, <span class="st">"Scale"</span>, <span class="st">"Type"</span>, <span class="st">"Design"</span>, <span class="st">"Inversion_YN"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(vars_cat)){</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  rollercoasters <span class="sc">|&gt;</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars_cat[i]))) <span class="sc">|&gt;</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">count=</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">print</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  CensusRegion count
+  &lt;chr&gt;        &lt;int&gt;
+1 Midwest        134
+2 Northeast      156
+3 South          223
+4 West           122
+# A tibble: 3 × 2
+  AgeGroup count
+  &lt;chr&gt;    &lt;int&gt;
+1 1:Older     69
+2 2:Recent   190
+3 3:Newest   376
+# A tibble: 4 × 2
+  Scale   count
+  &lt;chr&gt;   &lt;int&gt;
+1 Extreme   269
+2 Family    178
+3 Kiddie     28
+4 Thrill    160
+# A tibble: 2 × 2
+  Type  count
+  &lt;chr&gt; &lt;int&gt;
+1 Steel   530
+2 Wood    105
+# A tibble: 7 × 2
+  Design    count
+  &lt;chr&gt;     &lt;int&gt;
+1 Bobsled       4
+2 Flying        9
+3 Inverted     42
+4 Sit Down    560
+5 Stand Up      4
+6 Suspended     7
+7 Wing          9
+# A tibble: 2 × 2
+  Inversion_YN count
+  &lt;chr&gt;        &lt;int&gt;
+1 No             465
+2 Yes            170</code></pre>
+</div>
+</div>
+<p>Yes, convert all the suspected categorical variables to factors. <code>AgeGroup</code> was the only variable that benefited from a labeling change.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rollercoasters <span class="ot">&lt;-</span> rollercoasters <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">CensusRegion =</span> <span class="fu">as.factor</span>(CensusRegion),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">AgeGroup =</span> <span class="fu">factor</span>(AgeGroup, </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"1:Older"</span>, <span class="st">"2:Recent"</span>, <span class="st">"3:Newest"</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Older"</span>, <span class="st">"Recent"</span>, <span class="st">"Newest"</span>)),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Scale =</span> <span class="fu">as.factor</span>(Scale),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">Type=</span> <span class="fu">as.factor</span>(Type),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">Design=</span><span class="fu">as.factor</span>(Design),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">InversionYN=</span><span class="fu">as.factor</span>(Inversion_YN))</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rollercoasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [635 × 19] (S3: tbl_df/tbl/data.frame)
+ $ Coaster      : chr [1:635] "Adrenaline Peak" "Adventure Express" "Afterburn" "Aftershock" ...
+ $ Park         : chr [1:635] "Oaks Amusement Park" "Kings Island" "Carowinds" "Silverwood Theme Park" ...
+ $ City         : chr [1:635] "Portland" "Mason" "Charlotte" "Athol" ...
+ $ State        : chr [1:635] "Oregon" "Ohio" "North Carolina" "Idaho" ...
+ $ CensusRegion : Factor w/ 4 levels "Midwest","Northeast",..: 4 1 3 4 3 3 2 1 1 3 ...
+ $ YearOpened   : num [1:635] 2018 1991 1999 2008 2010 ...
+ $ AgeGroup     : Factor w/ 3 levels "Older","Recent",..: 3 2 2 3 3 2 2 2 3 2 ...
+ $ TopSpeed     : num [1:635] 45 35 62 65.6 22 67 35 66 48 50 ...
+ $ MaxHeight    : num [1:635] 72 63 113 192 25 ...
+ $ Scale        : Factor w/ 4 levels "Extreme","Family",..: 1 4 1 1 2 1 4 1 4 1 ...
+ $ Type         : Factor w/ 2 levels "Steel","Wood": 1 1 1 1 1 1 1 2 2 1 ...
+ $ Design       : Factor w/ 7 levels "Bobsled","Flying",..: 4 4 3 3 4 3 1 4 4 4 ...
+ $ Drop         : num [1:635] 70 47 110 177 22.5 170 20 147 80 144 ...
+ $ Length       : num [1:635] 1050 2963 2956 1204 628 ...
+ $ Duration     : num [1:635] 66 140 167 92 47 190 100 143 110 110 ...
+ $ Inversion_YN : chr [1:635] "Yes" "No" "Yes" "Yes" ...
+ $ Inversion_Num: num [1:635] 3 0 6 3 0 6 0 0 0 4 ...
+ $ Make         : chr [1:635] "Gerstlauer Amusement Rides GmbH" "Arrow Dynamics" "Bolliger &amp; Mabillard" "Vekoma" ...
+ $ InversionYN  : Factor w/ 2 levels "No","Yes": 2 1 2 2 1 2 1 1 1 2 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level3">
+<h3 class="anchored" data-anchor-id="section-4">5.</h3>
+<p>Document any missing values in the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Function to count NA within column</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>sum_na <span class="ot">&lt;-</span> <span class="cf">function</span>(column){ </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">is.na</span>(column))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Apply function, print variables with some missingness</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>has_na <span class="ot">&lt;-</span> rollercoasters <span class="sc">|&gt;</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), sum_na)) <span class="sc">|&gt;</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">everything</span>(),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"NA_Count"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NA_Count <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>has_na</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Variable  NA_Count
+  &lt;chr&gt;        &lt;int&gt;
+1 TopSpeed        74
+2 MaxHeight        8
+3 Drop           128
+4 Length          33
+5 Duration        66
+6 Make            36</code></pre>
 </div>
 </div>
 

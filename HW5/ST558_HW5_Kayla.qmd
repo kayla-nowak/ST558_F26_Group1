@@ -83,3 +83,87 @@ pullFromNews(subject="Apple", startdt= "2026-09-01", key=mykey)
 pullFromNews(subject="Apple", startdt= "2026-08-01", key=mykey)    #Date too old
 pullFromNews(subject="Apple", startdt= "2026-09-01", key="123ABC") #Bad Key
 ```
+
+## Task 2: Summarizing Roller Coaster Data
+
+Working with the roller coaster data. Source: <https://www4.stat.ncsu.edu/online/datasets/635USrollercoasters.csv>
+
+Read-in data and convert variables to factors as needed. No need to use the `Boundary` variable or the `Latitude` and `Longitude` variables in the EDA.
+
+```{r}
+rollercoasters <- read_csv("635USrollercoasters.csv") 
+names(rollercoasters)
+
+#Preliminary Cleaning:
+
+rollercoasters <- rollercoasters |>
+  #drop variables we don't need:
+  select(-c(Boundary, Latitude, Longitude)) |>
+  #enforce valid column names:
+  rename(CensusRegion = `Census Region`,
+         YearOpened = `Year Opened`,
+         Inversion_YN = `Inversions?`,
+         Inversion_Num = `# of Inversions` ) 
+
+names(rollercoasters)
+```
+
+### 4.
+
+Look at how the data is stored and see if everything makes sense.
+
+```{r}
+str(rollercoasters)
+```
+
+-   `Coaster`, `Park`, `City`, `State`, and `Make` are fine to store as character
+-   `YearOpened`, `TopSpeed`, `MaxHeight`, `Drop`, `Length`, `Duration`, and `Inversion_Num` are appropriately stored as numeric
+-   All other variables are likely categorical and may be better as factors.
+
+```{r}
+vars_cat <- c("CensusRegion", "AgeGroup", "Scale", "Type", "Design", "Inversion_YN")
+
+for(i in 1:length(vars_cat)){
+  rollercoasters |> 
+    group_by(across(all_of(vars_cat[i]))) |> 
+    summarize(count=n()) |> print()
+}
+```
+
+Yes, convert all the suspected categorical variables to factors. `AgeGroup` was the only variable that benefited from a labeling change.
+
+```{r}
+rollercoasters <- rollercoasters |>
+  mutate(CensusRegion = as.factor(CensusRegion),
+         AgeGroup = factor(AgeGroup, 
+                            levels=c("1:Older", "2:Recent", "3:Newest"),
+                            labels=c("Older", "Recent", "Newest")),
+         Scale = as.factor(Scale),
+         Type= as.factor(Type),
+         Design=as.factor(Design),
+         InversionYN=as.factor(Inversion_YN))
+
+str(rollercoasters)
+```
+
+### 5.
+
+Document any missing values in the data.
+
+```{r}
+
+#Function to count NA within column
+sum_na <- function(column){	
+  sum(is.na(column))
+}
+
+#Apply function, print variables with some missingness
+has_na <- rollercoasters |>
+  summarize(across(everything(), sum_na)) |>
+  pivot_longer(cols=everything(),
+               names_to = "Variable",
+               values_to = "NA_Count") |>
+  filter(NA_Count > 0)
+
+has_na
+```

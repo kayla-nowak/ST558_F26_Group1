@@ -593,70 +593,70 @@ dbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co">#view test objects</span></span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm
-1  0.5794027  0.25331685
-2  0.6629601  0.04176754
-3  0.5892663  0.73515187
-4  0.5496227  0.11704878
-5  0.3586058  0.50193272
-6  0.8799005  1.63983837
-7  0.0983552  0.83944289
-8  0.6744753 -0.58081132
-9  0.8361839  0.60025583
-10 0.9383802  1.06546644</code></pre>
+<pre><code>         unif       norm
+1  0.41740023  0.4188890
+2  0.97545886 -0.1682106
+3  0.68084504  0.7889895
+4  0.53503262 -1.7226967
+5  0.64519708 -0.8327885
+6  0.08946513  1.7155751
+7  0.65643581  0.3870975
+8  0.43784132 -0.5053830
+9  0.02683282  1.1777804
+10 0.94818612  2.3357416</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        gamma      beta
-1  0.71657591 0.9480176
-2  0.77498896 0.6130232
-3  0.24086493 0.9209209
-4  1.52485362 0.9942011
-5  2.63576343 0.9939555
-6  3.06501996 0.8097820
-7  0.24247916 0.8768003
-8  0.24515521 0.8922401
-9  0.02473638 0.3150530
-10 1.50703642 0.7673994</code></pre>
+<pre><code>         gamma      beta
+1  0.734035489 0.8431390
+2  0.160754817 0.9045733
+3  0.490012332 0.8445814
+4  0.009412668 0.7715746
+5  0.053842636 0.9032242
+6  0.009610112 0.9927115
+7  0.180276177 0.9893876
+8  0.061757419 0.5996328
+9  0.726193948 0.9782523
+10 0.162148352 0.9458928</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  9.454055  9.379416 11.214778  9.715564  9.264223 10.799124  8.406610
- [8]  9.924003 11.509787 10.311404</code></pre>
+<pre><code> [1]  9.976065 10.247158 10.485941 10.102368  9.227694 10.200725 10.555026
+ [8] 10.496373  9.154468  9.635321</code></pre>
 </div>
 </div>
 <p>Bind df1 + df2:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm      gamma      beta
-1  0.5794027  0.25331685 0.71657591 0.9480176
-2  0.6629601  0.04176754 0.77498896 0.6130232
-3  0.5892663  0.73515187 0.24086493 0.9209209
-4  0.5496227  0.11704878 1.52485362 0.9942011
-5  0.3586058  0.50193272 2.63576343 0.9939555
-6  0.8799005  1.63983837 3.06501996 0.8097820
-7  0.0983552  0.83944289 0.24247916 0.8768003
-8  0.6744753 -0.58081132 0.24515521 0.8922401
-9  0.8361839  0.60025583 0.02473638 0.3150530
-10 0.9383802  1.06546644 1.50703642 0.7673994</code></pre>
+<pre><code>         unif       norm       gamma      beta
+1  0.41740023  0.4188890 0.734035489 0.8431390
+2  0.97545886 -0.1682106 0.160754817 0.9045733
+3  0.68084504  0.7889895 0.490012332 0.8445814
+4  0.53503262 -1.7226967 0.009412668 0.7715746
+5  0.64519708 -0.8327885 0.053842636 0.9032242
+6  0.08946513  1.7155751 0.009610112 0.9927115
+7  0.65643581  0.3870975 0.180276177 0.9893876
+8  0.43784132 -0.5053830 0.061757419 0.5996328
+9  0.02683282  1.1777804 0.726193948 0.9782523
+10 0.94818612  2.3357416 0.162148352 0.9458928</code></pre>
 </div>
 </div>
 <p>Bind df1, df2, and vec1:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%+%</span> df2 <span class="sc">%+%</span> vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm      gamma      beta         b
-1  0.5794027  0.25331685 0.71657591 0.9480176  9.454055
-2  0.6629601  0.04176754 0.77498896 0.6130232  9.379416
-3  0.5892663  0.73515187 0.24086493 0.9209209 11.214778
-4  0.5496227  0.11704878 1.52485362 0.9942011  9.715564
-5  0.3586058  0.50193272 2.63576343 0.9939555  9.264223
-6  0.8799005  1.63983837 3.06501996 0.8097820 10.799124
-7  0.0983552  0.83944289 0.24247916 0.8768003  8.406610
-8  0.6744753 -0.58081132 0.24515521 0.8922401  9.924003
-9  0.8361839  0.60025583 0.02473638 0.3150530 11.509787
-10 0.9383802  1.06546644 1.50703642 0.7673994 10.311404</code></pre>
+<pre><code>         unif       norm       gamma      beta         b
+1  0.41740023  0.4188890 0.734035489 0.8431390  9.976065
+2  0.97545886 -0.1682106 0.160754817 0.9045733 10.247158
+3  0.68084504  0.7889895 0.490012332 0.8445814 10.485941
+4  0.53503262 -1.7226967 0.009412668 0.7715746 10.102368
+5  0.64519708 -0.8327885 0.053842636 0.9032242  9.227694
+6  0.08946513  1.7155751 0.009610112 0.9927115 10.200725
+7  0.65643581  0.3870975 0.180276177 0.9893876 10.555026
+8  0.43784132 -0.5053830 0.061757419 0.5996328 10.496373
+9  0.02683282  1.1777804 0.726193948 0.9782523  9.154468
+10 0.94818612  2.3357416 0.162148352 0.9458928  9.635321</code></pre>
 </div>
 </div>
 
