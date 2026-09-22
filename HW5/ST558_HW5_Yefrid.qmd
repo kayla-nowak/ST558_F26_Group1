@@ -84,15 +84,14 @@ get_news("gas", "2026-09-10", "b83cc47afb8e4f47a5ff9dafee63d05c")
 First we are going to read the data from the roller coaster, and convert the required variables to factor.
 
 ```{r}
-rc_data <- read.csv("635USrollercoasters.csv") |>
+rc_data <- read_csv("635USrollercoasters.csv") |>
   mutate(State = as.factor(State),
-         Census.Region = as.factor(Census.Region),
+         `Census Region` = as.factor(`Census Region`),
          AgeGroup = as.factor(AgeGroup),
          Scale = as.factor(Scale),
          Type = as.factor(Type),
          Design = as.factor(Design),
-         Inversions. = as.factor(Inversions.),
-         Make = as.factor(Make),
+         `Inversions?` = as.factor(`Inversions?`),
          Latitude = NULL,
          Longitude = NULL,
          Boundary = NULL)
@@ -154,14 +153,14 @@ From the older roller coasters, 9 are made of wood and categorized as extreme.
 
 First a conditional two-way contingency table, using a subset of the data, and then creating the two-way table
 ```{r}
-sub_rc <- filter(rc_data, Census.Region == "South")
+sub_rc <- filter(rc_data, `Census Region` == "South")
 table(sub_rc$Type, sub_rc$Scale)
 ```
 
 And then, creating first a three way contingency table, and sub setting it.
 
 ```{r}
-table(rc_data$Type, rc_data$Scale, rc_data$Census.Region)[ , , "South"]
+table(rc_data$Type, rc_data$Scale, rc_data$`Census Region`)[ , , "South"]
 ```
 
 ### 8.
@@ -170,9 +169,9 @@ In this step we need to create a two-way contingency table using tidyverse.
 
 ```{r}
 rc_data |>
-  group_by(Inversions., Type) |>
+  group_by(`Inversions?`, Type) |>
   summarise(count = n(), .groups = "drop") |>
-  pivot_wider(names_from = Inversions., values_from = count) 
+  pivot_wider(names_from = `Inversions?`, values_from = count) 
 ```
 
 ### 9.
@@ -181,11 +180,11 @@ Now we need to create a stacked bar plot.
 
 ```{r}
 ggplot(data = rc_data |>
-         group_by(Inversions., Type) |>
+         group_by(`Inversions?`, Type) |>
          summarise(count = n()),
     aes(x = Type, 
         y = count,
-        fill = Inversions.)) +
+        fill = `Inversions?`)) +
   geom_bar(stat = "identity") +
   labs(title = "Roller Coaster Materials and Presence of Inversions",
        x = "Material") +
@@ -197,7 +196,7 @@ And side by side bar
 ```{r}
 ggplot(data = rc_data,
     aes(x = Type,
-        fill = Inversions.)) +
+        fill = `Inversions?`)) +
   geom_bar(position = "dodge") +
   labs(title = "Roller Coaster Materials and Presence of Inversions",
        x = "Material") +
