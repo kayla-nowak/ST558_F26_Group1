@@ -17,6 +17,7 @@ We need to use the `GET()` function from the topic trade
 library(httr)
 library(jsonlite)
 library(tidyverse)
+library(readr)
 ```
 
 Now we obtain the info from the API.
@@ -78,4 +79,27 @@ get_news("gas", "2026-09-10", "b83cc47afb8e4f47a5ff9dafee63d05c")
 ```
 
 ## Task 2: Summarizing Roller Coaster Data
+
+First we are going to read the data from the roller coaster, and convert the required variables to factor.
+
+```{r}
+rc_data <- read.csv("635USrollercoasters.csv") |>
+  mutate(State = as.factor(State),
+         Census.Region = as.factor(Census.Region),
+         AgeGroup = as.factor(AgeGroup),
+         Scale = as.factor(Scale),
+         Type = as.factor(Type),
+         Design = as.factor(Design),
+         Inversions. = as.factor(Inversions.),
+         Make = as.factor(Make),
+         Latitude = NULL,
+         Longitude = NULL,
+         Boundary = NULL)
+
+```
+
+
+```{r}
+rc_data
+```
 
