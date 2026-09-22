@@ -165,13 +165,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>List of 10
  $ url        : chr "https://newsapi.org/v2/everything?q=Iran&amp;from=2026-09-18&amp;language=en&amp;pageSize=50&amp;apiKey=71ce2ed6f6844a9b8c771a2b3993de20"
  $ status_code: int 200
- $ headers    :List of 14
+ $ headers    :List of 12
   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ all_headers:List of 1
  $ cookies    :'data.frame':    0 obs. of  7 variables:
  $ content    : raw [1:42090] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2026-09-22 02:00:36"
- $ times      : Named num [1:6] 0 0.0272 0.0407 0.0703 0.1345 ...
+ $ date       : POSIXct[1:1], format: "2026-09-22 03:08:13"
+ $ times      : Named num [1:6] 0 0.0255 0.038 0.0649 0.1618 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..- attr(*, "class")= chr "request"
@@ -184,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 3
  $ status      : chr "ok"
- $ totalResults: int 1773
+ $ totalResults: int 1807
  $ articles    :'data.frame':   49 obs. of  8 variables:</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Select articles</span></span>
@@ -477,6 +477,114 @@ dbl  (9): Year Opened, TopSpeed, MaxHeight, Drop, Length, Duration, # of Inv...
 6 Make            36</code></pre>
 </div>
 </div>
+</section>
+<section id="section-5" class="level3">
+<h3 class="anchored" data-anchor-id="section-5">6.</h3>
+<p>Create a one-way contingency table, a two-way contingency table, and a three-way contingency table for some of the factor variables you created previously. Use table() to accomplish this. Interpret a number from each table.</p>
+<p><strong>One-Way Table:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(rollercoasters<span class="sc">$</span>Scale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Extreme  Family  Kiddie  Thrill 
+    269     178      28     160 </code></pre>
+</div>
+</div>
+<p>This dataset contains 178 roller coasters at the “Family” scale.</p>
+<p><strong>Two-Way Table:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(rollercoasters<span class="sc">$</span>Scale, rollercoasters<span class="sc">$</span>Design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         
+          Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
+  Extreme       0      9       36      211        4         0    9
+  Family        0      0        6      168        0         4    0
+  Kiddie        0      0        0       28        0         0    0
+  Thrill        4      0        0      153        0         3    0</code></pre>
+</div>
+</div>
+<p>This dataset contains 6 roller coasters with an Inverted design that were classified as the “Family” scale.</p>
+<p><strong>Three-Way Table:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(rollercoasters<span class="sc">$</span>Scale, rollercoasters<span class="sc">$</span>Design, rollercoasters<span class="sc">$</span>Type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>, ,  = Steel
+
+         
+          Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
+  Extreme       0      9       36      158        4         0    9
+  Family        0      0        6      153        0         4    0
+  Kiddie        0      0        0       27        0         0    0
+  Thrill        3      0        0      118        0         3    0
+
+, ,  = Wood
+
+         
+          Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
+  Extreme       0      0        0       53        0         0    0
+  Family        0      0        0       15        0         0    0
+  Kiddie        0      0        0        1        0         0    0
+  Thrill        1      0        0       35        0         0    0</code></pre>
+</div>
+</div>
+<p>All 6 of the roller coasters with an Inverted design that were classified as the “Family” scale were made from Steel.</p>
+</section>
+<section id="section-6" class="level3">
+<h3 class="anchored" data-anchor-id="section-6">7.</h3>
+<p>Create a conditional two-way table using table(). That is, condition on one variable’s setting and create a two-way table. Do this using two different methods:</p>
+<p><strong>By subsetting first:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rollercoasters <span class="sc">|&gt;</span> <span class="fu">filter</span>(Type<span class="sc">==</span><span class="st">"Steel"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(Scale, Design) <span class="sc">|&gt;</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Design
+Scale     Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
+  Extreme       0      9       36      158        4         0    9
+  Family        0      0        6      153        0         4    0
+  Kiddie        0      0        0       27        0         0    0
+  Thrill        3      0        0      118        0         3    0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#select after filter to accomplish everything in one chain</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>By subsetting a 3-way:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(rollercoasters[, <span class="fu">c</span>(<span class="st">"Scale"</span>, <span class="st">"Design"</span>, <span class="st">"Type"</span>)])[,,<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Design
+Scale     Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
+  Extreme       0      9       36      158        4         0    9
+  Family        0      0        6      153        0         4    0
+  Kiddie        0      0        0       27        0         0    0
+  Thrill        3      0        0      118        0         3    0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#earlier three-way crosstab confirmed 'Steel' was 1st level of Type</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-7" class="level3">
+<h3 class="anchored" data-anchor-id="section-7">8.</h3>
+<p>Create a two-way contingency table using <code>group_by()</code> and <code>summarize()</code> from dplyr. Then use <code>pivot_wider()</code> to make the result look more like the output from <code>table()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>rollercoasters <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Scale, Design) <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Design, </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> count, </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_fill=</span><span class="dv">0</span>)  <span class="co">#fill in zero count for unrepresented pairings</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Scale'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+# Groups:   Scale [4]
+  Scale   Flying Inverted `Sit Down` `Stand Up`  Wing Suspended Bobsled
+  &lt;fct&gt;    &lt;int&gt;    &lt;int&gt;      &lt;int&gt;      &lt;int&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;
+1 Extreme      9       36        211          4     9         0       0
+2 Family       0        6        168          0     0         4       0
+3 Kiddie       0        0         28          0     0         0       0
+4 Thrill       0        0        153          0     0         3       4</code></pre>
+</div>
+</div>
+<p><em>Note: Columns are arranged in a different order than what was produced by the <code>table()</code> function. Also, some of the levels from Design were not valid column names. Something to keep in mind.</em></p>
 
 
 </section>

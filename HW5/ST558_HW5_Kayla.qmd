@@ -167,3 +167,65 @@ has_na <- rollercoasters |>
 
 has_na
 ```
+
+
+### 6.
+
+Create a one-way contingency table, a two-way contingency table, and a three-way contingency table for some of the factor variables you created previously. Use table() to accomplish this. Interpret a number from each table.
+
+**One-Way Table:**
+
+```{r}
+table(rollercoasters$Scale)
+```
+
+This dataset contains 178 roller coasters at the "Family" scale.
+
+**Two-Way Table:**
+
+```{r}
+table(rollercoasters$Scale, rollercoasters$Design)
+```
+
+This dataset contains 6 roller coasters with an Inverted design that were classified as the "Family" scale.
+
+**Three-Way Table:**
+
+```{r}
+table(rollercoasters$Scale, rollercoasters$Design, rollercoasters$Type)
+```
+
+All 6 of the roller coasters with an Inverted design that were classified as the "Family" scale were made from Steel.
+
+### 7.
+
+Create a conditional two-way table using table(). That is, condition on one variable’s setting and create a two-way table. Do this using two different methods:
+
+**By subsetting first:**
+
+```{r}
+rollercoasters |> filter(Type=="Steel") |> select(Scale, Design) |> table()
+#select after filter to accomplish everything in one chain
+```
+
+**By subsetting a 3-way:**
+
+```{r}
+table(rollercoasters[, c("Scale", "Design", "Type")])[,,1]
+#earlier three-way crosstab confirmed 'Steel' was 1st level of Type
+```
+
+### 8. 
+
+Create a two-way contingency table using `group_by()` and `summarize()` from dplyr. Then use `pivot_wider()` to make the result look more like the output from `table()`.
+
+```{r}
+rollercoasters |>
+  group_by(Scale, Design) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = Design, 
+              values_from = count, 
+              values_fill=0)  #fill in zero count for unrepresented pairings
+```
+
+*Note: Columns are arranged in a different order than what was produced by the `table()` function. Also, some of the levels from Design were not valid column names. Something to keep in mind.*
