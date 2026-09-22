@@ -173,13 +173,13 @@ The following object is masked from 'package:purrr':
 </div>
 </div>
 <section id="get-call-for-an-interesting-topic-in-news" class="level2">
-<h2 class="anchored" data-anchor-id="get-call-for-an-interesting-topic-in-news">GET() call for an interesting topic in news</h2>
+<h2 class="anchored" data-anchor-id="get-call-for-an-interesting-topic-in-news">1. GET() call for an interesting topic in news</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">GET</span>(<span class="st">"https://newsapi.org/v2/everything?q=Iran&amp;from=2026-08-21&amp;language=en&amp;pageSize=50&amp;apiKey=8bc29bd8879e49e9940d1a64d5532623"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="parse-results-for-actual-article" class="level2">
-<h2 class="anchored" data-anchor-id="parse-results-for-actual-article">parse results for actual article</h2>
+<h2 class="anchored" data-anchor-id="parse-results-for-actual-article">2. parse results for actual article</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parsed_results <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">content</span>(results, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -592,7 +592,7 @@ The following object is masked from 'package:purrr':
 </div>
 </section>
 <section id="function-to-easily-query-api" class="level2">
-<h2 class="anchored" data-anchor-id="function-to-easily-query-api">function to easily query API</h2>
+<h2 class="anchored" data-anchor-id="function-to-easily-query-api">3. function to easily query API</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>get_news_article <span class="ot">&lt;-</span> <span class="cf">function</span>(query, from_date, api_key) {</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://newsapi.org/v2/everything?q="</span>, <span class="fu">URLencode</span>(query),</span>
@@ -1050,8 +1050,8 @@ The following object is masked from 'package:purrr':
 18             &lt;NA&gt;       Yahoo Entertainment
 19             &lt;NA&gt;              Barchart.com
 20             &lt;NA&gt;                  Deadline
-21             &lt;NA&gt;              Barchart.com
-22             &lt;NA&gt; Pharmaceutical Technology
+21             &lt;NA&gt; Pharmaceutical Technology
+22             &lt;NA&gt;              Barchart.com
 23             &lt;NA&gt;        Designyoutrust.com
 24             &lt;NA&gt; Investor's Business Daily
 25             &lt;NA&gt;       Yahoo Entertainment
@@ -1062,9 +1062,9 @@ The following object is masked from 'package:purrr':
 30             &lt;NA&gt;       Yahoo Entertainment
 31             &lt;NA&gt;       Yahoo Entertainment
 32             &lt;NA&gt;           Theregister.com
-33             &lt;NA&gt;             24/7 Wall St.
+33             &lt;NA&gt;                BeInCrypto
 34             &lt;NA&gt; Investor's Business Daily
-35             &lt;NA&gt;                BeInCrypto
+35             &lt;NA&gt;             24/7 Wall St.
 36             &lt;NA&gt; Investor's Business Daily
 37             &lt;NA&gt;       Yahoo Entertainment
 38             &lt;NA&gt;           Singularity Hub
@@ -1100,8 +1100,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                       &lt;NA&gt;
 19                                                                                                                Ruchi Gupta
 20                                                                                                                   Jillg366
-21                                                                                                              Neha Panjwani
-22                                                                                                              Robert Barrie
+21                                                                                                              Robert Barrie
+22                                                                                                              Neha Panjwani
 23                                                                                                                     Dmitry
 24                                                                                                                       &lt;NA&gt;
 25                                                                                                                       &lt;NA&gt;
@@ -1112,9 +1112,9 @@ The following object is masked from 'package:purrr':
 30                                                                                                               Maham Fatima
 31                                                                                                                 Neha Gupta
 32                                                                                                         Brandon Vigliarolo
-33                                                                                                               David Moadel
+33                                                                                                            Ananda Banerjee
 34                                                                                                                       &lt;NA&gt;
-35                                                                                                            Ananda Banerjee
+35                                                                                                               David Moadel
 36                                                                                                                       &lt;NA&gt;
 37                                                                                                               Maham Fatima
 38                                                                                                                   Edd Gent
@@ -1150,8 +1150,8 @@ The following object is masked from 'package:purrr':
 18                                                                                         8 biotech IPO prospects testing investor appetite
 19                                                             NVAX Stock Alert: Biotechs Hit Post-Pandemic High on mRNA Cancer Breakthrough
 20                                                      New York Film Festival To Screen Buzzy Elizabeth Holmes Doc ‘You Can See Everything’
-21                                                        How Is Vertex Pharmaceuticals' Stock Performance Compared to Other Biotech Stocks?
-22                                                          Metsera backers establish new biotech armed with China-licensed immunology asset
+21                                                          Metsera backers establish new biotech armed with China-licensed immunology asset
+22                                                        How Is Vertex Pharmaceuticals' Stock Performance Compared to Other Biotech Stocks?
 23               Artist Builds a Glitching, Bio-Mechanical Universe Where Electronic Music, CGI, and Body Horror Become One Continuous Story
 24                                                                                  Three Biotech Stocks Stick Out With Their Stellar Charts
 25                                                                          Pharma ETF or Biotech ETF: Which Matches Your Investing Mindset?
@@ -1162,9 +1162,9 @@ The following object is masked from 'package:purrr':
 30                                                                              Biogen’s (BIIB) Immunology Bet Meets A Pricier Balance Sheet
 31                                       Roivant Sciences Ltd. (ROIV)’s Pulmonary Hypertension Breakthrough Could Transform Its Growth Story
 32                                                                 Cyborg cockroaches may soon deliver life-saving drugs to disaster victims
-33                                                               Moderna Rallies 11%, BioNTech Ticks Up: Is the mRNA Trade Down to One Name?
+33                                                                        3 American Stocks Showing the Same Setup That Sent Moderna Up 177%
 34                                                                        Analysts See Drastic Change For This Particular Part Of Healthcare
-35                                                                        3 American Stocks Showing the Same Setup That Sent Moderna Up 177%
+35                                                               Moderna Rallies 11%, BioNTech Ticks Up: Is the mRNA Trade Down to One Name?
 36                                                       Biopharmaceutical Leader Kiniksa Poised To Hit New Buy Point After Big Revenue Beat
 37                                                                        Zura Bio (ZURA) Hits Enrollment Milestones As Losses Widen Sharply
 38                                                                   Virtual Biotech Company Puts 37,000 AI Agents to Work on Drug Discovery
@@ -1200,8 +1200,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                                                                                                                                                                  &lt;NA&gt;
 19                                                                                                                                                                           NVAX stock surges amid biotech stock rally following Moderna and Merck cancer breakthrough.
 20  The New York Film Festival has a late addition to its lineup, setting Nathan Fielder and Lance Oppenheim’s Elizabeth Holmes documentary You Can See Everything to the Spotlight section for a NY debut after its buzzy sneak premiere at Telluride. Holmes, founder…
-21                                                                                                                Vertex Pharmaceuticals has underperformed the Biotech industry over the past year, but analysts are moderately optimistic about the stock’s prospects.
-22                                                                                                                                                     PHP and ARCH have founded Sentivera, a biotech that now has an immunology licensing deal with China-based Haisco.
+21                                                                                                                                                     PHP and ARCH have founded Sentivera, a biotech that now has an immunology licensing deal with China-based Haisco.
+22                                                                                                                Vertex Pharmaceuticals has underperformed the Biotech industry over the past year, but analysts are moderately optimistic about the stock’s prospects.
 23  Cat Soup is the multidisciplinary project of California-based artist and musician Logan Walden. The work brings together electronic music, 3D animation, CGI, graphic design, merch, and an evolving fictional universe called Nanophage — a strange, colourful, bo…
 24                                                                                                                                 These biotech stocks all popped after their recent earnings reports. All three have outperformed 97% of stocks in the last 12 months.
 25                                                                                                                                                                                                                                                                  &lt;NA&gt;
@@ -1212,9 +1212,9 @@ The following object is masked from 'package:purrr':
 30                                                                                                      On August 6, Biogen (NASDAQ:BIIB) completed its acquisition of RayThera, a privately held biotech developing small-molecule immunology therapies whose lead p...
 31                                                                                                       Roivant Sciences Ltd. (NASDAQ:ROIV) shares surged 18% on September 8 after the biotech company reported strong Phase 2 results for an experimental treatment...
 32                                                                                                             Just what you want crawling through the rubble to rescue you: A swarm of remote-controlled cockroaches with syringe-shooting guns strapped to their backs
-33                                                                                                      Moderna just posted an 11% surge with zero news behind it, while its longtime mRNA peer BioNTech can barely keep pace with the broader biotech sector. Someth...
+33                                                                                                                                      Moderna's 130% day ran on five conditions. We screened the market for stocks like Moderna and found three names, none a biotech.
 34                                                                                                                              State Street SPDR S&amp;P Biotech ETF is hovering around a buy point after breaking out. The fund is one of the holdings in IBD Leaderboard.
-35                                                                                                                                      Moderna's 130% day ran on five conditions. We screened the market for stocks like Moderna and found three names, none a biotech.
+35                                                                                                      Moderna just posted an 11% surge with zero news behind it, while its longtime mRNA peer BioNTech can barely keep pace with the broader biotech sector. Someth...
 36                                                                                                                              Biotech leader Kiniksa stock is poised to hit a new buy point after shares soared 25% in response to better-than-expected sales numbers.
 37                                                                                                       On August 11, Zura Bio (NASDAQ:ZURA) reported second-quarter results that landed on an unusual mix of good and bad news. The clinical-stage biotech finished...
 38 The system, designed by Stanford researchers, identified which drugs are more likely to succeed in trials and even proposed a cancer treatment a major drugmaker later landed on too.\nThe post Virtual Biotech Company Puts 37,000 AI Agents to Work on Drug Discov…
@@ -1250,8 +1250,8 @@ The following object is masked from 'package:purrr':
 18                                                                              https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_8b09eee6-cc27-4e66-9434-ad327d657b60
 19                                                             https://www.barchart.com/story/news/3973429/nvax-stock-alert-biotechs-hit-post-pandemic-high-on-mrna-cancer-breakthrough
 20                                                                               http://deadline.com/2026/09/new-york-film-festival-adds-you-can-see-everything-documentary-1237073367/
-21                                                         https://www.barchart.com/story/news/4404399/how-is-vertex-pharmaceuticals-stock-performance-compared-to-other-biotech-stocks
-22                                                     https://www.pharmaceutical-technology.com/news/metsera-backers-establish-new-biotech-armed-with-china-licensed-immunology-asset/
+21                                                     https://www.pharmaceutical-technology.com/news/metsera-backers-establish-new-biotech-armed-with-china-licensed-immunology-asset/
+22                                                         https://www.barchart.com/story/news/4404399/how-is-vertex-pharmaceuticals-stock-performance-compared-to-other-biotech-stocks
 23                         https://designyoutrust.com/2026/09/artist-builds-a-glitching-bio-mechanical-universe-where-electronic-music-cgi-and-body-horror-become-one-continuous-story/
 24                                                        https://www.investors.com/stock-lists/ibd-50/biotech-stocks-drug-eton-pharmaceuticals-travere-therapeutics-kiniksa-tvtx-knsa/
 25                                                                              https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_33a0965b-bebc-4e4f-bd9c-260d9f8df0ea
@@ -1262,9 +1262,9 @@ The following object is masked from 'package:purrr':
 30                                                                                        https://finance.yahoo.com/healthcare/articles/biogen-biib-immunology-bet-meets-074806222.html
 31                                                                                     https://finance.yahoo.com/healthcare/articles/roivant-sciences-ltd-roiv-pulmonary-094515386.html
 32                                                     https://www.theregister.com/offbeat/2026/08/27/cyborg-cockroaches-may-soon-deliver-life-saving-drugs-to-disaster-victims/5293081
-33                                                                  https://247wallst.com/investing/2026/08/25/moderna-rallies-11-biontech-ticks-up-is-the-mrna-trade-down-to-one-name/
+33                                                                                                                          https://beincrypto.com/stocks-like-moderna-three-names-fit/
 34                                                                             https://www.investors.com/research/how-to-find-the-best-stocks-to-buy/biotech-xbi-stock-moderna-vaccine/
-35                                                                                                                          https://beincrypto.com/stocks-like-moderna-three-names-fit/
+35                                                                  https://247wallst.com/investing/2026/08/25/moderna-rallies-11-biontech-ticks-up-is-the-mrna-trade-down-to-one-name/
 36                                                                                                                               https://www.investors.com/research/kiniksa-stock-knsa/
 37                                                                                           https://finance.yahoo.com/healthcare/articles/zura-bio-zura-hits-enrollment-053502709.html
 38                                                                https://singularityhub.com/2026/09/18/virtual-biotech-company-puts-37000-ai-agents-to-work-on-drug-discovery/#article
@@ -1300,8 +1300,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                                                                                                                                                                                        &lt;NA&gt;
 19                                https://s.yimg.com/lo/mysterio/api/26E2B7C1D4DD818AE3BAB0B2BEBBC338DDFF331A878D0487D29D00D2EBDFC92B/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2F20ecd2fd0cf7ddc977ec6c3462e21c34.jpg
 20                                                                                                                                                                                                           https://deadline.com/wp-content/uploads/2026/09/You-Can-See-Everything.jpg?w=1024
-21                           https://s.yimg.com/lo/mysterio/api/8daf6f22b86370de25ca46ba902d2d0d2141f4e13f454cb9d9545ba5380129e1/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2Fb5539a40e3e6dbe96472872d4cb894db.jpg
-22              https://s.yimg.com/lo/mysterio/api/82b605432731c1f327aa25e94fd12cbf63d8e7b795f7bc46f832110550778d4d/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fpharmaceutical_technology_376%2F53f00b1c2475e2efc5f5effa0fdd82c5.jpg
+21              https://s.yimg.com/lo/mysterio/api/82b605432731c1f327aa25e94fd12cbf63d8e7b795f7bc46f832110550778d4d/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fpharmaceutical_technology_376%2F53f00b1c2475e2efc5f5effa0fdd82c5.jpg
+22                           https://s.yimg.com/lo/mysterio/api/8daf6f22b86370de25ca46ba902d2d0d2141f4e13f454cb9d9545ba5380129e1/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2Fb5539a40e3e6dbe96472872d4cb894db.jpg
 23                                                                                                                                                                                  https://designyoutrust.com/wp-content/uploads/2026/09/788666392_18021732293930758_412303002704832605_n.jpg
 24                                                                                                                                                                                                             https://www.investors.com/wp-content/uploads/2017/10/stock-biotech-03-adobe.jpg
 25                                                                                                                                                                                                                                                                                        &lt;NA&gt;
@@ -1312,9 +1312,9 @@ The following object is masked from 'package:purrr':
 30                          https://s.yimg.com/lo/mysterio/api/e9ae6dc6770c04fe55263a22c0e433820ec90d97456bf1f4068ec2e45da3d332/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2F2928bd42a56a91b4f9f31651755d5074.jpg
 31                          https://s.yimg.com/lo/mysterio/api/b21325e464ae21ef3d398b6350ef1e63e22a59bbd6d248e2cd24a4e38ba75e2c/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2F7c16cc3bd8d9db40639fe719e3997005.jpg
 32                                                                                                                                             https://image.theregister.com/5293085.jpg?imageId=5293085&amp;x=0&amp;y=0&amp;cropw=100&amp;croph=100&amp;panox=0&amp;panoy=0&amp;panow=100&amp;panoh=100&amp;width=1200&amp;height=683
-33                               https://s.yimg.com/lo/mysterio/api/A0C0712FFE2DFBCD274947FF1A2B700F606D15E230A41218428760E7D93384A4/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2F24_7_wall_st__718%2F0e1abad9858007c3b94dc75aff618779.jpg
+33                               https://s.yimg.com/lo/mysterio/api/F0E8B46C0D2D1D800A19C0D58DDD361E2D1C72AF239FEE78FEFBF6BDEE2ECAE0/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbeincrypto_us_662%2F9c107a361e9d3605aca66d3e653269e4.jpg
 34                                                                                                                                                                                                             https://www.investors.com/wp-content/uploads/2018/06/stock-biotech-17-adobe.jpg
-35                               https://s.yimg.com/lo/mysterio/api/F0E8B46C0D2D1D800A19C0D58DDD361E2D1C72AF239FEE78FEFBF6BDEE2ECAE0/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbeincrypto_us_662%2F9c107a361e9d3605aca66d3e653269e4.jpg
+35                               https://s.yimg.com/lo/mysterio/api/A0C0712FFE2DFBCD274947FF1A2B700F606D15E230A41218428760E7D93384A4/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2F24_7_wall_st__718%2F0e1abad9858007c3b94dc75aff618779.jpg
 36                                                                                                                                                                                                       https://www.investors.com/wp-content/uploads/2026/01/stock-biotech-pipettes-adobe.jpg
 37                          https://s.yimg.com/lo/mysterio/api/3ccb5bcbe50ad35b206430d3d4c3b7325701d5e04c4eb0c7d945e77e4c42c771/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2Fc0bdc94ad0d959d7669be6dc36175d2f.jpg
 38                                                                                                                                                                                                 https://singularityhub.com/uploads/2026/09/colorful-pile-of-medication-pills.jpeg?auto=webp
@@ -1350,8 +1350,8 @@ The following object is masked from 'package:purrr':
 18 2026-09-17T09:00:00Z
 19 2026-08-21T17:01:25Z
 20 2026-09-10T14:24:46Z
-21 2026-09-02T15:44:06Z
-22 2026-08-26T11:40:18Z
+21 2026-08-26T11:40:18Z
+22 2026-09-02T15:44:06Z
 23 2026-09-13T14:51:31Z
 24 2026-08-21T16:09:12Z
 25 2026-08-21T22:07:01Z
@@ -1362,9 +1362,9 @@ The following object is masked from 'package:purrr':
 30 2026-09-02T07:48:06Z
 31 2026-09-13T09:45:15Z
 32 2026-08-27T21:00:00Z
-33 2026-08-25T14:24:44Z
+33 2026-08-21T22:14:05Z
 34 2026-08-24T18:47:51Z
-35 2026-08-21T22:14:05Z
+35 2026-08-25T14:24:44Z
 36 2026-09-10T16:35:26Z
 37 2026-09-11T05:35:02Z
 38 2026-09-18T22:11:54Z
@@ -1400,8 +1400,8 @@ The following object is masked from 'package:purrr':
 18       If you click 'Accept all', we and our partners, including 252 who are part of the IAB Transparency &amp;amp; Consent Framework, will also store and / or access information on a device (in other words, us… [+1046 chars]
 19     Biotech research by Gorodenkoff via Shutterstock\r\nNovavax (NVAX) is a biotechnology company headquartered in Gaithersburg, Maryland, focused on the discovery, development, and commercialization of va… [+4938 chars]
 20       The New York Film Festival has a late addition to its lineup, setting Nathan Fielder and Lance Oppenheim’s Elizabeth Holmes documentary You Can See Everything to the Spotlight section for a NY debut … [+1097 chars]
-21     Vertex Pharmaceuticals logo By Midea\r\nBoston, Massachusetts-based Vertex Pharmaceuticals Incorporated (VRTX)&nbsp;develops and commercializes therapies for treating cystic fibrosis (CF). Valued at $139 bi… [+2048 chars]
-22     Fresh off a blockbuster sale to Pfizer, the investors behind Metsera are putting their expertise and business strategy to work again.\r\nPopulation Health Partners and ARCH Venture Partners have teamed… [+2645 chars]
+21     Fresh off a blockbuster sale to Pfizer, the investors behind Metsera are putting their expertise and business strategy to work again.\r\nPopulation Health Partners and ARCH Venture Partners have teamed… [+2645 chars]
+22     Vertex Pharmaceuticals logo By Midea\r\nBoston, Massachusetts-based Vertex Pharmaceuticals Incorporated (VRTX)&nbsp;develops and commercializes therapies for treating cystic fibrosis (CF). Valued at $139 bi… [+2048 chars]
 23        Cat Soup is the multidisciplinary project of California-based artist and musician Logan Walden. The work brings together electronic music, 3D animation, CGI, graphic design, merch, and an evolving fi… [+544 chars]
 24       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
 25       If you click 'Accept all', we and our partners, including 251 who are part of the IAB Transparency &amp;amp; Consent Framework, will also store and / or access information on a device (in other words, us… [+1046 chars]
@@ -1412,9 +1412,9 @@ The following object is masked from 'package:purrr':
 30       On August 6, Biogen (NASDAQ:BIIB) completed its acquisition of RayThera, a privately held biotech developing small-molecule immunology therapies whose lead program entered Phase 1 trials in July 2026… [+4430 chars]
 31       Roivant Sciences Ltd. (NASDAQ:ROIV) shares surged 18% on September 8 after the biotech company reported strong Phase 2 results for an experimental treatment for pulmonary hypertension. The positive t… [+4752 chars]
 32       Picture this: Youve just undergone one of the most harrowing experiences of your life, and youre trapped in the rubble of a collapsed building. Youre injured, air is running out, and human rescuers c… [+3497 chars]
-33   Quick Read\r\n&lt;ul&gt;&lt;li&gt;Moderna surged 11% while BioNTech gained just 2% on no catalyst, with MRNA's Reddit sentiment score of 88 flagging crowded retail positioning over fundamentals.\r\n&lt;/li&gt;&lt;li&gt;BioNTech… [+5585 chars]
+33       Moderna, the American pharma company that became popular for its COVID vaccine, has spent three days trading like a meme stock. Shares exploded 177% on Wednesday after its personalized mRNA cancer va… [+4671 chars]
 34       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
-35       Moderna, the American pharma company that became popular for its COVID vaccine, has spent three days trading like a meme stock. Shares exploded 177% on Wednesday after its personalized mRNA cancer va… [+4671 chars]
+35   Quick Read\r\n&lt;ul&gt;&lt;li&gt;Moderna surged 11% while BioNTech gained just 2% on no catalyst, with MRNA's Reddit sentiment score of 88 flagging crowded retail positioning over fundamentals.\r\n&lt;/li&gt;&lt;li&gt;BioNTech… [+5585 chars]
 36       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
 37       On August 11, Zura Bio (NASDAQ:ZURA) reported second-quarter results that landed on an unusual mix of good and bad news. The clinical-stage biotech finished enrolling two separate Phase 2 studies of … [+4578 chars]
 38       Developing a new drug can take years and cost hundreds of millions of dollars, and even then, most candidates ultimately fail. Now, researchers at Stanford have built a virtual biotech company with 3… [+4825 chars]
@@ -1429,6 +1429,243 @@ The following object is masked from 'package:purrr':
 47      Hunters wiped out thylacines, commonly known as Tasmanian tigers, in Australia nearly a century ago. But a myth about these shy, semi-nocturnal predators may have been behind the species extinction.\r… [+7014 chars]
 48    io9 is proud to present fiction from Lightspeed Magazine. Once a month, we feature a story from Lightspeeds current issue. This months selection is Dreamweavers by Alexander Weinstein. Enjoy!\r\nOn Sep… [+32373 chars]
 49       If you click 'Accept all', we and our partners, including 251 who are part of the IAB Transparency &amp;amp; Consent Framework, will also store and / or access information on a device (in other words, us… [+1046 chars]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="task-2-summarizing-roller-coaster-data" class="level1">
+<h1>Task 2: Summarizing Roller Coaster Data</h1>
+<section id="look-at-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="look-at-the-data">4. Look at the data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../HW5/635USrollercoasters.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 635 Columns: 21
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (12): Coaster, Park, City, State, Census Region, AgeGroup, Scale, Type, ...
+dbl  (9): Year Opened, TopSpeed, MaxHeight, Drop, Length, Duration, # of Inv...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(roller_coasters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 635
+Columns: 21
+$ Coaster           &lt;chr&gt; "Adrenaline Peak", "Adventure Express", "Afterburn",…
+$ Park              &lt;chr&gt; "Oaks Amusement Park", "Kings Island", "Carowinds", …
+$ City              &lt;chr&gt; "Portland", "Mason", "Charlotte", "Athol", "Tampa", …
+$ State             &lt;chr&gt; "Oregon", "Ohio", "North Carolina", "Idaho", "Florid…
+$ `Census Region`   &lt;chr&gt; "West", "Midwest", "South", "West", "South", "South"…
+$ `Year Opened`     &lt;dbl&gt; 2018, 1991, 1999, 2008, 2010, 1997, 1998, 1981, 2008…
+$ AgeGroup          &lt;chr&gt; "3:Newest", "2:Recent", "2:Recent", "3:Newest", "3:N…
+$ TopSpeed          &lt;dbl&gt; 45.0, 35.0, 62.0, 65.6, 22.0, 67.0, 35.0, 66.0, 48.0…
+$ MaxHeight         &lt;dbl&gt; 72.0, 63.0, 113.0, 191.6, 25.0, 195.0, 64.0, 127.0, …
+$ Scale             &lt;chr&gt; "Extreme", "Thrill", "Extreme", "Extreme", "Family",…
+$ Type              &lt;chr&gt; "Steel", "Steel", "Steel", "Steel", "Steel", "Steel"…
+$ Design            &lt;chr&gt; "Sit Down", "Sit Down", "Inverted", "Inverted", "Sit…
+$ Drop              &lt;dbl&gt; 70.0, 47.0, 110.0, 177.0, 22.5, 170.0, 20.0, 147.0, …
+$ Length            &lt;dbl&gt; 1050.0, 2963.0, 2956.0, 1204.0, 628.0, 3828.0, 1490.…
+$ Duration          &lt;dbl&gt; 66, 140, 167, 92, 47, 190, 100, 143, 110, 110, 180, …
+$ `Inversions?`     &lt;chr&gt; "Yes", "No", "Yes", "Yes", "No", "Yes", "No", "No", …
+$ `# of Inversions` &lt;dbl&gt; 3, 0, 6, 3, 0, 6, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 7…
+$ Make              &lt;chr&gt; "Gerstlauer Amusement Rides GmbH", "Arrow Dynamics",…
+$ Latitude          &lt;dbl&gt; 45.5079, 39.3601, 35.2600, 47.9224, 27.9961, 37.3105…
+$ Longitude         &lt;dbl&gt; -122.6908, -84.3099, -80.8042, -116.6860, -82.5820, …
+$ Boundary          &lt;chr&gt; "{\"type\":\"Feature\",\"properties\":{\"CENSUSAREA\…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(roller_coasters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Coaster           Park            City           State    
+ Length   :635   Length   :635   Length   :635   Length   :635  
+ N.unique :482   N.unique :197   N.unique :171   N.unique : 40  
+ N.blank  :  0   N.blank  :  0   N.blank  :  0   N.blank  :  0  
+ Min.nchar:  2   Min.nchar:  6   Min.nchar:  3   Min.nchar:  4  
+ Max.nchar: 46   Max.nchar: 47   Max.nchar: 20   Max.nchar: 14  
+                                                                
+                                                                
+   Census Region  Year Opened        AgeGroup      TopSpeed     
+ Length   :635   Min.   :1920   Length   :635   Min.   :  6.00  
+ N.unique :  4   1st Qu.:1995   N.unique :  3   1st Qu.: 28.50  
+ N.blank  :  0   Median :2002   N.blank  :  0   Median : 45.00  
+ Min.nchar:  4   Mean   :1999   Min.nchar:  7   Mean   : 42.24  
+ Max.nchar:  9   3rd Qu.:2013   Max.nchar:  8   3rd Qu.: 55.00  
+                 Max.   :2020                   Max.   :128.00  
+                                                NAs    :74      
+   MaxHeight           Scale            Type           Design   
+ Min.   :  5.0   Length   :635   Length   :635   Length   :635  
+ 1st Qu.: 28.0   N.unique :  4   N.unique :  2   N.unique :  7  
+ Median : 64.3   N.blank  :  0   N.blank  :  0   N.blank  :  0  
+ Mean   : 76.8   Min.nchar:  6   Min.nchar:  4   Min.nchar:  4  
+ 3rd Qu.:109.0   Max.nchar:  7   Max.nchar:  5   Max.nchar:  9  
+ Max.   :456.0                                                  
+ NAs    :8                                                      
+      Drop            Length        Duration      Inversions?  # of Inversions 
+ Min.   :  0.00   Min.   :  48   Min.   : 20   Length   :635   Min.   :0.0000  
+ 1st Qu.: 25.00   1st Qu.: 900   1st Qu.: 70   N.unique :  2   1st Qu.:0.0000  
+ Median : 70.00   Median :1490   Median :101   N.blank  :  0   Median :0.0000  
+ Mean   : 77.18   Mean   :1938   Mean   :106   Min.nchar:  2   Mean   :0.9213  
+ 3rd Qu.:108.50   3rd Qu.:2800   3rd Qu.:130   Max.nchar:  3   3rd Qu.:1.0000  
+ Max.   :418.00   Max.   :7359   Max.   :540                   Max.   :8.0000  
+ NAs    :128      NAs    :33     NAs    :66                                    
+        Make        Latitude       Longitude            Boundary    
+ Length   :635   Min.   :26.55   Min.   :-122.94   Length   :  635  
+ N.unique : 53   1st Qu.:34.47   1st Qu.: -97.15   N.unique :   41  
+ N.blank  :  0   Median :38.51   Median : -84.31   N.blank  :    0  
+ Min.nchar:  4   Mean   :37.69   Mean   : -89.46   Min.nchar: 6568  
+ Max.nchar: 36   3rd Qu.:40.97   3rd Qu.: -77.46   Max.nchar:32759  
+ NAs      : 36   Max.   :47.92   Max.   : -70.39                    
+                                                                    </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>( </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">AgeGroup =</span> <span class="fu">factor</span>(AgeGroup, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1:Older"</span>, <span class="st">"2:Recent"</span>, <span class="st">"3:Newest"</span>),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Older"</span>, <span class="st">"Recent"</span>, <span class="st">"Newest"</span>),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="document-any-missing-values-in-data" class="level2">
+<h2 class="anchored" data-anchor-id="document-any-missing-values-in-data">5. Document any missing values in data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(roller_coasters))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Coaster            Park            City           State   Census Region 
+              0               0               0               0               0 
+    Year Opened        AgeGroup        TopSpeed       MaxHeight           Scale 
+              0               0              74               8               0 
+           Type          Design            Drop          Length        Duration 
+              0               0             128              33              66 
+    Inversions? # of Inversions            Make        Latitude       Longitude 
+              0               0              36               0               0 
+       Boundary 
+              0 </code></pre>
+</div>
+</div>
+</section>
+<section id="create-one-way-two-way-and-three-way-contingency-table" class="level2">
+<h2 class="anchored" data-anchor-id="create-one-way-two-way-and-three-way-contingency-table">6. Create one-way, two-way, and three-way contingency table</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>one_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>one_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Steel  Wood 
+  530   105 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>two_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>two_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+        Extreme Family Kiddie Thrill
+  Steel     216    163     27    124
+  Wood       53     15      1     36</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>three_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale, roller_coasters<span class="sc">$</span>AgeGroup)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>three_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>, ,  = Older
+
+       
+        Extreme Family Kiddie Thrill
+  Steel       8      6      4     18
+  Wood        9      7      1     16
+
+, ,  = Recent
+
+       
+        Extreme Family Kiddie Thrill
+  Steel      82     37      9     27
+  Wood       23      3      0      9
+
+, ,  = Newest
+
+       
+        Extreme Family Kiddie Thrill
+  Steel     126    120     14     79
+  Wood       21      5      0     11</code></pre>
+</div>
+</div>
+</section>
+<section id="create-conditional-two-way-table" class="level2">
+<h2 class="anchored" data-anchor-id="create-conditional-two-way-table">7. Create conditional two-way table</h2>
+<section id="using-filter" class="level3">
+<h3 class="anchored" data-anchor-id="using-filter">using filter()</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>new_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span> <span class="fu">filter</span>(AgeGroup <span class="sc">==</span> <span class="st">"Newest"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(new_coasters<span class="sc">$</span>Type, new_coasters<span class="sc">$</span>Scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+        Extreme Family Kiddie Thrill
+  Steel     126    120     14     79
+  Wood       21      5      0     11</code></pre>
+</div>
+</div>
+</section>
+<section id="build-then-subset" class="level3">
+<h3 class="anchored" data-anchor-id="build-then-subset">build then subset</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>three_way_table[, , <span class="st">"Newest"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+        Extreme Family Kiddie Thrill
+  Steel     126    120     14     79
+  Wood       21      5      0     11</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="create-two-way-contingency-table-using-dplyr" class="level2">
+<h2 class="anchored" data-anchor-id="create-two-way-contingency-table-using-dplyr">8. Create two-way contingency table using dplyr</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="sc">|&gt;</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Type, Scale) <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Scale, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  Type  Extreme Family Kiddie Thrill
+  &lt;chr&gt;   &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+1 Steel     216    163     27    124
+2 Wood       53     15      1     36</code></pre>
+</div>
+</div>
+</section>
+<section id="create-stacked-bar-graph-and-side-by-side-bar-graph" class="level2">
+<h2 class="anchored" data-anchor-id="create-stacked-bar-graph-and-side-by-side-bar-graph">9. Create stacked bar graph and side by side bar graph</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Stacked"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ST558_HW5_Will_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Side-By-Side"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ST558_HW5_Will_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 

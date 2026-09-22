@@ -16,12 +16,12 @@ library(httr)
 library(jsonlite)
 ```
 
-## GET() call for an interesting topic in news
+## 1. GET() call for an interesting topic in news
 ```{r}
 results = GET("https://newsapi.org/v2/everything?q=Iran&from=2026-08-21&language=en&pageSize=50&apiKey=8bc29bd8879e49e9940d1a64d5532623")
 ```
 
-## parse results for actual article
+## 2. parse results for actual article
 ```{r}
 parsed_results <- fromJSON(content(results, as = "text", encoding = "UTF-8"))
 
@@ -32,7 +32,7 @@ articles <- parsed_results$articles
 articles
 ```
 
-## function to easily query API
+## 3. function to easily query API
 ```{r}
 get_news_article <- function(query, from_date, api_key) {
   url <- paste0("https://newsapi.org/v2/everything?q=", URLencode(query),
@@ -71,6 +71,88 @@ articles_biotech
 
 
 # Task 2: Summarizing Roller Coaster Data
+
+## 4. Look at the data
+```{r}
+roller_coasters <- read_csv("../HW5/635USrollercoasters.csv")
+```
+
+```{r}
+glimpse(roller_coasters)
+summary(roller_coasters)
+```
+
+```{r}
+roller_coasters <- roller_coasters |>
+    mutate( 
+      AgeGroup = factor(AgeGroup, levels = c("1:Older", "2:Recent", "3:Newest"),
+                        labels = c("Older", "Recent", "Newest"),
+                        ordered = TRUE)
+    )
+```
+
+
+## 5. Document any missing values in data
+```{r}
+colSums(is.na(roller_coasters))
+```
+
+
+## 6. Create one-way, two-way, and three-way contingency table
+```{r}
+one_way_table <- table(roller_coasters$Type)
+```
+
+```{r}
+one_way_table
+```
+
+```{r}
+two_way_table <- table(roller_coasters$Type, roller_coasters$Scale)
+```
+
+```{r}
+two_way_table
+```
+
+```{r}
+three_way_table <- table(roller_coasters$Type, roller_coasters$Scale, roller_coasters$AgeGroup)
+```
+
+```{r}
+three_way_table
+```
+
+
+## 7. Create conditional two-way table
+
+### using filter()
+```{r}
+new_coasters <- roller_coasters |> filter(AgeGroup == "Newest")
+table(new_coasters$Type, new_coasters$Scale)
+```
+
+### build then subset
+```{r}
+three_way_table[, , "Newest"]
+```
+
+## 8. Create two-way contingency table using dplyr
+```{r}
+roller_coasters |> 
+  group_by(Type, Scale) |> 
+  summarize(n = n(), .groups = "drop") |>
+  pivot_wider(names_from = Scale, values_from = n, values_fill = 0)
+```
+
+## 9. Create stacked bar graph and side by side bar graph
+```{r}
+ggplot(roller_coasters, aes(x = Type, fill = Scale)) + geom_bar(position = "stack") + labs(x = "Coaster Type", y = "Count", title = "Scale Distribution by Coaster Type Stacked", fill = "Scale")
+```
+
+```{r}
+ggplot(roller_coasters, aes(x = Type, fill = Scale)) + geom_bar(position = "dodge") + labs(x = "Coaster Type", y = "Count", title = "Scale Distribution by Coaster Type Side-By-Side", fill = "Scale")
+```
 
 
 
