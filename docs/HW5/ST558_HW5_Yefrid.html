@@ -162,38 +162,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 10
  $ url        : chr "https://newsapi.org/v2/everything?q=trade&amp;from=2026-08-21&amp;language=en&amp;pageSize=50&amp;apiKey=b83cc47afb8e4f47a5ff9dafee63d05c"
- $ status_code: int 200
+ $ status_code: int 426
  $ headers    :List of 12
-  ..$ date            : chr "Tue, 22 Sep 2026 03:08:27 GMT"
-  ..$ content-type    : chr "application/json; charset=utf-8"
-  ..$ cache-control   : chr "no-cache"
-  ..$ pragma          : chr "no-cache"
-  ..$ expires         : chr "-1"
-  ..$ x-cached-result : chr "false"
-  ..$ cf-cache-status : chr "DYNAMIC"
-  ..$ report-to       : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=YTO"| __truncated__
-  ..$ nel             : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
-  ..$ content-encoding: chr "gzip"
-  ..$ server          : chr "cloudflare"
-  ..$ cf-ray          : chr "a3ee1af12f6615e8-IAD"
+  ..$ date           : chr "Tue, 22 Sep 2026 03:33:52 GMT"
+  ..$ content-type   : chr "application/json; charset=utf-8"
+  ..$ content-length : chr "255"
+  ..$ cache-control  : chr "no-cache"
+  ..$ pragma         : chr "no-cache"
+  ..$ expires        : chr "-1"
+  ..$ x-cached-result: chr "false"
+  ..$ cf-cache-status: chr "DYNAMIC"
+  ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wXp"| __truncated__
+  ..$ nel            : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+  ..$ server         : chr "cloudflare"
+  ..$ cf-ray         : chr "a3ee4028f914fe3b-IAD"
   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ all_headers:List of 1
   ..$ :List of 3
-  .. ..$ status : int 200
+  .. ..$ status : int 426
   .. ..$ version: chr "HTTP/2"
   .. ..$ headers:List of 12
-  .. .. ..$ date            : chr "Tue, 22 Sep 2026 03:08:27 GMT"
-  .. .. ..$ content-type    : chr "application/json; charset=utf-8"
-  .. .. ..$ cache-control   : chr "no-cache"
-  .. .. ..$ pragma          : chr "no-cache"
-  .. .. ..$ expires         : chr "-1"
-  .. .. ..$ x-cached-result : chr "false"
-  .. .. ..$ cf-cache-status : chr "DYNAMIC"
-  .. .. ..$ report-to       : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=YTO"| __truncated__
-  .. .. ..$ nel             : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
-  .. .. ..$ content-encoding: chr "gzip"
-  .. .. ..$ server          : chr "cloudflare"
-  .. .. ..$ cf-ray          : chr "a3ee1af12f6615e8-IAD"
+  .. .. ..$ date           : chr "Tue, 22 Sep 2026 03:33:52 GMT"
+  .. .. ..$ content-type   : chr "application/json; charset=utf-8"
+  .. .. ..$ content-length : chr "255"
+  .. .. ..$ cache-control  : chr "no-cache"
+  .. .. ..$ pragma         : chr "no-cache"
+  .. .. ..$ expires        : chr "-1"
+  .. .. ..$ x-cached-result: chr "false"
+  .. .. ..$ cf-cache-status: chr "DYNAMIC"
+  .. .. ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wXp"| __truncated__
+  .. .. ..$ nel            : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+  .. .. ..$ server         : chr "cloudflare"
+  .. .. ..$ cf-ray         : chr "a3ee4028f914fe3b-IAD"
   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ cookies    :'data.frame':    0 obs. of  7 variables:
   ..$ domain    : logi(0) 
@@ -203,9 +203,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ..$ expiration: 'POSIXct' num(0) 
   ..$ name      : logi(0) 
   ..$ value     : logi(0) 
- $ content    : raw [1:37410] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2026-09-22 03:08:27"
- $ times      : Named num [1:6] 0 0.0205 0.0333 0.0556 0.1595 ...
+ $ content    : raw [1:255] 7b 22 73 74 ...
+ $ date       : POSIXct[1:1], format: "2026-09-22 03:33:52"
+ $ times      : Named num [1:6] 0 0.0627 0.1111 0.1443 0.1923 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..$ method    : chr "GET"
@@ -234,20 +234,7 @@ We use the <code>jsonlite</code> package to get a tibble.</p>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>team_info <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(parsed<span class="sc">$</span>articles)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>team_info</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 44 × 8
-   source$id $name author title description url   urlToImage publishedAt content
-   &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
- 1 bbc-news  BBC … https… 'An … "The UK's … http… https://i… 2026-09-09… "\"It'…
- 2 bbc-news  BBC … https… Brit… "The findi… http… https://i… 2026-09-14… "Ensla…
- 3 the-verge The … Domin… We s… "Europe's … http… https://p… 2026-09-03… "&lt;ul&gt;&lt;…
- 4 bbc-news  BBC … https… Cana… "It is the… http… https://i… 2026-09-08… "Canad…
- 5 bbc-news  BBC … https… UK g… "Foreign S… http… https://i… 2026-09-08… "The U…
- 6 bbc-news  BBC … https… Carn… "In the mi… http… https://i… 2026-09-13… "While…
- 7 &lt;NA&gt;      NPR   Russ … How … "The recen… http… https://n… 2026-09-02… "SAULT…
- 8 &lt;NA&gt;      MacR… Hartl… Appl… "Apple wil… http… https://i… 2026-09-09… "Apple…
- 9 &lt;NA&gt;      MacR… Hartl… iPho… "Ahead of … http… https://i… 2026-08-25… "Ahead…
-10 bbc-news  BBC … https… What… "Mark Carn… http… https://i… 2026-09-17… "So we…
-# ℹ 34 more rows</code></pre>
+<pre><code># A tibble: 0 × 0</code></pre>
 </div>
 </div>
 </section>

@@ -229,3 +229,33 @@ rollercoasters |>
 ```
 
 *Note: Columns are arranged in a different order than what was produced by the `table()` function. Also, some of the levels from Design were not valid column names. Something to keep in mind.*
+
+### 9.
+
+Create a stacked bar graph and a side-by-side bar graph. Give relevant x and y labels, and a title for the plots.
+
+**Stacked:**
+
+```{r}
+library(ggplot2)
+
+ggplot(data=rollercoasters, aes(x=Design, fill=Scale)) +
+  geom_bar() +
+  labs(title="Rollercoaster Scales by Design", 
+       x="Design", y="Count")
+```
+
+Not the best style for interpreting these two factors.
+
+**Side-by-Side:**
+
+```{r}
+library(ggplot2)
+
+ggplot(data=rollercoasters, aes(x=Design, fill=Scale)) +
+  geom_bar(position="dodge") +
+  labs(title="Rollercoaster Scales by Design", 
+       x="Design", y="Count")
+```
+
+Somewhat better, but still tough to interpret given that "Sit Down" design is a super majority accounting for 88% of the records.

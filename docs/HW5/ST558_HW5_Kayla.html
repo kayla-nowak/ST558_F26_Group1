@@ -169,9 +169,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ all_headers:List of 1
  $ cookies    :'data.frame':    0 obs. of  7 variables:
- $ content    : raw [1:42090] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2026-09-22 03:08:13"
- $ times      : Named num [1:6] 0 0.0255 0.038 0.0649 0.1618 ...
+ $ content    : raw [1:42206] 7b 22 73 74 ...
+ $ date       : POSIXct[1:1], format: "2026-09-22 03:33:38"
+ $ times      : Named num [1:6] 0 0.0297 0.0423 0.0623 0.1587 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..- attr(*, "class")= chr "request"
@@ -184,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 3
  $ status      : chr "ok"
- $ totalResults: int 1807
+ $ totalResults: int 1820
  $ articles    :'data.frame':   49 obs. of  8 variables:</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Select articles</span></span>
@@ -199,11 +199,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  3 &lt;NA&gt;      Gizm… Matt … Are … "There's a… http… https://g… 2026-09-18… "A vid…
  4 &lt;NA&gt;      NPR   The A… Saud… "Saudi Ara… http… https://n… 2026-09-20… "Saudi…
  5 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
- 6 &lt;NA&gt;      Yaho… By Ja… Iran… "By Jana C… http… https://s… 2026-09-20… "By Ja…
- 7 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
- 8 &lt;NA&gt;      Yaho… The A… Aeri… "Saudi Ara… http… https://s… 2026-09-19… "Saudi…
- 9 bbc-news  BBC … https… Trum… "The bill … http… https://i… 2026-09-18… "US Pr…
-10 &lt;NA&gt;      Yaho… AAMER… Oil … "WASHINGTO… http… https://s… 2026-09-19… "WASHI…
+ 6 cnn       CNN   Moham… Iran… "Flames an… http… https://m… 2026-09-21… "As wo…
+ 7 &lt;NA&gt;      Yaho… By Ja… Iran… "By Jana C… http… https://s… 2026-09-20… "By Ja…
+ 8 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
+ 9 &lt;NA&gt;      Yaho… The A… Aeri… "Saudi Ara… http… https://s… 2026-09-19… "Saudi…
+10 bbc-news  BBC … https… Trum… "The bill … http… https://i… 2026-09-18… "US Pr…
 # ℹ 39 more rows</code></pre>
 </div>
 </div>
@@ -585,6 +585,44 @@ Scale     Bobsled Flying Inverted Sit Down Stand Up Suspended Wing
 </div>
 </div>
 <p><em>Note: Columns are arranged in a different order than what was produced by the <code>table()</code> function. Also, some of the levels from Design were not valid column names. Something to keep in mind.</em></p>
+</section>
+<section id="section-8" class="level3">
+<h3 class="anchored" data-anchor-id="section-8">9.</h3>
+<p>Create a stacked bar graph and a side-by-side bar graph. Give relevant x and y labels, and a title for the plots.</p>
+<p><strong>Stacked:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>rollercoasters, <span class="fu">aes</span>(<span class="at">x=</span>Design, <span class="at">fill=</span>Scale)) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Rollercoaster Scales by Design"</span>, </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span><span class="st">"Design"</span>, <span class="at">y=</span><span class="st">"Count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ST558_HW5_Kayla_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not the best style for interpreting these two factors.</p>
+<p><strong>Side-by-Side:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>rollercoasters, <span class="fu">aes</span>(<span class="at">x=</span>Design, <span class="at">fill=</span>Scale)) <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position=</span><span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Rollercoaster Scales by Design"</span>, </span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span><span class="st">"Design"</span>, <span class="at">y=</span><span class="st">"Count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ST558_HW5_Kayla_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Somewhat better, but still tough to interpret given that “Sit Down” design is a super majority accounting for 88% of the records.</p>
 
 
 </section>
