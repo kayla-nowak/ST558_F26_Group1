@@ -1,0 +1,85 @@
+---
+title: "ST558_HW5_Nowak"
+author: "Kayla Nowak"
+format: html
+editor: visual
+---
+
+```{r}
+#| message: False
+#| warning: False
+
+library(tidyverse)
+library(httr)
+library(jsonlite)
+```
+
+## Task 1: Querying an API in a Tidy-Style Fashion
+
+Connect to the news API here: [newsapi.org](https://newsapi.org/)
+
+### 1.
+
+Use `GET()` from the `httr` package to return information about a topic that you are interested in that has been in the news lately (store the result as an R object).
+
+```{r}
+news_pull <- GET("https://newsapi.org/v2/everything?q=Iran&from=2026-09-18&language=en&pageSize=50&apiKey=71ce2ed6f6844a9b8c771a2b3993de20")
+```
+
+### 2.
+
+Parse what is returned and find your way to the data frame that has the actual article information in it (check content). Note the first column should be a list column!
+
+```{r}
+#Check top-level contents
+str(news_pull, max.level=1)
+
+#Parse to contents
+news_parse <- fromJSON(rawToChar(news_pull$content))
+str(news_parse, max.level=1)
+
+#Select articles
+news_data <- as_tibble(news_parse$articles)
+news_data
+```
+
+### 3.
+
+Now write a quick function that allows the user to easily query this API. The inputs to the function should be the title/subject to search for (string), a time period to search from (string - you’ll search from that time until the present), and an API key.
+
+```{r}
+pullFromNews <- function(subject, startdt, key) {
+  
+  URL <- paste0("https://newsapi.org/v2/everything?q=", as.character(subject),
+                "&from=", as.character(startdt),
+                "&to=", as.character(Sys.Date()),
+                "&language=en&pageSize=50&apiKey=", key)
+  
+  pulled <- GET(URL)
+  #Note: missing function inputs result in R error.
+    
+  if(pulled$status != 200) { return("Something broke, check requirements.") }
+  else {
+    parsed <- fromJSON(rawToChar(pulled$content))
+    tdata  <- as_tibble(parsed$articles)
+    return(tdata)
+  }
+}
+
+```
+
+Test Function:
+
+```{r}
+mykey <- "71ce2ed6f6844a9b8c771a2b3993de20"
+
+#Test 1
+pullFromNews(subject="Iran", startdt= "2026-09-18", key=mykey)
+
+#Test 2
+pullFromNews(subject="Apple", startdt= "2026-09-01", key=mykey)
+
+#Test 3 (expected to fail)
+pullFromNews(subject="Apple", startdt= "2026-08-01", key=mykey)    #Date too old
+pullFromNews(subject="Apple", startdt= "2026-09-01", key="123ABC") #Bad Key
+```

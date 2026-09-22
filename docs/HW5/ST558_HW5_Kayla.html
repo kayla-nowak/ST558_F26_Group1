@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Kayla Nowak">
 
-<title>ST588_HW2_Will_Carter</title>
+<title>ST558_HW5_Nowak</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -66,35 +101,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -111,13 +117,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ST588_HW2_Will_Carter</h1>
+<h1 class="title">ST558_HW5_Nowak</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Kayla Nowak </p>
+          </div>
+  </div>
     
   
     
@@ -128,129 +140,149 @@ window.Quarto = {
 </header>
 
 
-<section id="vector-practice" class="level1">
-<h1>Vector Practice</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="task-1-querying-an-api-in-a-tidy-style-fashion" class="level2">
+<h2 class="anchored" data-anchor-id="task-1-querying-an-api-in-a-tidy-style-fashion">Task 1: Querying an API in a Tidy-Style Fashion</h2>
+<p>Connect to the news API here: <a href="https://newsapi.org/">newsapi.org</a></p>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section">1.</h3>
+<p>Use <code>GET()</code> from the <code>httr</code> package to return information about a topic that you are interested in that has been in the news lately (store the result as an R object).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>news_pull <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">"https://newsapi.org/v2/everything?q=Iran&amp;from=2026-09-18&amp;language=en&amp;pageSize=50&amp;apiKey=71ce2ed6f6844a9b8c771a2b3993de20"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="section" class="level1">
-<h1>——————————————————</h1>
+<section id="section-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-1">2.</h3>
+<p>Parse what is returned and find your way to the data frame that has the actual article information in it (check content). Note the first column should be a list column!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check top-level contents</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(news_pull, <span class="at">max.level=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 10
+ $ url        : chr "https://newsapi.org/v2/everything?q=Iran&amp;from=2026-09-18&amp;language=en&amp;pageSize=50&amp;apiKey=71ce2ed6f6844a9b8c771a2b3993de20"
+ $ status_code: int 200
+ $ headers    :List of 14
+  ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+ $ all_headers:List of 1
+ $ cookies    :'data.frame':    0 obs. of  7 variables:
+ $ content    : raw [1:42090] 7b 22 73 74 ...
+ $ date       : POSIXct[1:1], format: "2026-09-22 01:12:43"
+ $ times      : Named num [1:6] 0 0.0619 0.0779 0.1137 0.1531 ...
+  ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+ $ request    :List of 7
+  ..- attr(*, "class")= chr "request"
+ $ handle     :Class 'curl_handle' &lt;externalptr&gt; 
+ - attr(*, "class")= chr "response"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Parse to contents</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>news_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(news_pull<span class="sc">$</span>content))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(news_parse, <span class="at">max.level=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 3
+ $ status      : chr "ok"
+ $ totalResults: int 1757
+ $ articles    :'data.frame':   49 obs. of  8 variables:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Select articles</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>news_data <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(news_parse<span class="sc">$</span>articles)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>news_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 49 × 8
+   source$id $name author title description url   urlToImage publishedAt content
+   &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
+ 1 &lt;NA&gt;      Gizm… Kyle … Pent… "An unrele… http… https://g… 2026-09-20… "Back …
+ 2 &lt;NA&gt;      Gizm… Matt … ‘Alm… "One sourc… http… https://g… 2026-09-19… "The U…
+ 3 &lt;NA&gt;      Gizm… Matt … Are … "There's a… http… https://g… 2026-09-18… "A vid…
+ 4 &lt;NA&gt;      NPR   The A… Saud… "Saudi Ara… http… https://n… 2026-09-20… "Saudi…
+ 5 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
+ 6 &lt;NA&gt;      Yaho… By Ja… Iran… "By Jana C… http… https://s… 2026-09-20… "By Ja…
+ 7 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
+ 8 &lt;NA&gt;      Yaho… The A… Aeri… "Saudi Ara… http… https://s… 2026-09-19… "Saudi…
+ 9 bbc-news  BBC … https… Trum… "The bill … http… https://i… 2026-09-18… "US Pr…
+10 &lt;NA&gt;      Yaho… AAMER… Oil … "WASHINGTO… http… https://s… 2026-09-19… "WASHI…
+# ℹ 39 more rows</code></pre>
+</div>
+</div>
 </section>
-<section id="pre-treatment-and-post-treatment-vectors" class="level1">
-<h1>1. pre-treatment and post-treatment vectors</h1>
-<p>pre_treatment_vector &lt;- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)</p>
-<p>post_treatment_vector &lt;- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)</p>
-</section>
-<section id="assign-names-to-the-vector-elements-using-paste-function" class="level1">
-<h1>2. assign names to the vector elements using paste() function</h1>
-<p>names_x &lt;- paste(“Subject”, 1:20, sep = “_“)</p>
-<p>names(pre_treatment_vector) &lt;- names_x names(post_treatment_vector) &lt;- names_x</p>
-</section>
-<section id="change-in-blood-pressure" class="level1">
-<h1>3. change in blood pressure</h1>
-<p>delta_vector &lt;- pre_treatment_vector - post_treatment_vector</p>
-</section>
-<section id="average-decrease-across-group" class="level1">
-<h1>4. average decrease across group</h1>
-<p>average_decrease &lt;- mean(delta_vector) average_decrease</p>
-</section>
-<section id="which-in-group-had-decrease-in-blood-pressure" class="level1">
-<h1>5. which in group had decrease in blood pressure</h1>
-<p>which(delta_vector &gt; 0)</p>
-</section>
-<section id="subset-the-vector-differences-to-only-return-those-that-have-a-positive" class="level1">
-<h1>6. subset the vector differences to only return those that have a positive</h1>
-<p>positive_delta &lt;- delta_vector[delta_vector &gt; 0] positive_delta</p>
-</section>
-<section id="average-decrease-in-blood-pressure-for-those-who-had-positive" class="level1">
-<h1>7. average decrease in blood pressure for those who had positive</h1>
-<p>mean(positive_delta)</p>
-</section>
-<section id="basic-data-frame-practice" class="level1">
-<h1>Basic Data Frame Practice</h1>
-</section>
-<section id="section-1" class="level1">
-<h1>——————————————–</h1>
-</section>
-<section id="create-data-frame-object" class="level1">
-<h1>1. create data frame object</h1>
-<p>blood_pressure_df &lt;- data.frame( patient = 1:20, pre_bp = unname(pre_treatment_vector), post_bp = unname(post_treatment_vector), diff_bp = delta_vector )</p>
-</section>
-<section id="return-only-rows-where-diff_bp-is-negative" class="level1">
-<h1>2. return only rows where diff_bp is negative</h1>
-<p>bp_df[bp_df$diff_bp &lt; 0, ]</p>
-</section>
-<section id="add-new-column" class="level1">
-<h1>3. add new column</h1>
-<p>bp_df<span class="math inline">\(under_120 &lt;- bp_df\)</span>post_bp &lt; 120</p>
-</section>
-<section id="print-data-frame" class="level1">
-<h1>4. print data frame</h1>
-<p>knitr::kable(bp_df)</p>
-</section>
-<section id="list-practice" class="level1">
-<h1>List Practice</h1>
-</section>
-<section id="section-2" class="level1">
-<h1>—————————————</h1>
-</section>
-<section id="create-new-data-frame-for-placebo-group" class="level1">
-<h1>create new data frame for placebo group</h1>
-<p>pre_placebo &lt;- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130) post_placebo &lt;- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)</p>
-<p>placebo_df &lt;- data.frame( patient = 1:10, pre_bp = pre_placebo, post_bp = post_placebo, diff_bp = pre_placebo - post_placebo )</p>
-<p>placebo_df<span class="math inline">\(under_120 &lt;- placebo_df\)</span>post_bp &lt; 120</p>
-</section>
-<section id="create-and-store-list-with-two-elements" class="level1">
-<h1>2. create and store list with two elements</h1>
-<p>bp_list &lt;- list(treatment = bp_df, placebo = placebo_df)</p>
-</section>
-<section id="access-fir-element-using-three-different-types-of-syntax" class="level1">
-<h1>3. access fir element using three different types of syntax</h1>
-<p>bp_list$treatment bp_list[[]] bp_list[[“treatment”]]</p>
-</section>
-<section id="access-placebopre_bp-bp_listplacebopre_bp" class="level1">
-<h1>4. access placebo<span class="math inline">\(pre_bp
-bp_list\)</span>placebo$pre_bp</h1>
-</section>
-<section id="control-flow-practice" class="level1">
-<h1>Control Flow Practice</h1>
-</section>
-<section id="section-3" class="level1">
-<h1>——————————————–</h1>
-</section>
-<section id="create-status-column" class="level1">
-<h1>1. create status column</h1>
-<p>bp_list<span class="math inline">\(treatment\)</span>status &lt;- character(nrow(bp_list<span class="math inline">\(treatment))
-bp_list\)</span>placebo<span class="math inline">\(status &lt;- character(nrow(bp_list\)</span>))</p>
-</section>
-<section id="loop-status-column-values" class="level1">
-<h1>2. loop status column values</h1>
-<p>for (i in 1:nrow(bp_list<span class="math inline">\(treatment)) {
-  if (bp_list\)</span>treatment<span class="math inline">\(post_bp[i] &lt;= 120) {
-    bp_list\)</span>treatment<span class="math inline">\(status[i] &lt;- "optimal"
-  }
-  else if (bp_list\)</span>treatment<span class="math inline">\(post_bp[i] &lt;= 130) {
-    bp_list\)</span>treatment<span class="math inline">\(status[i] &lt;- "borderline"
-  }
-  else {
-    bp_list\)</span>treatment$status[i] &lt;- “high” } }</p>
-</section>
-<section id="loop-status-column-values-placebo" class="level1">
-<h1>3. loop status column values placebo</h1>
-<p>for (i in 1:nrow(bp_list<span class="math inline">\(placebo)) {
-  if (bp_list\)</span>placebo<span class="math inline">\(post_bp[i] &lt;= 120) {
-    bp_list\)</span>placebo<span class="math inline">\(status[i] &lt;- "optimal"
-  }
-  else if (bp_list\)</span>placebo<span class="math inline">\(post_bp[i] &lt;= 130) {
-    bp_list\)</span>placebo<span class="math inline">\(status[i] &lt;- "borderline"
-  }
-  else {
-    bp_list\)</span>placebo$status[i] &lt;- “high” } }</p>
-</section>
-<section id="final-results" class="level1">
-<h1>Final results</h1>
-<p>knitr::kable(bp_list<span class="math inline">\(treatment)
-knitr::kable(bp_list\)</span>placebo)</p>
+<section id="section-2" class="level3">
+<h3 class="anchored" data-anchor-id="section-2">3.</h3>
+<p>Now write a quick function that allows the user to easily query this API. The inputs to the function should be the title/subject to search for (string), a time period to search from (string - you’ll search from that time until the present), and an API key.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pullFromNews <span class="ot">&lt;-</span> <span class="cf">function</span>(subject, startdt, key) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  URL <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://newsapi.org/v2/everything?q="</span>, <span class="fu">as.character</span>(subject),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">"&amp;from="</span>, <span class="fu">as.character</span>(startdt),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"&amp;to="</span>, <span class="fu">as.character</span>(<span class="fu">Sys.Date</span>()),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"&amp;language=en&amp;pageSize=50&amp;apiKey="</span>, key)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  pulled <span class="ot">&lt;-</span> <span class="fu">GET</span>(URL)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Note: missing function inputs result in R error.</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(pulled<span class="sc">$</span>status <span class="sc">!=</span> <span class="dv">200</span>) { <span class="fu">return</span>(<span class="st">"Something broke, check requirements."</span>) }</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    parsed <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(pulled<span class="sc">$</span>content))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    tdata  <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(parsed<span class="sc">$</span>articles)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(tdata)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Test Function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mykey <span class="ot">&lt;-</span> <span class="st">"71ce2ed6f6844a9b8c771a2b3993de20"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Test 1</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pullFromNews</span>(<span class="at">subject=</span><span class="st">"Iran"</span>, <span class="at">startdt=</span> <span class="st">"2026-09-18"</span>, <span class="at">key=</span>mykey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 49 × 8
+   source$id $name author title description url   urlToImage publishedAt content
+   &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
+ 1 &lt;NA&gt;      Gizm… Kyle … Pent… "An unrele… http… https://g… 2026-09-20… "Back …
+ 2 &lt;NA&gt;      Gizm… Matt … ‘Alm… "One sourc… http… https://g… 2026-09-19… "The U…
+ 3 &lt;NA&gt;      Gizm… Matt … Are … "There's a… http… https://g… 2026-09-18… "A vid…
+ 4 &lt;NA&gt;      NPR   The A… Saud… "Saudi Ara… http… https://n… 2026-09-20… "Saudi…
+ 5 &lt;NA&gt;      Abcn… Chris… Some… "The U.S. … http… https://i… 2026-09-21… "A gro…
+ 6 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
+ 7 cnn       CNN   Moham… Iran… "Flames an… http… https://m… 2026-09-21… "As wo…
+ 8 &lt;NA&gt;      Abcn… David… Iran… "President… http… https://i… 2026-09-21… "Irani…
+ 9 &lt;NA&gt;      Yaho… By Ja… Iran… "By Jana C… http… https://s… 2026-09-20… "By Ja…
+10 &lt;NA&gt;      Yaho… NASSE… Hund… "CAIRO (AP… http… https://s… 2026-09-18… "CAIRO…
+# ℹ 39 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Test 2</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pullFromNews</span>(<span class="at">subject=</span><span class="st">"Apple"</span>, <span class="at">startdt=</span> <span class="st">"2026-09-01"</span>, <span class="at">key=</span>mykey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 22 × 8
+   source$id $name author title description url   urlToImage publishedAt content
+   &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
+ 1 the-verge The … Stevi… Appl… "Apple ann… http… https://p… 2026-09-09… "&lt;ul&gt;&lt;…
+ 2 wired     Wired Bouta… Appl… "Apple’s l… http… https://m… 2026-09-09… "Apple…
+ 3 wired     Wired WIRED  Appl… "Get all t… http… https://m… 2026-09-09… "Good …
+ 4 the-verge The … John.… Appl… "Today, Ap… http… https://p… 2026-09-09… "Today…
+ 5 the-verge The … Victo… Hand… "After App… http… https://p… 2026-09-09… "&lt;ul&gt;&lt;…
+ 6 the-verge The … Brad … Wher… "The Apple… http… https://p… 2026-09-11… "&lt;ul&gt;&lt;…
+ 7 the-verge The … Emma … Appl… "Apple is … http… https://p… 2026-09-01… "&lt;ul&gt;&lt;…
+ 8 the-verge The … Nilay… Can … "Today, I’… http… https://p… 2026-09-21… "&lt;ul&gt;&lt;…
+ 9 the-verge The … Jenni… Appl… "With the … http… https://p… 2026-09-14… "&lt;ul&gt;&lt;…
+10 the-verge The … Brad … How … "Apple rol… http… https://p… 2026-09-09… "&lt;ul&gt;&lt;…
+# ℹ 12 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Test 3 (expected to fail)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pullFromNews</span>(<span class="at">subject=</span><span class="st">"Apple"</span>, <span class="at">startdt=</span> <span class="st">"2026-08-01"</span>, <span class="at">key=</span>mykey)    <span class="co">#Date too old</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Something broke, check requirements."</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pullFromNews</span>(<span class="at">subject=</span><span class="st">"Apple"</span>, <span class="at">startdt=</span> <span class="st">"2026-09-01"</span>, <span class="at">key=</span><span class="st">"123ABC"</span>) <span class="co">#Bad Key</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Something broke, check requirements."</code></pre>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

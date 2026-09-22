@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,9 +10,6 @@
 
 <title>ST558_HW5_Will</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -25,9 +22,8 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -38,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -68,16 +64,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-45431c2918bd31147ddb3fa7038bb99f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-d4be639c637f3db3c684c66cefad7e0c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -109,7 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="fullcontent">
 
 <div id="quarto-search-results"></div>
 <!-- content -->
@@ -148,21 +143,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="task-1-querying-an-api-and-a-tidy-style-function" class="level1">
 <h1>Task 1: Querying an API and a Tidy-Style Function</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.2.1     ✔ readr     2.2.0
-✔ forcats   1.0.1     ✔ stringr   1.6.0
-✔ ggplot2   4.0.3     ✔ tibble    3.3.1
-✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-✔ purrr     1.2.2     
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.1     ✔ stringr   1.5.2
+✔ ggplot2   4.0.0     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'jsonlite'
@@ -175,18 +170,18 @@ The following object is masked from 'package:purrr':
 <section id="get-call-for-an-interesting-topic-in-news" class="level2">
 <h2 class="anchored" data-anchor-id="get-call-for-an-interesting-topic-in-news">1. GET() call for an interesting topic in news</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">GET</span>(<span class="st">"https://newsapi.org/v2/everything?q=Iran&amp;from=2026-08-21&amp;language=en&amp;pageSize=50&amp;apiKey=8bc29bd8879e49e9940d1a64d5532623"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">GET</span>(<span class="st">"https://newsapi.org/v2/everything?q=Iran&amp;from=2026-08-21&amp;language=en&amp;pageSize=50&amp;apiKey=8bc29bd8879e49e9940d1a64d5532623"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="parse-results-for-actual-article" class="level2">
 <h2 class="anchored" data-anchor-id="parse-results-for-actual-article">2. parse results for actual article</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parsed_results <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">content</span>(results, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>))</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parsed_results <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">content</span>(results, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>articles <span class="ot">&lt;-</span> parsed_results<span class="sc">$</span>articles</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>articles <span class="ot">&lt;-</span> parsed_results<span class="sc">$</span>articles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>articles</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>articles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          source.id         source.name
 1              &lt;NA&gt;         Gizmodo.com
@@ -242,8 +237,8 @@ The following object is masked from 'package:purrr':
 1                                     Webb Wright
 2                https://www.facebook.com/bbcnews
 3                https://www.facebook.com/bbcnews
-4                                            &lt;NA&gt;
-5                https://www.facebook.com/bbcnews
+4                https://www.facebook.com/bbcnews
+5                                            &lt;NA&gt;
 6                https://www.facebook.com/bbcnews
 7                https://www.facebook.com/bbcnews
 8                                      Matt Novak
@@ -269,8 +264,8 @@ The following object is masked from 'package:purrr':
 28                                Brittney Melton
 29                                    Leila Fadel
 30                           The Associated Press
-31                                  Eric McDaniel
-32                           The Associated Press
+31                           The Associated Press
+32                                  Eric McDaniel
 33                     Jake Epstein,Chris Panella
 34                                   Kelsey Baker
 35               https://www.facebook.com/bbcnews
@@ -292,8 +287,8 @@ The following object is masked from 'package:purrr':
 1                                                              Silicon Valley’s AI Agent Push Has Been Paying Off—for Cybercriminals
 2                                                                 US launches more strikes on Iran as state media reports explosions
 3                                                          'Slim chance' government will hit 1.5m new homes target, Rayner tells BBC
-4                                                                        'Money, not missiles': US launches financial attack on Iran
-5                                                                           US investigating if missile hit Iran wedding, Vance says
+4                                                                           US investigating if missile hit Iran wedding, Vance says
+5                                                                        'Money, not missiles': US launches financial attack on Iran
 6                                                                                              US diesel prices hit an all-time-high
 7                                              US aviator shot down over Iran recalls 'free-falling' in first interview since rescue
 8                                                              Diesel Hits Record High as Trump’s Forever War Against Iran Grinds On
@@ -319,8 +314,8 @@ The following object is masked from 'package:purrr':
 28                                                        Key leaders sound the alarm on AI. And, Iran-Gulf diplomacy hits a setback
 29                                                                                                                Morning news brief
 30                                                   US military hits 3 Iranian oil tankers after saying Navy warships were targeted
-31                                                   Republican Rep. Massie moves to impeach Defense Secretary Hegseth over Iran war
-32                                               US diesel prices soar past $6 a gallon, deepening strain for hauling everyday goods
+31                                               US diesel prices soar past $6 a gallon, deepening strain for hauling everyday goods
+32                                                   Republican Rep. Massie moves to impeach Defense Secretary Hegseth over Iran war
 33 Iran says it captured an 'advanced' American underwater drone. The US says it was older, malfunctioning, and ‘dead in the water.’
 34              'Never let a lack of motivation put you on Iranian TV': US airman shares intense Iran survival story after shootdown
 35                                                        Hegseth is shaking up the Pentagon as the US wages war - but at what cost?
@@ -342,8 +337,8 @@ The following object is masked from 'package:purrr':
 1                                                                                                       Threat actors in China, Iran, and Russia have been moving away from simple prompt-and-reply chatbots to more autonomous systems, a new report from Google has found.
 2                                                                                                                                                      US Central Command accused Iran of targeting commercial shipping and American service members deployed in the region.
 3                                                                                                                                                             High construction costs and the Iran war are threatening the key manifesto pledge, the housing secretary says.
-4                                                                                                        Washington announced what it described as an "economic D-Day" against Iran, widening current sanctions and targetting countries with business ties with the regime.
-5                                                                                                                                                   The Iranian Red Crescent Society (IRCS) said shrapnel from a missile hit the ceremony and killed four people on Tuesday.
+4                                                                                                                                                   The Iranian Red Crescent Society (IRCS) said shrapnel from a missile hit the ceremony and killed four people on Tuesday.
+5                                                                                                        Washington announced what it described as an "economic D-Day" against Iran, widening current sanctions and targetting countries with business ties with the regime.
 6                                                                                                                                                 Fuel prices have soared since the Iran conflict began at the end of February, mirroring the surge in wholesale oil prices.
 7                                                                                                                                 The April rescue operation to recover the downed aircrew saw the first US boots on the ground in Iran in 46 years, American officials say.
 8                                                                                                                                                                                                          "Summer is over. Peace didn't happen. The war is still going on."
@@ -369,8 +364,8 @@ The following object is masked from 'package:purrr':
 28                                                                                                        Some key leaders at artificial intelligence companies call for a slowdown in AI development. And, Iran-Gulf diplomacy hits a setback as talks in Oman are delayed.
 29                                                                             Trump threatens economic pressure campaign against Iran, SCOTUS to weigh in on whether Trump's ballroom project, investors dump stocks and bonds despite government's efforts to calm market.
 30                                                                                                             The strikes come a day after President Trump appeared to downplay the war with Iran as "small potatoes" during an exchange with reporters in the Oval Office.
-31                                                                                                                           Kentucky Republican Thomas Massie introduced articles of impeachment against Secretary of Defense Pete Hegseth on Tuesday over the war in Iran.
-32                                                                                                                 Diesel prices in the U.S. has hit yet another record, soaring past $6 a gallon on average as Washington's war with Iran disrupts the world's flow of fuel
+31                                                                                                                 Diesel prices in the U.S. has hit yet another record, soaring past $6 a gallon on average as Washington's war with Iran disrupts the world's flow of fuel
+32                                                                                                                           Kentucky Republican Thomas Massie introduced articles of impeachment against Secretary of Defense Pete Hegseth on Tuesday over the war in Iran.
 33                                                                                                                        A spokesperson for US Central Command said the underwater drone had malfunctioned before Iran claimed to have seized it near the Strait of Hormuz.
 34                                                                                                                                              A US airman recounts surviving a damaged parachute and evading capture for 50 hours after his F-15E was shot down over Iran.
 35                                                                                                                                                                 The upheaval in the military could shape the legacy of Trump's second term, writes the BBC's Tom Bateman.
@@ -392,8 +387,8 @@ The following object is masked from 'package:purrr':
 1                                                    https://gizmodo.com/silicon-valleys-ai-agent-push-has-been-paying-off-for-cybercriminals-2000808764
 2                                                                                                       https://www.bbc.co.uk/news/articles/cj06q4ynpmjo
 3                                                                                                       https://www.bbc.co.uk/news/articles/cgqdlw0x092o
-4                                                                                                         https://www.bbc.co.uk/news/videos/c07lel35rllo
-5                                                                                                       https://www.bbc.co.uk/news/articles/cy4zvk3z2k1o
+4                                                                                                       https://www.bbc.co.uk/news/articles/cy4zvk3z2k1o
+5                                                                                                         https://www.bbc.co.uk/news/videos/c07lel35rllo
 6                                                                                                       https://www.bbc.co.uk/news/articles/c7903r0grx0o
 7                                                                                                       https://www.bbc.co.uk/news/articles/cy7zvxe1jm7o
 8                                                    https://gizmodo.com/diesel-hits-record-high-as-trumps-forever-war-against-iran-grinds-on-2000808763
@@ -419,8 +414,8 @@ The following object is masked from 'package:purrr':
 28                                     https://www.npr.org/2026/09/14/g-s1-143148/up-first-newsletter-ai-anthropic-openai-midterms-trump-oman-iran-talks
 29                                                                                       https://www.npr.org/2026/08/21/nx-s1-5931262/morning-news-brief
 30                                                                                https://www.npr.org/2026/09/05/nx-s1-5959159/us-iran-warships-targeted
-31                                                                                https://www.npr.org/2026/09/15/g-s1-143407/massie-impeach-hegseth-iran
-32                                                                                       https://www.npr.org/2026/09/11/g-s1-142842/us-diesel-6-a-gallon
+31                                                                                       https://www.npr.org/2026/09/11/g-s1-142842/us-diesel-6-a-gallon
+32                                                                                https://www.npr.org/2026/09/15/g-s1-143407/massie-impeach-hegseth-iran
 33                                                        https://www.businessinsider.com/iran-found-us-naval-drone-us-says-dead-in-water-2026-9#article
 34                                                  https://www.businessinsider.com/rescued-airman-survival-story-iran-f-15e-strike-eagle-2026-9#article
 35                                                                                                      https://www.bbc.co.uk/news/articles/cd94j8e9n12o
@@ -442,8 +437,8 @@ The following object is masked from 'package:purrr':
 1                                                                                                                                                                                                            https://gizmodo.com/app/uploads/2026/09/AIcybercrime-1200x675.jpg
 2                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/913b/live/5a3308c0-a629-11f1-a291-b542ee92de7c.jpg
 3                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/1f55/live/d372c2e0-af64-11f1-a183-757a3b74b8bd.jpg
-4                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/7775/live/46eb4c80-a08b-11f1-a291-b542ee92de7c.jpg
-5                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/70a5/live/33e75750-a7e3-11f1-a291-b542ee92de7c.jpg
+4                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/70a5/live/33e75750-a7e3-11f1-a291-b542ee92de7c.jpg
+5                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/7775/live/46eb4c80-a08b-11f1-a291-b542ee92de7c.jpg
 6                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/f9ea/live/aaff4f90-a843-11f1-b3a7-d5de760fef6e.jpg
 7                                                                                                                                                                  https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/e579/live/16c18970-afe5-11f1-a540-61c3f7fc4e6c.jpg
 8                                                                                                                                                                                                https://gizmodo.com/app/uploads/2026/09/iran-wedding-child-death-1200x675.jpg
@@ -469,8 +464,8 @@ The following object is masked from 'package:purrr':
 28                                     https://npr.brightspotcdn.com/dims3/default/strip/false/crop/5147x2895+0+431/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Ffb%2F8b%2F92f4c72b49b8aa2e1006753a4132%2Fgettyimages-2285098382.jpg
 29                                                                                                                                                                                                    https://media.npr.org/include/images/facebook-default-wide-s1400-c85.jpg
 30                                           https://npr.brightspotcdn.com/dims3/default/strip/false/crop/6000x3375+0+313/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F65%2Fec%2F64938f1741d199aebbc31393fde3%2Fap26247569143031.jpg
-31                                       https://npr.brightspotcdn.com/dims3/default/strip/false/crop/6988x3931+0+0/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F86%2F51%2F901c10eb4ec385ec7e99e086a5cd%2Fgettyimages-2293050779.jpg
-32                                           https://npr.brightspotcdn.com/dims3/default/strip/false/crop/5233x2944+0+273/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F34%2Ffc%2Fddd121964005b309f321abeed8c7%2Fap26247695683233.jpg
+31                                           https://npr.brightspotcdn.com/dims3/default/strip/false/crop/5233x2944+0+273/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F34%2Ffc%2Fddd121964005b309f321abeed8c7%2Fap26247695683233.jpg
+32                                       https://npr.brightspotcdn.com/dims3/default/strip/false/crop/6988x3931+0+0/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F86%2F51%2F901c10eb4ec385ec7e99e086a5cd%2Fgettyimages-2293050779.jpg
 33                                                                                                                                                                                                       https://i.insider.com/6aa064779b8974787b1c9972?width=1200&amp;format=jpeg
 34                                                                                                                                                                                                       https://i.insider.com/6aa869f7cc23a829a3b9157d?width=1200&amp;format=jpeg
 35                                                                                                                                                                 https://ichef.bbci.co.uk/ace/branded_news/1200/cpsprodpb/16f3/live/80b86570-ab8e-11f1-aa04-efbf6a882854.jpg
@@ -492,8 +487,8 @@ The following object is masked from 'package:purrr':
 1  2026-09-08T19:45:16Z
 2  2026-09-01T17:35:14Z
 3  2026-09-13T11:16:06Z
-4  2026-08-25T13:46:28Z
-5  2026-09-03T22:19:59Z
+4  2026-09-03T22:19:59Z
+5  2026-08-25T13:46:28Z
 6  2026-09-04T09:59:50Z
 7  2026-09-14T01:00:30Z
 8  2026-09-08T22:07:31Z
@@ -519,8 +514,8 @@ The following object is masked from 'package:purrr':
 28 2026-09-14T11:39:06Z
 29 2026-08-21T08:46:00Z
 30 2026-09-05T15:05:08Z
-31 2026-09-15T17:35:14Z
-32 2026-09-11T10:04:04Z
+31 2026-09-11T10:04:04Z
+32 2026-09-15T17:35:14Z
 33 2026-09-08T20:24:06Z
 34 2026-09-14T22:02:17Z
 35 2026-09-08T23:11:41Z
@@ -542,8 +537,8 @@ The following object is masked from 'package:purrr':
 1          AI companies have made a lot of noise about the technology supercharging healthcare, scientific discovery, education, productivity, and just about everything else worth caring about. But so far, prob… [+3643 chars]
 2         American forces resumed strikes against Iran on Tuesday, US Central Command said in a statement.\r\nIt accused the Islamic Revolutionary Guard Corps (IRGC) of "recent attempted attacks" against commerc… [+623 chars]
 3        There is only a "slim chance" the government will meet its target of building 1.5 million homes in England by the next election, Housing Secretary Angela Rayner has told the BBC.\r\n"Headwinds" includi… [+1072 chars]
-4         On Monday, US Treasury Secretary Scott Bessent, announced an "economic D-day" against Iran, with further sanctions on the regime and countries doing business with it.\r\nIranian Economy Minister Ali Ma… [+432 chars]
-5         "I will say that the Iranian state media has not been a very good scribe about what's happened in the conflict thus far. So I'm extremely sceptical of this," Vance told a White House briefing. \r\n"I k… [+517 chars]
+4         "I will say that the Iranian state media has not been a very good scribe about what's happened in the conflict thus far. So I'm extremely sceptical of this," Vance told a White House briefing. \r\n"I k… [+517 chars]
+5         On Monday, US Treasury Secretary Scott Bessent, announced an "economic D-day" against Iran, with further sanctions on the regime and countries doing business with it.\r\nIranian Economy Minister Ali Ma… [+432 chars]
 6        Drivers in the US are paying more than ever for diesel at the pump as the US-Israel war with Iran continues to hit Americans' wallets.\r\nThe average price for one gallon of diesel in the US has hit $5… [+2095 chars]
 7        A US Air Force officer has described "free-falling" to the ground with a damaged parachute after his plane was shot down over Iran, leading to a dangerous rescue operation.\r\n"At one point when I look… [+1088 chars]
 8          Diesel hit a record high on Monday and the price of crude oil climbed higher Tuesday as it’s becoming more clear that President Donald Trump has started a war he can’t win with Iran. Those prices are… [+3787 chars]
@@ -569,8 +564,8 @@ The following object is masked from 'package:purrr':
 28       Good morning. You're reading the Up First newsletter.&nbsp;Subscribe&nbsp;here to get it delivered to your inbox, and&nbsp;listen&nbsp;to the Up First podcast for all the news you need to start your day.\r\nToday's top st… [+4634 chars]
 29                                  Trump threatens economic pressure campaign against Iran, SCOTUS to weigh in on whether Trump's ballroom project, investors dump stocks and bonds despite government's efforts to calm market.
 30         CAIRO The U.S. military on Saturday said it struck three Iranian oil tankers after Navy warships were targeted with missiles, warning that it would "if necessary, destroy Iran's limited and exposed o… [+2541 chars]
-31       Republican Rep. Thomas Massie of Kentucky moved Tuesday to impeach Secretary of Defense Pete Hegseth over the war in Iran.\r\nCongressman Massie, a long-time critic of the Trump administration, read th… [+1770 chars]
-32       Diesel prices in the U.S. hit yet another record on Friday, soaring past $6 a gallon on average as Washington's war with Iran disrupts the world's flow of fuel.\r\nThe national average of $6.05 is up f… [+6759 chars]
+31       Diesel prices in the U.S. hit yet another record on Friday, soaring past $6 a gallon on average as Washington's war with Iran disrupts the world's flow of fuel.\r\nThe national average of $6.05 is up f… [+6759 chars]
+32       Republican Rep. Thomas Massie of Kentucky moved Tuesday to impeach Secretary of Defense Pete Hegseth over the war in Iran.\r\nCongressman Massie, a long-time critic of the Trump administration, read th… [+1770 chars]
 33       US Central Command said the drone had malfunctioned "well before" it was seized by Iran.US Central Command Photo\r\n&lt;ul&gt;&lt;li&gt;Iran said it captured a US underwater drone near the Strait of Hormuz.&lt;/li&gt;&lt;l… [+2838 chars]
 34       A US Air Force F-15E Strike Eagle flying over the US Central Command area of responsibility.US Air Force photo by Tech. Sgt. Daniel Asselta\r\n&lt;ul&gt;&lt;li&gt;The aviator shot down over Iran in April survived … [+4788 chars]
 35         But while the fallout from the Iran war has exacerbated Trump's irritation with Europe and accelerated some US military moves away from the region, it has not been to the immediate benefit of the US … [+2151 chars]
@@ -594,7 +589,7 @@ The following object is masked from 'package:purrr':
 <section id="function-to-easily-query-api" class="level2">
 <h2 class="anchored" data-anchor-id="function-to-easily-query-api">3. function to easily query API</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>get_news_article <span class="ot">&lt;-</span> <span class="cf">function</span>(query, from_date, api_key) {</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>get_news_article <span class="ot">&lt;-</span> <span class="cf">function</span>(query, from_date, api_key) {</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://newsapi.org/v2/everything?q="</span>, <span class="fu">URLencode</span>(query),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&amp;from="</span>, from_date,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&amp;language=en&amp;pageSize=50&amp;apiKey="</span>, api_key)</span>
@@ -604,19 +599,19 @@ The following object is masked from 'package:purrr':
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  parsed_result <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">content</span>(result, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>))</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  parsed_result<span class="sc">$</span>articles</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>api_key <span class="ot">=</span> <span class="st">"8bc29bd8879e49e9940d1a64d5532623"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>api_key <span class="ot">=</span> <span class="st">"8bc29bd8879e49e9940d1a64d5532623"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="clean-energy-article" class="level2">
 <h2 class="anchored" data-anchor-id="clean-energy-article">clean energy article</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>articles_energy <span class="ot">&lt;-</span> <span class="fu">get_news_article</span>(<span class="st">"clean energy"</span>, <span class="st">"2026-08-21"</span>, api_key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>articles_energy <span class="ot">&lt;-</span> <span class="fu">get_news_article</span>(<span class="st">"clean energy"</span>, <span class="st">"2026-08-21"</span>, api_key)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>articles_energy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>articles_energy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          source.id         source.name
 1              &lt;NA&gt;         Gizmodo.com
@@ -633,8 +628,8 @@ The following object is masked from 'package:purrr':
 12             &lt;NA&gt; Yahoo Entertainment
 13             &lt;NA&gt;       Science Daily
 14             &lt;NA&gt;            BBC News
-15             &lt;NA&gt;         Uncrate.com
-16             &lt;NA&gt; Yahoo Entertainment
+15             &lt;NA&gt; Yahoo Entertainment
+16             &lt;NA&gt;         Uncrate.com
 17     the-next-web        The Next Web
 18     the-next-web        The Next Web
 19        the-verge           The Verge
@@ -683,8 +678,8 @@ The following object is masked from 'package:purrr':
 12                                                                  MATTHEW DALY
 13                                                                          &lt;NA&gt;
 14   Kelly Ng; Navin Singh Khadka - Environment correspondent, BBC World Service
-15                                                                       Uncrate
-16                                                                       Reuters
+15                                                                       Reuters
+16                                                                       Uncrate
 17                                                              Alina Maria Stan
 18                                                              Alina Maria Stan
 19                                                                 Lauren Feiner
@@ -733,8 +728,8 @@ The following object is masked from 'package:purrr':
 12                                                                                                                               Federal court rejects Trump order keeping Michigan coal plant open
 13                                                                                                                                 Australia’s red soil may be hiding a massive clean energy source
 14                                                                                                                 Nepal bet nearly everything on hydropower - the floods show why that's a problem
-15                                                                                                                                                                             Ultra Energy Pouches
-16                                                                                                                              Vietnam PM seeks higher quality tech investments from Chinese firms
+15                                                                                                                              Vietnam PM seeks higher quality tech investments from Chinese firms
+16                                                                                                                                                                             Ultra Energy Pouches
 17                                                                                                                                  Australian data centres will use seven times more power by 2036
 18                                                                                                                                     Fervo signs 396MW geothermal deal with Google for 2028 start
 19                                                                                                                                                                   Is this the future of America?
@@ -783,8 +778,8 @@ The following object is masked from 'package:purrr':
 12                                                                                                       In a defeat for the Trump administration, a federal court on Friday ruled that the Energy Department exceeded its authority when it forced a Michigan coal-fi...
 13   Researchers have discovered that Western Australia’s iron-rich rocks can naturally generate hydrogen and that the process may be boosted to produce much larger amounts. If it can be scaled up, the vast formations beneath the Pilbara could become a major new s…
 14                                                                                                                                                                             More than 10% of Nepal's energy generation capacity was knocked out by last week's floods.
-15               Ultra is expanding its nicotine-free pouch lineup with new Energy Pouches, delivering 180mg of caffeine alongside L-theanine and a full B-vitamin stack of B3, B6, and B12. Designed for sharper focus and a faster onset than coffee, the formula is...
-16                                                                                                       HANOI, Aug 27 (Reuters) - Vietnamese Prime Minister Le Minh Hung has called on Chinese businesses investing in Vietnam to shift toward higher quality, techno...
+15                                                                                                       HANOI, Aug 27 (Reuters) - Vietnamese Prime Minister Le Minh Hung has called on Chinese businesses investing in Vietnam to shift toward higher quality, techno...
+16               Ultra is expanding its nicotine-free pouch lineup with new Energy Pouches, delivering 180mg of caffeine alongside L-theanine and a full B-vitamin stack of B3, B6, and B12. Designed for sharper focus and a faster onset than coffee, the formula is...
 17   Australian data centres will take 13% of the country’s main electricity market by 2035-36, up from 3% today. That is almost a sevenfold rise in a decade, according to the Australian Energy Market Operator. Keira Wright reported the forecast for Bloomberg. The…
 18   Alphabet has contracted up to 396MW of geothermal power from Fervo Energy for a prospective Utah data centre from 2028, with an option on another 600MW by 2030 that would take the order close to a gigawatt. The European Union had about 1GW of net geothermal e…
 19   In 2007, the US was on the cusp of an economic recession, and Buddy Rizer was tasked with finding Loudoun County, Virginia, a new way to make money. Rizer’s earlier career as a radio DJ didn’t exactly make him an obvious candidate to find a solution, but he w…
@@ -833,8 +828,8 @@ The following object is masked from 'package:purrr':
 12                                                                                 https://www.yahoo.com/news/politics/articles/federal-court-rejects-trump-order-164951961.html
 13                                                                                                                https://www.sciencedaily.com/releases/2026/08/260829035214.htm
 14                          https://www.bbc.com/news/articles/cy0zx368prno?xtor=AL-72-%5Bpartner%5D-%5Byahoo.north.america%5D-%5Bheadline%5D-%5Bnews%5D-%5Bbizdev%5D-%5Bisapi%5D
-15                                                                                                                                     https://uncrate.com/ultra-energy-pouches/
-16                                                                                            https://www.yahoo.com/news/articles/vietnam-pm-seeks-higher-quality-052119532.html
+15                                                                                            https://www.yahoo.com/news/articles/vietnam-pm-seeks-higher-quality-052119532.html
+16                                                                                                                                     https://uncrate.com/ultra-energy-pouches/
 17                                                                                                  https://thenextweb.com/news/australian-data-centres-power-aemo-forecast-2036
 18                                                                                      https://thenextweb.com/news/fervo-google-geothermal-utah-eu-capacity-geretsried-strategy
 19                                                                                      https://www.theverge.com/cs/features/975597/loudoun-county-virginia-data-center-backlash
@@ -883,8 +878,8 @@ The following object is masked from 'package:purrr':
 12               https://s.yimg.com/lo/mysterio/api/715b3ab586a5ee705d9e884a91715f5bcf0b7b1b098e4c8c6221c2a958f3b41e/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_jpg/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fap.org%2F6f11997a8a7ab96c61724fa3c8e81f37.jpg
 13                                                                                                                                                                                    https://www.sciencedaily.com/images/1920/iron-ore-western-australia-red-soil.webp
 14  https://s.yimg.com/lo/mysterio/api/4dd5800971088d500d9faba6ab12ad2fd73af92e94aaba6ad71dbfdbe182b91f/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_jpg/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fbbc_us_articles_995%2F582dddadbd68f0917f429f969efbcd5b.jpg
-15                                                                                                                                                                                                                    https://uncrate.com/p/2026/09/ultra-pouches-1.jpg
-16      https://s.yimg.com/lo/mysterio/api/a881b2c8bacbb27a07b7606c1b26c718f395b7439997226861c21671c2245d1d/lightyear_networkapi/resizefill_w800_h533%3Bquality_80%3Bformat_jpg/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Freuters.com%2F6cec7226ab3683de1da61efc0ced9748.jpg
+15      https://s.yimg.com/lo/mysterio/api/a881b2c8bacbb27a07b7606c1b26c718f395b7439997226861c21671c2245d1d/lightyear_networkapi/resizefill_w800_h533%3Bquality_80%3Bformat_jpg/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Freuters.com%2F6cec7226ab3683de1da61efc0ced9748.jpg
+16                                                                                                                                                                                                                    https://uncrate.com/p/2026/09/ultra-pouches-1.jpg
 17                                                                                                                                                                                           https://media.thenextweb.com/2024/11/sympower-electricity-grid-startup.jpg
 18                                                                                                                                                               https://media.thenextweb.com/2026/09/fervo-google-geothermal-utah-eu-capacity-geretsried-strategy1.jpg
 19                                                                                                        https://platform.theverge.com/wp-content/uploads/sites/2/2026/08/lede-poster.jpg?quality=90&amp;strip=all&amp;crop=0%2C9.7261377366089%2C100%2C80.547724526782&amp;w=1200
@@ -933,8 +928,8 @@ The following object is masked from 'package:purrr':
 12 2026-09-11T16:49:51Z
 13 2026-08-29T10:05:43Z
 14 2026-09-04T22:02:58Z
-15 2026-09-15T19:07:20Z
-16 2026-08-27T05:21:19Z
+15 2026-08-27T05:21:19Z
+16 2026-09-15T19:07:20Z
 17 2026-08-24T18:27:17Z
 18 2026-09-01T14:05:20Z
 19 2026-09-02T10:02:28Z
@@ -983,8 +978,8 @@ The following object is masked from 'package:purrr':
 12     WASHINGTON (AP) In a defeat for the Trump administration, a federal court on Friday ruled that the Energy Department exceeded its authority when it forced a Michigan coal-fired power to stay open pas… [+2846 chars]
 13     Researchers at Edith Cowan University (ECU) have identified a potentially important source of low-emission energy beneath Western Australia, where vast iron-rich formations may be capable of generati… [+3362 chars]
 14   Almost 100% of Nepal's electricity comes from hydropower, and it produces so much it earns nearly $200m (£147m) each year exporting hydroelectricity to India and Bangladesh.\r\nBut the very glaciers an… [+7969 chars]
-15      A solid wind-down ritual, Collagen Dream delivers a no-nonsense blend of function and flavor. Packed with 5g of high-absorption collagen peptides, magnesium, and sleep-supporting compounds like L-the… [+386 chars]
-16     HANOI, Aug 27 (Reuters) - Vietnamese Prime Minister Le Minh Hung has called on Chinese businesses investing in Vietnam to shift toward higher quality, technology-driven ventures including artificial … [+1650 chars]
+15     HANOI, Aug 27 (Reuters) - Vietnamese Prime Minister Le Minh Hung has called on Chinese businesses investing in Vietnam to shift toward higher quality, technology-driven ventures including artificial … [+1650 chars]
+16      A solid wind-down ritual, Collagen Dream delivers a no-nonsense blend of function and flavor. Packed with 5g of high-absorption collagen peptides, magnesium, and sleep-supporting compounds like L-the… [+386 chars]
 17     Australian data centres will take 13% of the countrys main electricity market by 2035-36, up from 3% today. That is almost a sevenfold rise in a decade, according to the Australian Energy Market Oper… [+5593 chars]
 18     Alphabet has contracted up to 396MW of geothermal power from Fervo Energy for a prospective Utah data centre from 2028, with an option on another 600MW by 2030 that would take the order close to a gi… [+2276 chars]
 19    Massive AI infrastructure is being built out across the US. But if you want to know what the data center occupation looks like, visit Loudoun County, Virginia, where that future arrived 20 years ago.… [+40305 chars]
@@ -1024,10 +1019,10 @@ The following object is masked from 'package:purrr':
 <section id="biotech-article" class="level2">
 <h2 class="anchored" data-anchor-id="biotech-article">biotech article</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>articles_biotech <span class="ot">&lt;-</span> <span class="fu">get_news_article</span>(<span class="st">"biotech"</span>, <span class="st">"2026-08-21"</span>, api_key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>articles_biotech <span class="ot">&lt;-</span> <span class="fu">get_news_article</span>(<span class="st">"biotech"</span>, <span class="st">"2026-08-21"</span>, api_key)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>articles_biotech</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>articles_biotech</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          source.id               source.name
 1  business-insider          Business Insider
@@ -1050,8 +1045,8 @@ The following object is masked from 'package:purrr':
 18             &lt;NA&gt;       Yahoo Entertainment
 19             &lt;NA&gt;              Barchart.com
 20             &lt;NA&gt;                  Deadline
-21             &lt;NA&gt; Pharmaceutical Technology
-22             &lt;NA&gt;              Barchart.com
+21             &lt;NA&gt;              Barchart.com
+22             &lt;NA&gt; Pharmaceutical Technology
 23             &lt;NA&gt;        Designyoutrust.com
 24             &lt;NA&gt; Investor's Business Daily
 25             &lt;NA&gt;       Yahoo Entertainment
@@ -1062,9 +1057,9 @@ The following object is masked from 'package:purrr':
 30             &lt;NA&gt;       Yahoo Entertainment
 31             &lt;NA&gt;       Yahoo Entertainment
 32             &lt;NA&gt;           Theregister.com
-33             &lt;NA&gt;                BeInCrypto
+33             &lt;NA&gt;             24/7 Wall St.
 34             &lt;NA&gt; Investor's Business Daily
-35             &lt;NA&gt;             24/7 Wall St.
+35             &lt;NA&gt;                BeInCrypto
 36             &lt;NA&gt; Investor's Business Daily
 37             &lt;NA&gt;       Yahoo Entertainment
 38             &lt;NA&gt;           Singularity Hub
@@ -1100,8 +1095,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                       &lt;NA&gt;
 19                                                                                                                Ruchi Gupta
 20                                                                                                                   Jillg366
-21                                                                                                              Robert Barrie
-22                                                                                                              Neha Panjwani
+21                                                                                                              Neha Panjwani
+22                                                                                                              Robert Barrie
 23                                                                                                                     Dmitry
 24                                                                                                                       &lt;NA&gt;
 25                                                                                                                       &lt;NA&gt;
@@ -1112,9 +1107,9 @@ The following object is masked from 'package:purrr':
 30                                                                                                               Maham Fatima
 31                                                                                                                 Neha Gupta
 32                                                                                                         Brandon Vigliarolo
-33                                                                                                            Ananda Banerjee
+33                                                                                                               David Moadel
 34                                                                                                                       &lt;NA&gt;
-35                                                                                                               David Moadel
+35                                                                                                            Ananda Banerjee
 36                                                                                                                       &lt;NA&gt;
 37                                                                                                               Maham Fatima
 38                                                                                                                   Edd Gent
@@ -1150,8 +1145,8 @@ The following object is masked from 'package:purrr':
 18                                                                                         8 biotech IPO prospects testing investor appetite
 19                                                             NVAX Stock Alert: Biotechs Hit Post-Pandemic High on mRNA Cancer Breakthrough
 20                                                      New York Film Festival To Screen Buzzy Elizabeth Holmes Doc ‘You Can See Everything’
-21                                                          Metsera backers establish new biotech armed with China-licensed immunology asset
-22                                                        How Is Vertex Pharmaceuticals' Stock Performance Compared to Other Biotech Stocks?
+21                                                        How Is Vertex Pharmaceuticals' Stock Performance Compared to Other Biotech Stocks?
+22                                                          Metsera backers establish new biotech armed with China-licensed immunology asset
 23               Artist Builds a Glitching, Bio-Mechanical Universe Where Electronic Music, CGI, and Body Horror Become One Continuous Story
 24                                                                                  Three Biotech Stocks Stick Out With Their Stellar Charts
 25                                                                          Pharma ETF or Biotech ETF: Which Matches Your Investing Mindset?
@@ -1162,9 +1157,9 @@ The following object is masked from 'package:purrr':
 30                                                                              Biogen’s (BIIB) Immunology Bet Meets A Pricier Balance Sheet
 31                                       Roivant Sciences Ltd. (ROIV)’s Pulmonary Hypertension Breakthrough Could Transform Its Growth Story
 32                                                                 Cyborg cockroaches may soon deliver life-saving drugs to disaster victims
-33                                                                        3 American Stocks Showing the Same Setup That Sent Moderna Up 177%
+33                                                               Moderna Rallies 11%, BioNTech Ticks Up: Is the mRNA Trade Down to One Name?
 34                                                                        Analysts See Drastic Change For This Particular Part Of Healthcare
-35                                                               Moderna Rallies 11%, BioNTech Ticks Up: Is the mRNA Trade Down to One Name?
+35                                                                        3 American Stocks Showing the Same Setup That Sent Moderna Up 177%
 36                                                       Biopharmaceutical Leader Kiniksa Poised To Hit New Buy Point After Big Revenue Beat
 37                                                                        Zura Bio (ZURA) Hits Enrollment Milestones As Losses Widen Sharply
 38                                                                   Virtual Biotech Company Puts 37,000 AI Agents to Work on Drug Discovery
@@ -1200,8 +1195,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                                                                                                                                                                  &lt;NA&gt;
 19                                                                                                                                                                           NVAX stock surges amid biotech stock rally following Moderna and Merck cancer breakthrough.
 20  The New York Film Festival has a late addition to its lineup, setting Nathan Fielder and Lance Oppenheim’s Elizabeth Holmes documentary You Can See Everything to the Spotlight section for a NY debut after its buzzy sneak premiere at Telluride. Holmes, founder…
-21                                                                                                                                                     PHP and ARCH have founded Sentivera, a biotech that now has an immunology licensing deal with China-based Haisco.
-22                                                                                                                Vertex Pharmaceuticals has underperformed the Biotech industry over the past year, but analysts are moderately optimistic about the stock’s prospects.
+21                                                                                                                Vertex Pharmaceuticals has underperformed the Biotech industry over the past year, but analysts are moderately optimistic about the stock’s prospects.
+22                                                                                                                                                     PHP and ARCH have founded Sentivera, a biotech that now has an immunology licensing deal with China-based Haisco.
 23  Cat Soup is the multidisciplinary project of California-based artist and musician Logan Walden. The work brings together electronic music, 3D animation, CGI, graphic design, merch, and an evolving fictional universe called Nanophage — a strange, colourful, bo…
 24                                                                                                                                 These biotech stocks all popped after their recent earnings reports. All three have outperformed 97% of stocks in the last 12 months.
 25                                                                                                                                                                                                                                                                  &lt;NA&gt;
@@ -1212,9 +1207,9 @@ The following object is masked from 'package:purrr':
 30                                                                                                      On August 6, Biogen (NASDAQ:BIIB) completed its acquisition of RayThera, a privately held biotech developing small-molecule immunology therapies whose lead p...
 31                                                                                                       Roivant Sciences Ltd. (NASDAQ:ROIV) shares surged 18% on September 8 after the biotech company reported strong Phase 2 results for an experimental treatment...
 32                                                                                                             Just what you want crawling through the rubble to rescue you: A swarm of remote-controlled cockroaches with syringe-shooting guns strapped to their backs
-33                                                                                                                                      Moderna's 130% day ran on five conditions. We screened the market for stocks like Moderna and found three names, none a biotech.
+33                                                                                                      Moderna just posted an 11% surge with zero news behind it, while its longtime mRNA peer BioNTech can barely keep pace with the broader biotech sector. Someth...
 34                                                                                                                              State Street SPDR S&amp;P Biotech ETF is hovering around a buy point after breaking out. The fund is one of the holdings in IBD Leaderboard.
-35                                                                                                      Moderna just posted an 11% surge with zero news behind it, while its longtime mRNA peer BioNTech can barely keep pace with the broader biotech sector. Someth...
+35                                                                                                                                      Moderna's 130% day ran on five conditions. We screened the market for stocks like Moderna and found three names, none a biotech.
 36                                                                                                                              Biotech leader Kiniksa stock is poised to hit a new buy point after shares soared 25% in response to better-than-expected sales numbers.
 37                                                                                                       On August 11, Zura Bio (NASDAQ:ZURA) reported second-quarter results that landed on an unusual mix of good and bad news. The clinical-stage biotech finished...
 38 The system, designed by Stanford researchers, identified which drugs are more likely to succeed in trials and even proposed a cancer treatment a major drugmaker later landed on too.\nThe post Virtual Biotech Company Puts 37,000 AI Agents to Work on Drug Discov…
@@ -1250,8 +1245,8 @@ The following object is masked from 'package:purrr':
 18                                                                              https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_8b09eee6-cc27-4e66-9434-ad327d657b60
 19                                                             https://www.barchart.com/story/news/3973429/nvax-stock-alert-biotechs-hit-post-pandemic-high-on-mrna-cancer-breakthrough
 20                                                                               http://deadline.com/2026/09/new-york-film-festival-adds-you-can-see-everything-documentary-1237073367/
-21                                                     https://www.pharmaceutical-technology.com/news/metsera-backers-establish-new-biotech-armed-with-china-licensed-immunology-asset/
-22                                                         https://www.barchart.com/story/news/4404399/how-is-vertex-pharmaceuticals-stock-performance-compared-to-other-biotech-stocks
+21                                                         https://www.barchart.com/story/news/4404399/how-is-vertex-pharmaceuticals-stock-performance-compared-to-other-biotech-stocks
+22                                                     https://www.pharmaceutical-technology.com/news/metsera-backers-establish-new-biotech-armed-with-china-licensed-immunology-asset/
 23                         https://designyoutrust.com/2026/09/artist-builds-a-glitching-bio-mechanical-universe-where-electronic-music-cgi-and-body-horror-become-one-continuous-story/
 24                                                        https://www.investors.com/stock-lists/ibd-50/biotech-stocks-drug-eton-pharmaceuticals-travere-therapeutics-kiniksa-tvtx-knsa/
 25                                                                              https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_33a0965b-bebc-4e4f-bd9c-260d9f8df0ea
@@ -1262,9 +1257,9 @@ The following object is masked from 'package:purrr':
 30                                                                                        https://finance.yahoo.com/healthcare/articles/biogen-biib-immunology-bet-meets-074806222.html
 31                                                                                     https://finance.yahoo.com/healthcare/articles/roivant-sciences-ltd-roiv-pulmonary-094515386.html
 32                                                     https://www.theregister.com/offbeat/2026/08/27/cyborg-cockroaches-may-soon-deliver-life-saving-drugs-to-disaster-victims/5293081
-33                                                                                                                          https://beincrypto.com/stocks-like-moderna-three-names-fit/
+33                                                                  https://247wallst.com/investing/2026/08/25/moderna-rallies-11-biontech-ticks-up-is-the-mrna-trade-down-to-one-name/
 34                                                                             https://www.investors.com/research/how-to-find-the-best-stocks-to-buy/biotech-xbi-stock-moderna-vaccine/
-35                                                                  https://247wallst.com/investing/2026/08/25/moderna-rallies-11-biontech-ticks-up-is-the-mrna-trade-down-to-one-name/
+35                                                                                                                          https://beincrypto.com/stocks-like-moderna-three-names-fit/
 36                                                                                                                               https://www.investors.com/research/kiniksa-stock-knsa/
 37                                                                                           https://finance.yahoo.com/healthcare/articles/zura-bio-zura-hits-enrollment-053502709.html
 38                                                                https://singularityhub.com/2026/09/18/virtual-biotech-company-puts-37000-ai-agents-to-work-on-drug-discovery/#article
@@ -1300,8 +1295,8 @@ The following object is masked from 'package:purrr':
 18                                                                                                                                                                                                                                                                                        &lt;NA&gt;
 19                                https://s.yimg.com/lo/mysterio/api/26E2B7C1D4DD818AE3BAB0B2BEBBC338DDFF331A878D0487D29D00D2EBDFC92B/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2F20ecd2fd0cf7ddc977ec6c3462e21c34.jpg
 20                                                                                                                                                                                                           https://deadline.com/wp-content/uploads/2026/09/You-Can-See-Everything.jpg?w=1024
-21              https://s.yimg.com/lo/mysterio/api/82b605432731c1f327aa25e94fd12cbf63d8e7b795f7bc46f832110550778d4d/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fpharmaceutical_technology_376%2F53f00b1c2475e2efc5f5effa0fdd82c5.jpg
-22                           https://s.yimg.com/lo/mysterio/api/8daf6f22b86370de25ca46ba902d2d0d2141f4e13f454cb9d9545ba5380129e1/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2Fb5539a40e3e6dbe96472872d4cb894db.jpg
+21                           https://s.yimg.com/lo/mysterio/api/8daf6f22b86370de25ca46ba902d2d0d2141f4e13f454cb9d9545ba5380129e1/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fbarchart_com_477%2Fb5539a40e3e6dbe96472872d4cb894db.jpg
+22              https://s.yimg.com/lo/mysterio/api/82b605432731c1f327aa25e94fd12cbf63d8e7b795f7bc46f832110550778d4d/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fpharmaceutical_technology_376%2F53f00b1c2475e2efc5f5effa0fdd82c5.jpg
 23                                                                                                                                                                                  https://designyoutrust.com/wp-content/uploads/2026/09/788666392_18021732293930758_412303002704832605_n.jpg
 24                                                                                                                                                                                                             https://www.investors.com/wp-content/uploads/2017/10/stock-biotech-03-adobe.jpg
 25                                                                                                                                                                                                                                                                                        &lt;NA&gt;
@@ -1312,9 +1307,9 @@ The following object is masked from 'package:purrr':
 30                          https://s.yimg.com/lo/mysterio/api/e9ae6dc6770c04fe55263a22c0e433820ec90d97456bf1f4068ec2e45da3d332/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2F2928bd42a56a91b4f9f31651755d5074.jpg
 31                          https://s.yimg.com/lo/mysterio/api/b21325e464ae21ef3d398b6350ef1e63e22a59bbd6d248e2cd24a4e38ba75e2c/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2F7c16cc3bd8d9db40639fe719e3997005.jpg
 32                                                                                                                                             https://image.theregister.com/5293085.jpg?imageId=5293085&amp;x=0&amp;y=0&amp;cropw=100&amp;croph=100&amp;panox=0&amp;panoy=0&amp;panow=100&amp;panoh=100&amp;width=1200&amp;height=683
-33                               https://s.yimg.com/lo/mysterio/api/F0E8B46C0D2D1D800A19C0D58DDD361E2D1C72AF239FEE78FEFBF6BDEE2ECAE0/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbeincrypto_us_662%2F9c107a361e9d3605aca66d3e653269e4.jpg
+33                               https://s.yimg.com/lo/mysterio/api/A0C0712FFE2DFBCD274947FF1A2B700F606D15E230A41218428760E7D93384A4/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2F24_7_wall_st__718%2F0e1abad9858007c3b94dc75aff618779.jpg
 34                                                                                                                                                                                                             https://www.investors.com/wp-content/uploads/2018/06/stock-biotech-17-adobe.jpg
-35                               https://s.yimg.com/lo/mysterio/api/A0C0712FFE2DFBCD274947FF1A2B700F606D15E230A41218428760E7D93384A4/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2F24_7_wall_st__718%2F0e1abad9858007c3b94dc75aff618779.jpg
+35                               https://s.yimg.com/lo/mysterio/api/F0E8B46C0D2D1D800A19C0D58DDD361E2D1C72AF239FEE78FEFBF6BDEE2ECAE0/subgraphmysterio/resizefill_w1200_h675;quality_80;format_webp/https:%2F%2Fmedia.zenfs.com%2Fen%2Fbeincrypto_us_662%2F9c107a361e9d3605aca66d3e653269e4.jpg
 36                                                                                                                                                                                                       https://www.investors.com/wp-content/uploads/2026/01/stock-biotech-pipettes-adobe.jpg
 37                          https://s.yimg.com/lo/mysterio/api/3ccb5bcbe50ad35b206430d3d4c3b7325701d5e04c4eb0c7d945e77e4c42c771/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Finsidermonkey.com%2Fc0bdc94ad0d959d7669be6dc36175d2f.jpg
 38                                                                                                                                                                                                 https://singularityhub.com/uploads/2026/09/colorful-pile-of-medication-pills.jpeg?auto=webp
@@ -1350,8 +1345,8 @@ The following object is masked from 'package:purrr':
 18 2026-09-17T09:00:00Z
 19 2026-08-21T17:01:25Z
 20 2026-09-10T14:24:46Z
-21 2026-08-26T11:40:18Z
-22 2026-09-02T15:44:06Z
+21 2026-09-02T15:44:06Z
+22 2026-08-26T11:40:18Z
 23 2026-09-13T14:51:31Z
 24 2026-08-21T16:09:12Z
 25 2026-08-21T22:07:01Z
@@ -1362,9 +1357,9 @@ The following object is masked from 'package:purrr':
 30 2026-09-02T07:48:06Z
 31 2026-09-13T09:45:15Z
 32 2026-08-27T21:00:00Z
-33 2026-08-21T22:14:05Z
+33 2026-08-25T14:24:44Z
 34 2026-08-24T18:47:51Z
-35 2026-08-25T14:24:44Z
+35 2026-08-21T22:14:05Z
 36 2026-09-10T16:35:26Z
 37 2026-09-11T05:35:02Z
 38 2026-09-18T22:11:54Z
@@ -1400,8 +1395,8 @@ The following object is masked from 'package:purrr':
 18       If you click 'Accept all', we and our partners, including 252 who are part of the IAB Transparency &amp;amp; Consent Framework, will also store and / or access information on a device (in other words, us… [+1046 chars]
 19     Biotech research by Gorodenkoff via Shutterstock\r\nNovavax (NVAX) is a biotechnology company headquartered in Gaithersburg, Maryland, focused on the discovery, development, and commercialization of va… [+4938 chars]
 20       The New York Film Festival has a late addition to its lineup, setting Nathan Fielder and Lance Oppenheim’s Elizabeth Holmes documentary You Can See Everything to the Spotlight section for a NY debut … [+1097 chars]
-21     Fresh off a blockbuster sale to Pfizer, the investors behind Metsera are putting their expertise and business strategy to work again.\r\nPopulation Health Partners and ARCH Venture Partners have teamed… [+2645 chars]
-22     Vertex Pharmaceuticals logo By Midea\r\nBoston, Massachusetts-based Vertex Pharmaceuticals Incorporated (VRTX)&nbsp;develops and commercializes therapies for treating cystic fibrosis (CF). Valued at $139 bi… [+2048 chars]
+21     Vertex Pharmaceuticals logo By Midea\r\nBoston, Massachusetts-based Vertex Pharmaceuticals Incorporated (VRTX)&nbsp;develops and commercializes therapies for treating cystic fibrosis (CF). Valued at $139 bi… [+2048 chars]
+22     Fresh off a blockbuster sale to Pfizer, the investors behind Metsera are putting their expertise and business strategy to work again.\r\nPopulation Health Partners and ARCH Venture Partners have teamed… [+2645 chars]
 23        Cat Soup is the multidisciplinary project of California-based artist and musician Logan Walden. The work brings together electronic music, 3D animation, CGI, graphic design, merch, and an evolving fi… [+544 chars]
 24       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
 25       If you click 'Accept all', we and our partners, including 251 who are part of the IAB Transparency &amp;amp; Consent Framework, will also store and / or access information on a device (in other words, us… [+1046 chars]
@@ -1412,9 +1407,9 @@ The following object is masked from 'package:purrr':
 30       On August 6, Biogen (NASDAQ:BIIB) completed its acquisition of RayThera, a privately held biotech developing small-molecule immunology therapies whose lead program entered Phase 1 trials in July 2026… [+4430 chars]
 31       Roivant Sciences Ltd. (NASDAQ:ROIV) shares surged 18% on September 8 after the biotech company reported strong Phase 2 results for an experimental treatment for pulmonary hypertension. The positive t… [+4752 chars]
 32       Picture this: Youve just undergone one of the most harrowing experiences of your life, and youre trapped in the rubble of a collapsed building. Youre injured, air is running out, and human rescuers c… [+3497 chars]
-33       Moderna, the American pharma company that became popular for its COVID vaccine, has spent three days trading like a meme stock. Shares exploded 177% on Wednesday after its personalized mRNA cancer va… [+4671 chars]
+33   Quick Read\r\n&lt;ul&gt;&lt;li&gt;Moderna surged 11% while BioNTech gained just 2% on no catalyst, with MRNA's Reddit sentiment score of 88 flagging crowded retail positioning over fundamentals.\r\n&lt;/li&gt;&lt;li&gt;BioNTech… [+5585 chars]
 34       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
-35   Quick Read\r\n&lt;ul&gt;&lt;li&gt;Moderna surged 11% while BioNTech gained just 2% on no catalyst, with MRNA's Reddit sentiment score of 88 flagging crowded retail positioning over fundamentals.\r\n&lt;/li&gt;&lt;li&gt;BioNTech… [+5585 chars]
+35       Moderna, the American pharma company that became popular for its COVID vaccine, has spent three days trading like a meme stock. Shares exploded 177% on Wednesday after its personalized mRNA cancer va… [+4671 chars]
 36       Information in Investors Business Daily is for informational and educational purposes only and should not be construed as an offer, recommendation, solicitation, or rating to buy or sell securities. … [+1064 chars]
 37       On August 11, Zura Bio (NASDAQ:ZURA) reported second-quarter results that landed on an unusual mix of good and bad news. The clinical-stage biotech finished enrolling two separate Phase 2 studies of … [+4578 chars]
 38       Developing a new drug can take years and cost hundreds of millions of dollars, and even then, most candidates ultimately fail. Now, researchers at Stanford have built a virtual biotech company with 3… [+4825 chars]
@@ -1438,7 +1433,7 @@ The following object is masked from 'package:purrr':
 <section id="look-at-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="look-at-the-data">4. Look at the data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../HW5/635USrollercoasters.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../HW5/635USrollercoasters.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 635 Columns: 21
 ── Column specification ────────────────────────────────────────────────────────
@@ -1451,7 +1446,7 @@ dbl  (9): Year Opened, TopSpeed, MaxHeight, Drop, Length, Duration, # of Inv...
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(roller_coasters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(roller_coasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 635
 Columns: 21
@@ -1477,63 +1472,71 @@ $ Latitude          &lt;dbl&gt; 45.5079, 39.3601, 35.2600, 47.9224, 27.9961, 37.
 $ Longitude         &lt;dbl&gt; -122.6908, -84.3099, -80.8042, -116.6860, -82.5820, …
 $ Boundary          &lt;chr&gt; "{\"type\":\"Feature\",\"properties\":{\"CENSUSAREA\…</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(roller_coasters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(roller_coasters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      Coaster           Park            City           State    
- Length   :635   Length   :635   Length   :635   Length   :635  
- N.unique :482   N.unique :197   N.unique :171   N.unique : 40  
- N.blank  :  0   N.blank  :  0   N.blank  :  0   N.blank  :  0  
- Min.nchar:  2   Min.nchar:  6   Min.nchar:  3   Min.nchar:  4  
- Max.nchar: 46   Max.nchar: 47   Max.nchar: 20   Max.nchar: 14  
-                                                                
-                                                                
-   Census Region  Year Opened        AgeGroup      TopSpeed     
- Length   :635   Min.   :1920   Length   :635   Min.   :  6.00  
- N.unique :  4   1st Qu.:1995   N.unique :  3   1st Qu.: 28.50  
- N.blank  :  0   Median :2002   N.blank  :  0   Median : 45.00  
- Min.nchar:  4   Mean   :1999   Min.nchar:  7   Mean   : 42.24  
- Max.nchar:  9   3rd Qu.:2013   Max.nchar:  8   3rd Qu.: 55.00  
-                 Max.   :2020                   Max.   :128.00  
-                                                NAs    :74      
-   MaxHeight           Scale            Type           Design   
- Min.   :  5.0   Length   :635   Length   :635   Length   :635  
- 1st Qu.: 28.0   N.unique :  4   N.unique :  2   N.unique :  7  
- Median : 64.3   N.blank  :  0   N.blank  :  0   N.blank  :  0  
- Mean   : 76.8   Min.nchar:  6   Min.nchar:  4   Min.nchar:  4  
- 3rd Qu.:109.0   Max.nchar:  7   Max.nchar:  5   Max.nchar:  9  
- Max.   :456.0                                                  
- NAs    :8                                                      
-      Drop            Length        Duration      Inversions?  # of Inversions 
- Min.   :  0.00   Min.   :  48   Min.   : 20   Length   :635   Min.   :0.0000  
- 1st Qu.: 25.00   1st Qu.: 900   1st Qu.: 70   N.unique :  2   1st Qu.:0.0000  
- Median : 70.00   Median :1490   Median :101   N.blank  :  0   Median :0.0000  
- Mean   : 77.18   Mean   :1938   Mean   :106   Min.nchar:  2   Mean   :0.9213  
- 3rd Qu.:108.50   3rd Qu.:2800   3rd Qu.:130   Max.nchar:  3   3rd Qu.:1.0000  
- Max.   :418.00   Max.   :7359   Max.   :540                   Max.   :8.0000  
- NAs    :128      NAs    :33     NAs    :66                                    
-        Make        Latitude       Longitude            Boundary    
- Length   :635   Min.   :26.55   Min.   :-122.94   Length   :  635  
- N.unique : 53   1st Qu.:34.47   1st Qu.: -97.15   N.unique :   41  
- N.blank  :  0   Median :38.51   Median : -84.31   N.blank  :    0  
- Min.nchar:  4   Mean   :37.69   Mean   : -89.46   Min.nchar: 6568  
- Max.nchar: 36   3rd Qu.:40.97   3rd Qu.: -77.46   Max.nchar:32759  
- NAs      : 36   Max.   :47.92   Max.   : -70.39                    
-                                                                    </code></pre>
+<pre><code>   Coaster              Park               City              State          
+ Length:635         Length:635         Length:635         Length:635        
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+ Census Region       Year Opened     AgeGroup            TopSpeed     
+ Length:635         Min.   :1920   Length:635         Min.   :  6.00  
+ Class :character   1st Qu.:1995   Class :character   1st Qu.: 28.50  
+ Mode  :character   Median :2002   Mode  :character   Median : 45.00  
+                    Mean   :1999                      Mean   : 42.24  
+                    3rd Qu.:2013                      3rd Qu.: 55.00  
+                    Max.   :2020                      Max.   :128.00  
+                                                      NA's   :74      
+   MaxHeight        Scale               Type              Design         
+ Min.   :  5.0   Length:635         Length:635         Length:635        
+ 1st Qu.: 28.0   Class :character   Class :character   Class :character  
+ Median : 64.3   Mode  :character   Mode  :character   Mode  :character  
+ Mean   : 76.8                                                           
+ 3rd Qu.:109.0                                                           
+ Max.   :456.0                                                           
+ NA's   :8                                                               
+      Drop            Length        Duration   Inversions?       
+ Min.   :  0.00   Min.   :  48   Min.   : 20   Length:635        
+ 1st Qu.: 25.00   1st Qu.: 900   1st Qu.: 70   Class :character  
+ Median : 70.00   Median :1490   Median :101   Mode  :character  
+ Mean   : 77.18   Mean   :1938   Mean   :106                     
+ 3rd Qu.:108.50   3rd Qu.:2800   3rd Qu.:130                     
+ Max.   :418.00   Max.   :7359   Max.   :540                     
+ NA's   :128      NA's   :33     NA's   :66                      
+ # of Inversions      Make              Latitude       Longitude      
+ Min.   :0.0000   Length:635         Min.   :26.55   Min.   :-122.94  
+ 1st Qu.:0.0000   Class :character   1st Qu.:34.47   1st Qu.: -97.15  
+ Median :0.0000   Mode  :character   Median :38.51   Median : -84.31  
+ Mean   :0.9213                      Mean   :37.69   Mean   : -89.46  
+ 3rd Qu.:1.0000                      3rd Qu.:40.97   3rd Qu.: -77.46  
+ Max.   :8.0000                      Max.   :47.92   Max.   : -70.39  
+                                                                      
+   Boundary        
+ Length:635        
+ Class :character  
+ Mode  :character  
+                   
+                   
+                   
+                   </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>( </span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">AgeGroup =</span> <span class="fu">factor</span>(AgeGroup, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1:Older"</span>, <span class="st">"2:Recent"</span>, <span class="st">"3:Newest"</span>),</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Older"</span>, <span class="st">"Recent"</span>, <span class="st">"Newest"</span>),</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="document-any-missing-values-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="document-any-missing-values-in-data">5. Document any missing values in data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(roller_coasters))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(roller_coasters))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        Coaster            Park            City           State   Census Region 
               0               0               0               0               0 
@@ -1551,10 +1554,10 @@ $ Boundary          &lt;chr&gt; "{\"type\":\"Feature\",\"properties\":{\"CENSUSA
 <section id="create-one-way-two-way-and-three-way-contingency-table" class="level2">
 <h2 class="anchored" data-anchor-id="create-one-way-two-way-and-three-way-contingency-table">6. Create one-way, two-way, and three-way contingency table</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>one_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>one_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>one_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>one_way_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Steel  Wood 
@@ -1562,10 +1565,10 @@ Steel  Wood
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>two_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>two_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>two_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>two_way_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       
         Extreme Family Kiddie Thrill
@@ -1574,10 +1577,10 @@ Steel  Wood
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>three_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale, roller_coasters<span class="sc">$</span>AgeGroup)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>three_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(roller_coasters<span class="sc">$</span>Type, roller_coasters<span class="sc">$</span>Scale, roller_coasters<span class="sc">$</span>AgeGroup)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>three_way_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>three_way_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>, ,  = Older
 
@@ -1607,8 +1610,8 @@ Steel  Wood
 <section id="using-filter" class="level3">
 <h3 class="anchored" data-anchor-id="using-filter">using filter()</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>new_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span> <span class="fu">filter</span>(AgeGroup <span class="sc">==</span> <span class="st">"Newest"</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(new_coasters<span class="sc">$</span>Type, new_coasters<span class="sc">$</span>Scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>new_coasters <span class="ot">&lt;-</span> roller_coasters <span class="sc">|&gt;</span> <span class="fu">filter</span>(AgeGroup <span class="sc">==</span> <span class="st">"Newest"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(new_coasters<span class="sc">$</span>Type, new_coasters<span class="sc">$</span>Scale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       
         Extreme Family Kiddie Thrill
@@ -1620,7 +1623,7 @@ Steel  Wood
 <section id="build-then-subset" class="level3">
 <h3 class="anchored" data-anchor-id="build-then-subset">build then subset</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>three_way_table[, , <span class="st">"Newest"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>three_way_table[, , <span class="st">"Newest"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       
         Extreme Family Kiddie Thrill
@@ -1633,10 +1636,10 @@ Steel  Wood
 <section id="create-two-way-contingency-table-using-dplyr" class="level2">
 <h2 class="anchored" data-anchor-id="create-two-way-contingency-table-using-dplyr">8. Create two-way contingency table using dplyr</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>roller_coasters <span class="sc">|&gt;</span> </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Type, Scale) <span class="sc">|&gt;</span> </span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Scale, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Scale, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   Type  Extreme Family Kiddie Thrill
@@ -1649,7 +1652,7 @@ Steel  Wood
 <section id="create-stacked-bar-graph-and-side-by-side-bar-graph" class="level2">
 <h2 class="anchored" data-anchor-id="create-stacked-bar-graph-and-side-by-side-bar-graph">9. Create stacked bar graph and side by side bar graph</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Stacked"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Stacked"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1659,7 +1662,7 @@ Steel  Wood
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Side-By-Side"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roller_coasters, <span class="fu">aes</span>(<span class="at">x =</span> Type, <span class="at">fill =</span> Scale)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coaster Type"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Scale Distribution by Coaster Type Side-By-Side"</span>, <span class="at">fill =</span> <span class="st">"Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1675,243 +1678,236 @@ Steel  Wood
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
     }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
         }
       }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
     }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1919,161 +1915,185 @@ Steel  Wood
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
     }
-  });
-  </script>
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
 </div> <!-- /content -->
 
 
