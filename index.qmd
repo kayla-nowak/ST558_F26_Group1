@@ -13,3 +13,5 @@ author:
 - [Homework 3](/HW3/ST558_HW3_Final.qmd)
 
 - [Homework 4](/HW4/ST558_HW4_Final.qmd)
+
+- [Homework 5](/HW5/ST558_HW5_Final.qmd)
