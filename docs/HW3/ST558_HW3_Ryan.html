@@ -546,36 +546,36 @@ $Coef_Var
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># View objects</span></span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm
-1  0.2271705 -1.25992899
-2  0.6291122 -0.93205660
-3  0.4958096 -1.15237436
-4  0.3788607  1.88366458
-5  0.1591152 -1.71637715
-6  0.4005303  0.09866765
-7  0.5333368  0.55242966
-8  0.9336123  2.20364550
-9  0.8804516  0.26013814
-10 0.4203349 -0.76563991</code></pre>
+<pre><code>          unif       norm
+1  0.466980709 -0.5881386
+2  0.009056523 -1.4148912
+3  0.552755840  0.9946372
+4  0.992748349  0.4567322
+5  0.142006531  1.0283612
+6  0.871761628  1.3578873
+7  0.233884198 -0.9388043
+8  0.094300968  0.7741293
+9  0.941261196  1.3182035
+10 0.507088900 -0.8362816</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        gamma      beta
-1  0.41464749 0.6308641
-2  0.95193563 0.6443016
-3  0.13185814 0.8259461
-4  1.52810679 0.9721362
-5  0.02264559 0.7992768
-6  0.39292327 0.6700165
-7  1.80080354 0.8831702
-8  0.11812027 0.9950215
-9  0.81838155 0.7814551
-10 0.52072540 0.8668411</code></pre>
+1  0.24232116 0.9262297
+2  1.23576945 0.7048326
+3  0.06732064 0.8970108
+4  0.27897237 0.9418664
+5  0.76336252 0.9749285
+6  1.39834238 0.9264968
+7  1.71933298 0.9591332
+8  2.28292005 0.7724044
+9  1.48025352 0.8944078
+10 1.69199264 0.6093534</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  9.681660  9.950076 10.372714 11.373453  9.725606  8.855758  8.743573
- [8]  9.912796  9.625150  9.287336</code></pre>
+<pre><code> [1] 11.405627 10.543453  9.671603 10.140740 10.819005 10.834015  9.749353
+ [8] 10.400734  8.871371  9.567602</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -588,34 +588,34 @@ $Coef_Var
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm      gamma      beta
-1  0.2271705 -1.25992899 0.41464749 0.6308641
-2  0.6291122 -0.93205660 0.95193563 0.6443016
-3  0.4958096 -1.15237436 0.13185814 0.8259461
-4  0.3788607  1.88366458 1.52810679 0.9721362
-5  0.1591152 -1.71637715 0.02264559 0.7992768
-6  0.4005303  0.09866765 0.39292327 0.6700165
-7  0.5333368  0.55242966 1.80080354 0.8831702
-8  0.9336123  2.20364550 0.11812027 0.9950215
-9  0.8804516  0.26013814 0.81838155 0.7814551
-10 0.4203349 -0.76563991 0.52072540 0.8668411</code></pre>
+<pre><code>          unif       norm      gamma      beta
+1  0.466980709 -0.5881386 0.24232116 0.9262297
+2  0.009056523 -1.4148912 1.23576945 0.7048326
+3  0.552755840  0.9946372 0.06732064 0.8970108
+4  0.992748349  0.4567322 0.27897237 0.9418664
+5  0.142006531  1.0283612 0.76336252 0.9749285
+6  0.871761628  1.3578873 1.39834238 0.9264968
+7  0.233884198 -0.9388043 1.71933298 0.9591332
+8  0.094300968  0.7741293 2.28292005 0.7724044
+9  0.941261196  1.3182035 1.48025352 0.8944078
+10 0.507088900 -0.8362816 1.69199264 0.6093534</code></pre>
 </div>
 </div>
 <p>Finally, test with both dataframes and vector</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="sc">%cb%</span> df2 <span class="sc">%cb%</span> vec1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        unif        norm      gamma      beta         y
-1  0.2271705 -1.25992899 0.41464749 0.6308641  9.681660
-2  0.6291122 -0.93205660 0.95193563 0.6443016  9.950076
-3  0.4958096 -1.15237436 0.13185814 0.8259461 10.372714
-4  0.3788607  1.88366458 1.52810679 0.9721362 11.373453
-5  0.1591152 -1.71637715 0.02264559 0.7992768  9.725606
-6  0.4005303  0.09866765 0.39292327 0.6700165  8.855758
-7  0.5333368  0.55242966 1.80080354 0.8831702  8.743573
-8  0.9336123  2.20364550 0.11812027 0.9950215  9.912796
-9  0.8804516  0.26013814 0.81838155 0.7814551  9.625150
-10 0.4203349 -0.76563991 0.52072540 0.8668411  9.287336</code></pre>
+<pre><code>          unif       norm      gamma      beta         y
+1  0.466980709 -0.5881386 0.24232116 0.9262297 11.405627
+2  0.009056523 -1.4148912 1.23576945 0.7048326 10.543453
+3  0.552755840  0.9946372 0.06732064 0.8970108  9.671603
+4  0.992748349  0.4567322 0.27897237 0.9418664 10.140740
+5  0.142006531  1.0283612 0.76336252 0.9749285 10.819005
+6  0.871761628  1.3578873 1.39834238 0.9264968 10.834015
+7  0.233884198 -0.9388043 1.71933298 0.9591332  9.749353
+8  0.094300968  0.7741293 2.28292005 0.7724044 10.400734
+9  0.941261196  1.3182035 1.48025352 0.8944078  8.871371
+10 0.507088900 -0.8362816 1.69199264 0.6093534  9.567602</code></pre>
 </div>
 </div>
 <p>Creating this infix function lets us cleanly bind these arguments together in one line without the added function notation</p>

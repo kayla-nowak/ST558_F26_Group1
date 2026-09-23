@@ -1,0 +1,236 @@
+---
+title: "ST558 Homework 5 - Group 1"
+author: 
+  - name: Kayla Nowak
+  - name: Ryan Merserau
+  - name: Will Carter
+  - name: Yefrid Cordoba
+format: html
+---
+
+## Task 1: Querying an API in a Tidy-Style Fashion
+
+Connect to the news API here: <https://newsapi.org/>
+
+```{r}
+#| message: False
+#| warning: False
+
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+my_key <- "71ce2ed6f6844a9b8c771a2b3993de20"
+```
+
+### 1.
+
+Use `GET()` from the `httr` package to return information about a topic that you are interested in that has been in the news lately (store the result as an R object).
+
+This query searches for articles from last Monday regarding Panthers quarterback Bryce Young.
+
+```{r}
+news_results <- GET(
+  url = "https://newsapi.org/v2/everything",
+  query = list(
+    q = "bryce-young",
+    from = "2026-09-14",
+    language = "en",
+    pageSize = 50,
+    apiKey = my_key
+  )
+)
+```
+
+### 2.
+
+Parse what is returned and find your way to the data frame that has the actual article information in it (check content). Note the first column should be a list column!
+
+```{r}
+#Check top-level contents
+str(news_results, max.level=1)
+
+#Parse to contents
+news_parsed <- fromJSON(rawToChar(news_results$content))
+str(news_results, max.level=1)
+
+#Select articles
+articles <- as_tibble(news_parsed$articles)
+articles
+```
+
+### 3.
+
+Now write a quick function that allows the user to easily query this API.
+
+```{r}
+get_news_article <- function(subject, startdt, key) {
+  
+  URL <- paste0("https://newsapi.org/v2/everything?q=",
+                URLencode(subject),
+                "&from=", as.character(startdt),
+                "&to=", as.character(Sys.Date()),
+                "&language=en&pageSize=50&apiKey=", key)
+  
+  pulled <- GET(URL)
+  #Note: missing function inputs result in R error.
+    
+  if(pulled$status != 200) { return("Something broke, check requirements.") }
+  else {
+    parsed <- fromJSON(rawToChar(pulled$content))
+    tdata  <- as_tibble(parsed$articles)
+    return(tdata)
+  }
+}
+```
+
+Test function with two different topics and dates:
+
+```{r}
+get_news_article("macklemore", "2026-09-15", my_key)
+get_news_article("clean energy", "2026-09-21", my_key) #space handled by URLencode()
+```
+
+## Task 2: Summarizing Roller Coaster Data
+
+Working with the roller coaster data. Source: <https://www4.stat.ncsu.edu/online/datasets/635USrollercoasters.csv>
+
+First we are going to read the data and convert the required variables to factor. No need to use the `Boundary` variable or the `Latitude` and `Longitude` variables in the EDA.
+
+-   Dropped ignored variables.
+-   Renamed non-standard variables for ease of use.
+-   Converted all categorical variables to factors.
+
+```{r}
+rollercoasters <- read_csv("635USrollercoasters.csv") |>
+  select(-c(Boundary, Latitude, Longitude)) |>
+  rename(CensusRegion = `Census Region`,
+         YearOpened = `Year Opened`,
+         Inversion_YN = `Inversions?`,
+         Inversion_Num = `# of Inversions`) |> 
+  mutate(State = as.factor(State),
+         CensusRegion = as.factor(CensusRegion),
+         AgeGroup = factor(AgeGroup, 
+                           levels=c("1:Older", "2:Recent", "3:Newest"),
+                           labels=c("Older", "Recent", "Newest")),
+         Scale = as.factor(Scale),
+         Type = as.factor(Type),
+         Design = as.factor(Design),
+         Inversion_YN = as.factor(Inversion_YN))
+```
+
+### 4.
+
+Look at how the data is stored and see if everything makes sense.
+
+```{r}
+#General Structure
+str(rollercoasters)
+
+#Review Factor Levels
+vars_cat <- c("State", "CensusRegion", "AgeGroup", "Scale", "Type", "Design", "Inversion_YN")
+
+for(i in 1:length(vars_cat)){
+  rollercoasters |> 
+    group_by(across(all_of(vars_cat[i]))) |> 
+    summarize(count=n()) |> print()
+}
+
+```
+
+-   `Coaster`, `Park`, `City`, and `Make` are fine to store as character
+-   `YearOpened`, `TopSpeed`, `MaxHeight`, `Drop`, `Length`, `Duration`, and `Inversion_Num` are appropriately stored as numeric
+-   All other variables make sense to store as factors. Only `AgeGroup` benefited from a label change.
+
+### 5.
+
+Document any missing values in the data.
+
+```{r}
+colSums(is.na(rollercoasters))
+```
+
+`TopSpeed`, `MaxHeight`, `Drop`, `Length`, `Duration`, and `Make` have some records with missing values. 
+
+### 6.
+
+Create a one-way contingency table, a two-way contingency table, and a three-way contingency table for some of the factor variables you created previously. Use table() to accomplish this. Interpret a number from each table.
+
+**One-Way Table:**
+
+```{r}
+table(rollercoasters$Type)
+```
+
+There are 530 roller coasters made of steel.
+
+**Two-Way Table:**
+
+```{r}
+table(rollercoasters$Type, rollercoasters$Scale)
+```
+
+Out of the 530 steel roller coasters, 216 are categorized as extreme.
+
+**Three-Way Table:**
+
+```{r}
+table(rollercoasters$Type, rollercoasters$Scale, rollercoasters$AgeGroup)
+```
+
+From the older roller coasters, 9 are made of wood and categorized as extreme
+
+### 7.
+
+Create a conditional two-way table using table(). That is, condition on one variable’s setting and create a two-way table. Do this using two different methods.
+
+Looking at Scale x Design for Steel type coasters.
+
+**By subsetting first, then making a 2-way table:**
+
+```{r}
+#single chain approach
+rollercoasters |> filter(Type=="Steel") |> select(Scale, Design) |> table()
+```
+
+**By subsetting a 3-way table:**
+
+```{r}
+table(rollercoasters[, c("Scale", "Design", "Type")])[,,"Steel"]
+```
+
+### 8.
+
+Create a two-way contingency table using `group_by()` and `summarize()` from dplyr. Then use `pivot_wider()` to make the result look more like the output from `table()`.
+
+```{r}
+rollercoasters |> 
+  group_by(Type, Scale) |> 
+  summarize(n = n(), .groups = "drop") |>
+  pivot_wider(names_from = Scale, values_from = n, values_fill = 0)
+```
+
+### 9.
+
+Create a stacked bar graph and a side-by-side bar graph. Give relevant x and y labels, and a title for the plots.
+
+**Stacked:**
+
+```{r}
+library(ggplot2)
+
+g1 <- ggplot(data = rollercoasters |>
+               drop_na(Type, Scale), aes(x = Scale, fill = Type))
+g1 + geom_bar() + labs(x = "Scale", y = "Count", title = "Rollercoaster Types by Scale") 
+```
+
+**Side-by-Side:**
+
+```{r}
+ggplot(data = rollercoasters |> drop_na(Type, Scale), aes(x = Scale, fill = Type)) +
+  geom_bar(position = "dodge") + 
+  labs(x = "Scale", title = "Roller Coaster Types by Scale", y = "Count") +
+  scale_fill_discrete("Type")
+```
+
+This is better (although the scales should be ordered). From most to least intense it goes: Extreme, Thrill, Family, Kiddie.

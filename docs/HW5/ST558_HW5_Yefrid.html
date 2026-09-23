@@ -164,7 +164,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  $ url        : chr "https://newsapi.org/v2/everything?q=trade&amp;from=2026-08-21&amp;language=en&amp;pageSize=50&amp;apiKey=b83cc47afb8e4f47a5ff9dafee63d05c"
  $ status_code: int 426
  $ headers    :List of 12
-  ..$ date           : chr "Tue, 22 Sep 2026 03:33:52 GMT"
+  ..$ date           : chr "Wed, 23 Sep 2026 18:39:27 GMT"
   ..$ content-type   : chr "application/json; charset=utf-8"
   ..$ content-length : chr "255"
   ..$ cache-control  : chr "no-cache"
@@ -172,17 +172,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ..$ expires        : chr "-1"
   ..$ x-cached-result: chr "false"
   ..$ cf-cache-status: chr "DYNAMIC"
-  ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wXp"| __truncated__
   ..$ nel            : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+  ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=9qG"| __truncated__
   ..$ server         : chr "cloudflare"
-  ..$ cf-ray         : chr "a3ee4028f914fe3b-IAD"
+  ..$ cf-ray         : chr "a3fbac170fa4e5c9-IAD"
   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ all_headers:List of 1
   ..$ :List of 3
   .. ..$ status : int 426
   .. ..$ version: chr "HTTP/2"
   .. ..$ headers:List of 12
-  .. .. ..$ date           : chr "Tue, 22 Sep 2026 03:33:52 GMT"
+  .. .. ..$ date           : chr "Wed, 23 Sep 2026 18:39:27 GMT"
   .. .. ..$ content-type   : chr "application/json; charset=utf-8"
   .. .. ..$ content-length : chr "255"
   .. .. ..$ cache-control  : chr "no-cache"
@@ -190,10 +190,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   .. .. ..$ expires        : chr "-1"
   .. .. ..$ x-cached-result: chr "false"
   .. .. ..$ cf-cache-status: chr "DYNAMIC"
-  .. .. ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wXp"| __truncated__
   .. .. ..$ nel            : chr "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+  .. .. ..$ report-to      : chr "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=9qG"| __truncated__
   .. .. ..$ server         : chr "cloudflare"
-  .. .. ..$ cf-ray         : chr "a3ee4028f914fe3b-IAD"
+  .. .. ..$ cf-ray         : chr "a3fbac170fa4e5c9-IAD"
   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
  $ cookies    :'data.frame':    0 obs. of  7 variables:
   ..$ domain    : logi(0) 
@@ -204,8 +204,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ..$ name      : logi(0) 
   ..$ value     : logi(0) 
  $ content    : raw [1:255] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2026-09-22 03:33:52"
- $ times      : Named num [1:6] 0 0.0627 0.1111 0.1443 0.1923 ...
+ $ date       : POSIXct[1:1], format: "2026-09-23 18:39:27"
+ $ times      : Named num [1:6] 0 0.0212 0.0344 0.0537 0.0903 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..$ method    : chr "GET"
@@ -264,7 +264,7 @@ We use the <code>jsonlite</code> package to get a tibble.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_news</span>(<span class="st">"macklemore"</span>, <span class="st">"2026-09-15"</span>, <span class="st">"b83cc47afb8e4f47a5ff9dafee63d05c"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 98 × 8
+<pre><code># A tibble: 99 × 8
    source$id $name author title description url   urlToImage publishedAt content
    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
  1 bbc-news  BBC … &lt;NA&gt;   Ed S… "US stadiu… http… https://i… 2026-09-17… "Rober…
@@ -277,7 +277,7 @@ We use the <code>jsonlite</code> package to get a tibble.</p>
  8 &lt;NA&gt;      Yaho… Dylan… Ed S… "The fate … http… https://s… 2026-09-16… "The f…
  9 &lt;NA&gt;      Yaho… Dylan… Ever… "Ed Sheera… http… https://s… 2026-09-19… "Ed Sh…
 10 &lt;NA&gt;      Abcn… Jack … Ed S… "Opening a… http… https://i… 2026-09-20… "Ed Sh…
-# ℹ 88 more rows</code></pre>
+# ℹ 89 more rows</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -286,16 +286,16 @@ We use the <code>jsonlite</code> package to get a tibble.</p>
 <pre><code># A tibble: 98 × 8
    source$id $name author title description url   urlToImage publishedAt content
    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;  
- 1 &lt;NA&gt;      Gizm… Ellyn… Over… "A new stu… http… https://g… 2026-09-10… "As hu…
- 2 &lt;NA&gt;      Gizm… Tom M… EPA … "Donald Tr… http… https://g… 2026-09-15… "The E…
- 3 the-verge The … Justi… Trum… "The Envir… http… https://p… 2026-09-14… "&lt;ul&gt;&lt;…
- 4 bbc-news  BBC … https… Trum… "The bill … http… https://i… 2026-09-18… "US Pr…
- 5 &lt;NA&gt;      Kota… Ethan… Wolv… "Logan's a… http… https://k… 2026-09-19… "Even …
- 6 &lt;NA&gt;      Slas… BeauHD Scie… "An anonym… http… https://a… 2026-09-15… "NASA'…
- 7 &lt;NA&gt;      Yaho… MATTH… Trum… "The Envir… http… https://s… 2026-09-14… "WASHI…
- 8 &lt;NA&gt;      Kota… Ethan… Marv… "The PS5 b… http… https://k… 2026-09-11… "If yo…
- 9 &lt;NA&gt;      Yaho… &lt;NA&gt;   US G…  &lt;NA&gt;       http… &lt;NA&gt;       2026-09-14… "If yo…
-10 &lt;NA&gt;      Yaho… STEVE… Gas … "EDINBURG,… http… https://s… 2026-09-20… "EDINB…
+ 1 &lt;NA&gt;      Gizm… Ellyn… Over… A new stud… http… https://g… 2026-09-10… "As hu…
+ 2 &lt;NA&gt;      Gizm… Tom M… EPA … Donald Tru… http… https://g… 2026-09-15… "The E…
+ 3 the-verge The … Justi… Trum… The Enviro… http… https://p… 2026-09-14… "&lt;ul&gt;&lt;…
+ 4 the-verge The … Andre… GM c… Last week,… http… https://p… 2026-09-21… "&lt;ul&gt;&lt;…
+ 5 bbc-news  BBC … https… Trum… The bill i… http… https://i… 2026-09-18… "US Pr…
+ 6 &lt;NA&gt;      Kota… Ethan… Wolv… Logan's ab… http… https://k… 2026-09-19… "Even …
+ 7 &lt;NA&gt;      Slas… BeauHD Scie… An anonymo… http… https://a… 2026-09-15… "NASA'…
+ 8 &lt;NA&gt;      Yaho… MATTH… Trum… The Enviro… http… https://s… 2026-09-14… "WASHI…
+ 9 &lt;NA&gt;      Yaho… &lt;NA&gt;   US G… &lt;NA&gt;        http… &lt;NA&gt;       2026-09-14… "If yo…
+10 &lt;NA&gt;      Kota… Ethan… Marv… The PS5 bl… http… https://k… 2026-09-11… "If yo…
 # ℹ 88 more rows</code></pre>
 </div>
 </div>
