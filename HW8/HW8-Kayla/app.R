@@ -31,24 +31,36 @@ ui <- fluidPage(
       
       h2("Choose a subset of the data:"),
       
-      # radioButtons(
-      #   inputId ="hhl_corr",
-      #   label = "Household Language",
-      #   selected =,
-      #   choiceNames=unname(HHLvals),
-      #   choiceValues=names(HHLvals)
-      # ),
-      
-      
-      
-      "Place your radio buttons here! One radio button for each variable we may subset on. Set the internal IDs for these to be hhl_corr, fs_corr, and schl_corr.",
-      "Notice that you can use choiceNames and choiceValues to have different values show vs the values you use internally for comparisons. There are 'internal' values already used in the server file - the first large commented section - so you should set the internal values to match those!",
-      
+      radioButtons(
+        inputId ="hhl_corr",
+        label = "Household Language",
+        choiceNames=c("All", "English", "Spanish", "Other"),
+        choiceValues=c("all", "english", "spanish", "other"),
+        selected = "all"
+      ),
+      radioButtons(
+        inputId ="fs_corr",
+        label = "SNAP Recipient",
+        choices = c("All" = "all", "Yes" = "yes", "No"="no"), #old way
+        selected = "all"
+      ),
+      radioButtons(
+        inputId ="schl_corr",
+        label = "Educational attainment",
+        choiceNames=c("All", "High School not Completed", "High School or GED", "College Degree"),
+        choiceValues=c("all", "no_hs", "hs", "college"),
+        selected = "all"
+      ),  
       
       h2("Select a Sample Size"),
-      "Put your slider for sample size here. Give this an ID of corr_n.",
+      sliderInput(
+        inputId = "corr_n",
+        label = "",
+        min=20, max=500, value=20
+      ),
       actionButton("corr_sample","Get a Sample!")
     ),
+    
     mainPanel(
       "Add a plotOutput here for the scatter plot!",
       conditionalPanel("input.corr_sample", #only show if a sample has been taken
@@ -116,7 +128,6 @@ server <- function(input, output, session) {
     # ##############################################################
     # #Uncomment the next large block of code to go in an
     # #observeEvent() to look for the action button (corr_sample)
-    # #Note you can highlight and bulk comment/uncomment (ctrl+shift+c or similar on mac)
     # 
     #   if(input$hhl_corr == "all"){
     #     hhl_sub <- HHLvals
@@ -175,7 +186,7 @@ server <- function(input, output, session) {
     #   #the corr_truth argument should be updated to be the correlation between
     #   #the two variables selected. This can be found with this code:
     #   #cor(sample_corr$corr_data |> select(corr_vars))[1,2]
-    ####################################################################
+    # ###################################################################
 
 
 
