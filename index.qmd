@@ -16,4 +16,4 @@ author:
 
 - [Homework 5](/HW5/ST558_HW5_Final.qmd)
 
-- [Homework 8](/HW8/HW8-Final/app.R)
+- [Homework 8: Correlation Exploration App](https://connect.posit.cloud/ryan-mersereau/content/01a16012-80ff-5fb4-6151-e2ec6f3de35e)
