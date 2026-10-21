@@ -5,6 +5,10 @@ library(tidyverse)
 
 source("helpers.R")
 
+# save snapshot of packages
+renv::init()
+renv::snapshot()
+
 # Define application UI
 ui <- fluidPage(
 
