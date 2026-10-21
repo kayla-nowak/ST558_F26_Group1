@@ -15,3 +15,5 @@ author:
 - [Homework 4](/HW4/ST558_HW4_Final.qmd)
 
 - [Homework 5](/HW5/ST558_HW5_Final.qmd)
+
+- [Homework 8](/HW8/HW8-Final/app.R)
