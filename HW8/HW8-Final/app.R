@@ -2,12 +2,9 @@
 library(shiny)
 library(shinyalert)
 library(tidyverse)
+library(bslib)
 
 source("helpers.R")
-
-# save snapshot of packages
-renv::init()
-renv::snapshot()
 
 # Define application UI
 ui <- fluidPage(
@@ -192,7 +189,7 @@ server <- function(input, output, session) {
         need(!is.null(sample_corr$corr_data), "Please select your variables, subset, and click the 'Get a Sample!' button.")
       )
       # use isolate() so the plot only redraws when a new sample is taken
-      ggplot(sample_corr$corr_data, aes_string(x = isolate(input$corr_x), y = isolate(input$corr_y))) +
+      ggplot(sample_corr$corr_data, aes(x = .data[[isolate(input$corr_x)]], y = .data[[isolate(input$corr_y)]])) +
         geom_point()
     })
 
