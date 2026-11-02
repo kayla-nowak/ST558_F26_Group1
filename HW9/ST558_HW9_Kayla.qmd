@@ -9,16 +9,176 @@ format: html
 #| warning: False
 
 library(tidyverse)
+library(lubridate)
+library(ggplot2)
 ```
-
 
 ## Read-in Data
 
+- Import data from a local copy of the CSV (downloaded from URL, saved to repo).
+- Convert to R-compatible variable names using the `janitor` package
+- Store the data as a basic tibble (not the spec_tbl_df)
+
 ```{r}
 seoul <- read_csv("SeoulBikeData.csv", locale=locale(encoding="latin1"))
+seoul <- janitor::clean_names(as_tibble(seoul))
 ```
 
 ## EDA
+
+First glance:
+
+```{r}
+str(seoul)
+```
+
+### Date Data
+
+Covert the character date field to a true date data type using `lubridate` package.
+
+```{r}
+seoul <- seoul |>
+  mutate(date_num = dmy(date))
+
+#check the derivation
+class(seoul$date_num)
+head(seoul |> select(date,date_num))
+```
+
+Review range and missingness:
+
+```{r}
+seoul |> select(date_num) |>
+  summarize(min = min(date_num),
+            max = max(date_num))
+
+cat("Records with NA: ", nrow(seoul |> filter(is.na(date_num))))
+```
+
+### Character Data
+
+Review frequencies and create factors as needed.
+
+```{r}
+table(seoul$seasons, useNA= "ifany")
+table(seoul$holiday, useNA= "ifany")
+table(seoul$functioning_day, useNA= "ifany")
+```
+
+Remarks:
+
+- All 3 variables should be treated as categorical factors (update below)
+- No concerns about missingness
+- Check for overlap between holiday and non-functioning days
+
+```{r}
+xtabs(~ holiday + functioning_day, data=seoul)
+```
+
+Proceed with factor assignments. Also drop character date, since that is no longer needed.
+
+```{r}
+seoul <- seoul |>
+  mutate(seasons = as.factor(seasons),
+         holiday = as.factor(holiday),
+         functioning_day = as.factor(functioning_day)) |>
+  select(-date) |> select(date_num, everything())
+
+str(seoul |> select(seasons, holiday, functioning_day))
+```
+
+### Numeric Data
+
+Review basic summary stats for all numeric data using the `psych` package:
+
+```{r}
+psych::describe(seoul |> select(where(is.numeric)) ) |> 
+  select(n, min, median, max, range, mean, sd)
+```
+
+Remarks:
+
+- Most ranges seem plausible, but a few variables have suspiciously wide ranges
+- Use graphical summaries to further investigate the suspicious variables: `rented_bike_count` and `visibility_10m`
+- Check for association between rental counts and non-functioning days
+
+```{r}
+psych::describe(seoul |> filter(functioning_day=="No") |> select(rented_bike_count) ) |> 
+  select(n, min, median, max, range, mean, sd)
+```
+
+Absolutely no rentals occur on the non-functioning days. Create a version of the data that contains functioning days only to use moving forward.
+
+```{r}
+seoul_fn <- seoul |> filter(functioning_day=="Yes")
+```
+
+**Rental Count**
+
+```{r}
+#boxplots x categories
+gxd <- ggplot(seoul_fn) + scale_x_discrete() + theme_minimal()
+
+gxd + geom_boxplot(aes(y=rented_bike_count))
+gxd + geom_boxplot(aes(x= holiday, y=rented_bike_count, fill=holiday))
+gxd + geom_boxplot(aes(x= seasons, y=rented_bike_count, fill=seasons))
+
+
+#scatterplot with rain + snow
+ggplot(seoul_fn) + theme_minimal() +
+  geom_point(aes(x=rainfall_mm, y = rented_bike_count))
+
+ggplot(seoul_fn) + theme_minimal() +
+  geom_point(aes(x=snowfall_cm, y = rented_bike_count))
+
+```
+
+Remarks:
+
+- The high counts appear to be legitimate data (as opposed to a data entry error). While these high counts are certainly less frequent, they happen enough and no holiday or season accounts for all of the outliers.
+- From the boxplot x seasons, we see that winter has a much different distribution of bike rentcals compared to the other seasons.
+- Scatter plots x precipitation show a steep drop in the number of rentals with any notable rain/snow fall. Check correlations below.
+
+```{r}
+cat("Correlation Rentals x Rainfall = ", 
+    cor(seoul_fn |> select(rented_bike_count,rainfall_mm))[1,2])
+
+cat("Correlation Rentals x Snowfall = ", 
+    cor(seoul_fn |> select(rented_bike_count,snowfall_cm))[1,2])
+```
+
+**Visibility**
+
+```{r}
+#boxplots x categories
+gxd + geom_boxplot(aes(y=visibility_10m))
+gxd + geom_boxplot(aes(x= seasons, y=visibility_10m, fill=seasons))
+
+#scatterplot with rain + snow
+ggplot(seoul_fn) + theme_minimal() +
+  geom_point(aes(x=rainfall_mm, y = visibility_10m))
+
+ggplot(seoul_fn) + theme_minimal() +
+  geom_point(aes(x=snowfall_cm, y = visibility_10m))
+```
+
+Remarks:
+
+- High-end visibility is actually the norm with low-end visibility being less frequent.
+- From the boxplot x season, we see that visibility was fairly consistent across seasons.
+- Scatter plots of visibility with rainfall and snowfall are tough to interpret since the days with zero precipitation include the full spectrum of visibility. Check correlations below
+
+```{r}
+cat("Correlation Visibility x Rainfall = ", 
+    cor(seoul_fn |> select(visibility_10m, rainfall_mm))[1,2])
+
+cat("Correlation Visibility x Snowfall = ", 
+    cor(seoul_fn |> select(visibility_10m, snowfall_cm))[1,2])
+```
+
+## Data Restrucure
+
+
 
 ## Split for Training
 
