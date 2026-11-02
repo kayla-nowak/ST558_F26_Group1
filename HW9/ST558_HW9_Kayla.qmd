@@ -1,0 +1,25 @@
+---
+title: "ST 558 - HW 9"
+author: "Kayla Nowak"
+format: html
+---
+
+```{r}
+#| message: False
+#| warning: False
+
+library(tidyverse)
+```
+
+
+## Read-in Data
+
+```{r}
+seoul <- read_csv("SeoulBikeData.csv", locale=locale(encoding="latin1"))
+```
+
+## EDA
+
+## Split for Training
+
+## MLR Fit
