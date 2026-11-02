@@ -1,0 +1,110 @@
+---
+title: "ST558_HW9_Will"
+author: "Will Carter"
+format: html
+---
+
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(tidyverse)
+library(lubridate)
+library(rsample)
+```
+ 
+# Reading the Data
+ 
+The degree symbols in the column names (like `Temperature(°C)`) cause `read_csv()` to throw `invalid multibyte string`. The encoding is set in `locale()` to fix this.
+ 
+```{r}
+#| label: read-data
+bike_raw <- read_csv(
+  "https://www4.stat.ncsu.edu/~online/datasets/SeoulBikeData.csv",
+  locale = locale(encoding = "latin1")
+)
+bike_raw
+```
+ 
+# EDA
+ 
+## Checking the Data
+ 
+### 1. missing data
+ 
+First, check each column for missing values.
+ 
+```{r}
+#| label: missing
+colSums(is.na(bike_raw))
+```
+ 
+The columns are not missing any values.
+ 
+### 2. column types and values
+ 
+Next, check that the column types make sense.
+ 
+```{r}
+#| label: col-types
+glimpse(bike_raw)
+```
+ 
+Basic summary statistics for the numeric columns:
+ 
+```{r}
+#| label: numeric-summary
+bike_raw |>
+  select(where(is.numeric)) |>
+  summary()
+```
+ 
+The ranges look valid. Humidity is between 0 and 98%, hours run from 0 to 23 (hour beginning), and rainfall, snowfall, and bike counts are not negative.
+ 
+Unique values of the categorical columns:
+ 
+```{r}
+#| label: cat-values
+bike_raw |>
+  select(where(is.character), -Date) |>
+  map(unique)
+```
+ 
+### 3. convert the date
+ 
+`Date` was read in as a character, so it needs to be converted. The dates are in day/month/year format, so we use `dmy()` from `lubridate`.
+ 
+```{r}
+#| label: convert-date
+bike_raw <- bike_raw |>
+  mutate(Date = dmy(Date))
+ 
+range(bike_raw$Date)
+```
+ 
+The data covers one year, from December 2017 through November 2018.
+ 
+### 4. convert character variables to factors
+ 
+```{r}
+#| label: factors
+bike_raw <- bike_raw |>
+  mutate(across(c(Seasons, Holiday, `Functioning Day`), as.factor))
+```
+ 
+### 5. rename the variables
+ 
+Rename everything to lower snake case so columns are standard formatting. The original names contain the degree symbol which can cause encoding problems. Replace all the names.
+ 
+```{r}
+#| label: rename
+bike_data <- bike_raw
+names(bike_data) <- c("date", "bike_count", "hour", "temp", "humidity",
+                      "wind_speed", "visibility", "dew_point_temp",
+                      "solar_radiation", "rainfall", "snowfall",
+                      "seasons", "holiday", "functioning_day")
+ 
+names(bike_data)
+```
+ 
