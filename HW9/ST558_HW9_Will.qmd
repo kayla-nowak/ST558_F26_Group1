@@ -108,3 +108,193 @@ names(bike_data) <- c("date", "bike_count", "hour", "temp", "humidity",
 names(bike_data)
 ```
  
+ 
+### 6. summary statistics
+ 
+Summarize bike rental counts across each categorical variable.
+ 
+```{r}
+#| label: summary-by-season
+bike_data |>
+  group_by(seasons) |>
+  summarize(
+    n      = n(),
+    mean   = mean(bike_count),
+    median = median(bike_count),
+    sd     = sd(bike_count),
+    min    = min(bike_count),
+    max    = max(bike_count)
+  )
+```
+ 
+```{r}
+#| label: summary-by-holiday
+bike_data |>
+  group_by(holiday) |>
+  summarize(
+    n      = n(),
+    mean   = mean(bike_count),
+    median = median(bike_count),
+    sd     = sd(bike_count),
+    min    = min(bike_count),
+    max    = max(bike_count)
+  )
+```
+ 
+```{r}
+#| label: summary-by-functioning
+bike_data |>
+  group_by(functioning_day) |>
+  summarize(
+    n      = n(),
+    mean   = mean(bike_count),
+    median = median(bike_count),
+    sd     = sd(bike_count),
+    min    = min(bike_count),
+    max    = max(bike_count)
+  )
+```
+ 
+When `functioning_day` is `No`, the bike count is always 0. No bikes are rented when the system is not functioning. These rows tell us nothing about demand, so we drop them and keep only functioning hours.
+ 
+```{r}
+#| label: subset-functioning
+bike_data <- bike_data |>
+  filter(functioning_day == "Yes") |>
+  select(-functioning_day)
+ 
+nrow(bike_data)
+```
+ 
+### 7. summarize across hours
+ 
+We collapse the hourly data to one row per day. Bike count, rainfall, and snowfall are summed across the day. The other weather variables are averaged.
+ 
+```{r}
+#| label: daily
+bike_daily <- bike_data |>
+  group_by(date, seasons, holiday) |>
+  summarize(
+    bike_count      = sum(bike_count),
+    rainfall        = sum(rainfall),
+    snowfall        = sum(snowfall),
+    temp            = mean(temp),
+    humidity        = mean(humidity),
+    wind_speed      = mean(wind_speed),
+    visibility      = mean(visibility),
+    dew_point_temp  = mean(dew_point_temp),
+    solar_radiation = mean(solar_radiation),
+    .groups = "drop"
+  )
+ 
+bike_daily
+```
+ 
+The daily data has `r nrow(bike_daily)` days.
+ 
+### 8. summaries and plots on the daily data
+ 
+Recreate the summary statistics on the daily data.
+ 
+```{r}
+#| label: daily-numeric-summary
+bike_daily |>
+  select(where(is.numeric)) |>
+  summary()
+```
+ 
+```{r}
+#| label: daily-by-season
+bike_daily |>
+  group_by(seasons) |>
+  summarize(
+    n      = n(),
+    mean   = mean(bike_count),
+    median = median(bike_count),
+    sd     = sd(bike_count)
+  )
+```
+ 
+```{r}
+#| label: daily-by-holiday
+bike_daily |>
+  group_by(holiday) |>
+  summarize(
+    n      = n(),
+    mean   = mean(bike_count),
+    median = median(bike_count),
+    sd     = sd(bike_count)
+  )
+```
+ 
+Summer has the most rentals and winter has by far the fewest.
+ 
+Correlations between the numeric variables:
+ 
+```{r}
+#| label: correlation
+bike_daily |>
+  select(where(is.numeric)) |>
+  cor() |>
+  round(2)
+```
+ 
+Bike count is most strongly correlated with temperature, dew point temperature, and solar radiation. Temperature and dew point temperature are highly correlated with each other.
+ 
+Plot bike count against temperature, colored by season:
+ 
+```{r}
+#| label: plot-temp
+ggplot(bike_daily, aes(x = temp, y = bike_count, color = seasons)) +
+  geom_point() +
+  labs(
+    title = "Daily Bike Rentals vs. Temperature",
+    x = "Mean Temperature (°C)",
+    y = "Bikes Rented"
+  )
+```
+ 
+Rentals rise with temperature, though the relationship levels off and may dip on the hottest days.
+ 
+Distribution of bike count by season:
+ 
+```{r}
+#| label: plot-season
+ggplot(bike_daily, aes(x = seasons, y = bike_count, fill = seasons)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Daily Bike Rentals by Season",
+    x = "Season",
+    y = "Bikes Rented"
+  )
+```
+ 
+Bike count against total daily rainfall:
+ 
+```{r}
+#| label: plot-rain
+ggplot(bike_daily, aes(x = rainfall, y = bike_count)) +
+  geom_point() +
+  labs(
+    title = "Daily Bike Rentals vs. Rainfall",
+    x = "Total Rainfall (mm)",
+    y = "Bikes Rented"
+  )
+```
+ 
+Most days have no rain. Rentals tend to be low on days with rain.
+ 
+Bike count over time:
+ 
+```{r}
+#| label: plot-time
+ggplot(bike_daily, aes(x = date, y = bike_count)) +
+  geom_line() +
+  labs(
+    title = "Daily Bike Rentals Over Time",
+    x = "Date",
+    y = "Bikes Rented"
+  )
+```
+ 
+Rentals follow the seasons, peaking in early summer and fall and dropping off in winter.
