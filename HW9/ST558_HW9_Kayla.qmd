@@ -11,6 +11,7 @@ format: html
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
+library(tidymodels)
 ```
 
 ## Read-in Data
@@ -192,7 +193,6 @@ seoul_new <- seoul_fn |>
             solar      = mean(solar_radiation_mj_m2)) |>
   ungroup()
 
-str(seoul_new)
 ```
 
 **Categorical Frequencies**
@@ -208,6 +208,11 @@ table(seoul_new$holiday)
 Overall:
 
 ```{r}
+# apply(X = seoul_new |> select(where(is.numeric)),
+#       MARGIN = 2, 
+#       FUN = summary,
+#       na.rm=TRUE)
+
 psych::describe(seoul_new |> select(where(is.numeric)) ) |> 
   select(n, min, median, max, range, mean, sd)
 ```
@@ -216,11 +221,86 @@ psych::describe(seoul_new |> select(where(is.numeric)) ) |>
 
 ## Split for Training
 
-Split 75:25 for training:test, stratified by season.
+Split 75:25 for training:test, stratified by seasons.
 
 ```{r}
+set.seed(789)
 
+seoul_split <- rsample::initial_split(seoul_new, prop = 0.75, strata = "seasons")
+seoul_train <- training(seoul_split)
+seoul_test  <- testing(seoul_split)
 ```
 
 
 ## MLR Fit
+
+### Data prep
+
+Additional data transformations are needed...
+
+**Find Standards**
+
+Calculate mean and standard deviation for all numeric x-variables in the training dataset. These will be used to standardize each variable in both training and testing.
+
+Results are stored in the `standards` matrix as ["mean", ] and ["sd", ] row positions, with each variable name as the column positions.
+
+```{r}
+standards <- apply(X = seoul_train |> select(where(is.numeric)),
+                   MARGIN = 2,
+                   FUN = function(x){
+                     temp <- c(mean(x), sd(x))
+                     names(temp) <- c("mean", "sd")
+                     temp
+                   })
+
+standards
+```
+
+**Standardize**
+
+Standardize all numeric x-variables on the dataset:  (x - mean(x_train)) / sd(x_train). Store results in new datasets for quick spot-check qc.
+
+```{r}
+#Initiate Standardized Datasets
+seoul_trainz <- seoul_train
+seoul_testz  <- seoul_test
+
+#Predictors to loop over
+xvars <- c("rainfall", "snowfall", "temp", "humidity", "windspeed", "visibility", "dewpoint", "solar")
+
+
+for (i in 1:length(xvars)){
+  
+  x <- xvars[i]
+  
+  #Training Data
+  seoul_trainz[,x] <- (seoul_trainz[,x] - standards["mean", x])/standards["sd", x]
+  
+  #Testing Data
+  seoul_testz[,x] <- (seoul_testz[,x] - standards["mean", x])/standards["sd", x]
+
+}
+
+```
+
+**DOW Derived**
+
+Derive day of week variable from date (factor with 1=Sunday, ..., 7 = Saturday)
+
+```{r}
+seoul_trainz <- seoul_trainz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+
+seoul_testz <- seoul_testz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+```
+
+### Models
+
+Three proposed models:
+
+1. Main effects model ( ~ seasons + holiday + dow + allX)
+2. Interaction model (~ mod1 + seasons\*holiday + seasons\*temp + temp*rainfall)
+3. Quadratic model (~ mod2 + )
