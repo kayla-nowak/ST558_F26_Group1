@@ -1,0 +1,145 @@
+---
+title: "ST558_HW9_Ryan"
+author: "Ryan Mersereau"
+format: html
+editor: visual
+---
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(lubridate)
+library(rsample)
+```
+
+# Reading in Data
+
+```{r}
+bike <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/SeoulBikeData.csv", 
+                 locale = locale(encoding = "latin1")
+)
+bike
+```
+
+# EDA
+
+## Checking Data
+
+### 1. Missingness
+
+```{r}
+colSums(is.na(bike))
+```
+
+### 2. Column types and values
+
+```{r}
+glimpse(bike)
+```
+
+Summary stats for numeric columns
+
+```{r}
+bike |>
+  select(where(is.numeric)) |>
+  summary()
+```
+
+Unique values for categorical variables:
+
+```{r}
+bike |>
+  select(where(is.character), -Date) |>
+  map(unique)
+```
+
+### 3. Convert date
+
+```{r}
+bike <- bike |>
+  mutate(Date = dmy(Date))
+sum(is.na(bike$Date))
+```
+```{r}
+range(bike$Date)
+```
+
+### 4. Convert to factors
+
+```{r}
+bike <- bike |>
+  mutate(across(c(Seasons, Holiday, `Functioning Day`), as.factor))
+
+bike
+```
+
+### 5. Rename variables
+
+```{r}
+bike_data <- bike |>
+  rename(
+    date = Date,
+    bike_count = `Rented Bike Count`,
+    hour = Hour,
+    temp = starts_with("Temperature"),
+    humidity = `Humidity(%)`,
+    wind_speed = `Wind speed (m/s)`,
+    visibility = `Visibility (10m)`,
+    dew_point_temp = starts_with("Dew point"),
+    solar_radiation = `Solar Radiation (MJ/m2)`,
+    rainfall = `Rainfall(mm)`,
+    snowfall = `Snowfall (cm)`,
+    seasons = Seasons,
+    holiday = Holiday,
+    functioning_day = `Functioning Day`
+  )
+
+names(bike_data)
+```
+
+### 6. Summary stats
+
+```{r}
+# Function to summarize by given grouping variables
+bike_summary <- function(data, ...) {
+  data |>
+    group_by(...) |>
+    summarize(
+      n = n(),
+      total = sum(bike_count),
+      mean = mean(bike_count),
+      sd = sd(bike_count),
+      min = min(bike_count),
+      median = median(bike_count),
+      max = max(bike_count),
+      .groups = "drop"
+    )
+}
+
+bike_data |> bike_summary()
+```
+
+```{r}
+bike_data |> bike_summary(seasons)
+```
+
+```{r}
+bike_data |> bike_summary(holiday)
+```
+
+```{r}
+bike_data |> bike_summary(functioning_day)
+```
+
+When functioning_day is zero, the bike rental total is 0 since no bikes are rented if the system isn't functioning. We can drop these to only focus on functioning hours
+
+```{r}
+bike_data <- bike_data |>
+  filter(functioning_day == "Yes") |>
+  select(-functioning_day)
+
+nrow(bike_data)
+```
+
+### 7. Summarize across hours
