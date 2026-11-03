@@ -298,3 +298,155 @@ ggplot(bike_daily, aes(x = date, y = bike_count)) +
 ```
  
 Rentals follow the seasons, peaking in early summer and fall and dropping off in winter.
+
+
+# fitting models
+ 
+## weekday/weekend Variable
+ 
+We won't use `date` directly in the models, but we use it to create a weekday/weekend factor in both sets. `wday()` with `week_start = 1` numbers Monday as 1 through Sunday as 7, so days 6 and 7 are the weekend.
+ 
+```{r}
+#| label: weekend
+add_day_type <- function(df) {
+  df |>
+    mutate(
+      day_type = factor(
+        if_else(wday(date, week_start = 1) >= 6, "weekend", "weekday")
+      )
+    )
+}
+ 
+bike_train <- add_day_type(bike_train)
+bike_test  <- add_day_type(bike_test)
+ 
+table(bike_train$day_type)
+```
+ 
+## standardize numeric variables
+ 
+Each numeric predictor is standardized with the **training set** mean and standard deviation. The test set is standardized with those same training values, so no information from the test set leaks into the model. The response, `bike_count`, is left on its original scale.
+ 
+```{r}
+#| label: standardize
+num_vars <- c("temp", "humidity", "wind_speed", "visibility",
+              "dew_point_temp", "solar_radiation", "rainfall", "snowfall")
+ 
+
+train_means <- map_dbl(bike_train[num_vars], mean)
+train_sds   <- map_dbl(bike_train[num_vars], sd)
+ 
+standardize <- function(df, means, sds) {
+  for (v in names(means)) {
+    df[[v]] <- (df[[v]] - means[[v]]) / sds[[v]]
+  }
+  df
+}
+ 
+bike_train_std <- standardize(bike_train, train_means, train_sds)
+bike_test_std  <- standardize(bike_test,  train_means, train_sds)
+ 
+# training set should have mean ~0 and sd 1
+bike_train_std |>
+  summarize(across(all_of(num_vars), list(mean = \(x) round(mean(x), 3), sd = sd)))
+```
+ 
+## model 1: main effects
+ 
+All standardized numeric variables plus seasons, holiday, and weekday/weekend.
+ 
+```{r}
+#| label: model-1
+fit1 <- lm(
+  bike_count ~ temp + humidity + wind_speed + visibility + dew_point_temp +
+    solar_radiation + rainfall + snowfall + seasons + holiday + day_type,
+  data = bike_train_std
+)
+summary(fit1)
+```
+ 
+## model 2: adding interactions
+ 
+Model 1 plus interactions between seasons and holiday, seasons and temperature, and temperature and rainfall.
+ 
+```{r}
+#| label: model-2
+fit2 <- lm(
+  bike_count ~ temp + humidity + wind_speed + visibility + dew_point_temp +
+    solar_radiation + rainfall + snowfall + seasons + holiday + day_type +
+    seasons:holiday + seasons:temp + temp:rainfall,
+  data = bike_train_std
+)
+summary(fit2)
+```
+ 
+## model 3: adding quadratic terms
+ 
+Model 2 plus squared terms for temperature and humidity, created with `I()`.
+ 
+```{r}
+#| label: model-3
+fit3 <- lm(
+  bike_count ~ temp + humidity + wind_speed + visibility + dew_point_temp +
+    solar_radiation + rainfall + snowfall + seasons + holiday + day_type +
+    seasons:holiday + seasons:temp + temp:rainfall +
+    I(temp^2) + I(humidity^2),
+  data = bike_train_std
+)
+summary(fit3)
+```
+ 
+## test set RMSE
+ 
+Predict on the standardized test set and compute the RMSE for each model.
+ 
+```{r}
+#| label: rmse
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+ 
+rmse_results <- tibble(
+  model = c("Model 1: Main effects",
+            "Model 2: + Interactions",
+            "Model 3: + Quadratic terms"),
+  test_rmse = c(
+    rmse(bike_test_std$bike_count, predict(fit1, newdata = bike_test_std)),
+    rmse(bike_test_std$bike_count, predict(fit2, newdata = bike_test_std)),
+    rmse(bike_test_std$bike_count, predict(fit3, newdata = bike_test_std))
+  )
+)
+ 
+rmse_results
+ 
+best_model <- rmse_results$model[which.min(rmse_results$test_rmse)]
+best_model
+```
+ 
+The best model is **`r best_model`**, with the lowest test set RMSE.
+ 
+## fit the best model to the full data
+ 
+Now refit the best model on the entire daily data set. This time the numeric variables are standardized with the mean and SD of **all** the data, and the weekday/weekend variable is added the same way as before.
+ 
+```{r}
+#| label: full-data
+bike_full <- add_day_type(bike_daily)
+ 
+full_means <- map_dbl(bike_full[num_vars], mean)
+full_sds   <- map_dbl(bike_full[num_vars], sd)
+ 
+bike_full_std <- standardize(bike_full, full_means, full_sds)
+ 
+best_fit <- list(fit1, fit2, fit3)[[which.min(rmse_results$test_rmse)]]
+ 
+final_fit <- lm(formula(best_fit), data = bike_full_std)
+```
+ 
+## final model coefficients
+ 
+```{r}
+#| label: final-coefs
+final_coefs <- coef(final_fit)
+tibble(term = names(final_coefs), estimate = round(final_coefs, 2))
+```
