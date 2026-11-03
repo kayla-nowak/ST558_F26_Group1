@@ -176,10 +176,51 @@ cat("Correlation Visibility x Snowfall = ",
     cor(seoul_fn |> select(visibility_10m, snowfall_cm))[1,2])
 ```
 
-## Data Restrucure
+## Data Restructure
+
+```{r}
+seoul_new <- seoul_fn |>
+  group_by(date_num, seasons, holiday) |>
+  summarize(bike_count = sum(rented_bike_count),
+            rainfall   = sum(rainfall_mm),
+            snowfall   = sum(snowfall_cm),
+            temp       = mean(temperature_c),
+            humidity   = mean(humidity_percent),
+            windspeed  = mean(wind_speed_m_s),
+            visibility = mean(visibility_10m),
+            dewpoint   = mean(dew_point_temperature_c),
+            solar      = mean(solar_radiation_mj_m2)) |>
+  ungroup()
+
+str(seoul_new)
+```
+
+**Categorical Frequencies**
+
+```{r}
+table(seoul_new$seasons)
+table(seoul_new$holiday)
+```
 
 
+**Numeric Summaries**
+
+Overall:
+
+```{r}
+psych::describe(seoul_new |> select(where(is.numeric)) ) |> 
+  select(n, min, median, max, range, mean, sd)
+```
+
+***add rest if time***
 
 ## Split for Training
+
+Split 75:25 for training:test, stratified by season.
+
+```{r}
+
+```
+
 
 ## MLR Fit
