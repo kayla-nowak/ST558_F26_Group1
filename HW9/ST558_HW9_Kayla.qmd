@@ -297,10 +297,60 @@ seoul_testz <- seoul_testz |>
   select(date_num, dow, everything())
 ```
 
-### Models
+### Three Models
 
 Three proposed models:
 
 1. Main effects model ( ~ seasons + holiday + dow + allX)
 2. Interaction model (~ mod1 + seasons\*holiday + seasons\*temp + temp*rainfall)
-3. Quadratic model (~ mod2 + )
+3. Quadratic model (~ mod2 + temp^2 + humidity^2)
+
+Fit models using training data:
+
+```{r}
+#Model 1:
+mod1 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar,
+           data = seoul_trainz)
+mod1
+
+#Model 2:
+mod2 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall,
+           data = seoul_trainz)
+mod2
+
+#Model 3:
+mod3 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall +
+             I(temp^2) + I(humidity^2),
+           data = seoul_trainz)
+mod3
+```
+
+### Test Set Error Assessment
+
+Using RMSE metric and the standardized test data (seoul_testz)
+
+```{r}
+#Model 1:
+tse1 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod1, newdata=seoul_testz) )
+tse1
+
+#Model 2:
+tse2 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod2, newdata=seoul_testz) )
+tse2
+
+#Model 3:
+tse3 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod3, newdata=seoul_testz) )
+tse3
+```
+
+Model 3 has the smallest RMSE (2817.623). Proceed with Model 3 for the formal analysis.
+
+### Final Model
