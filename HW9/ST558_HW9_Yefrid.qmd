@@ -10,6 +10,7 @@ format: html
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(tidymodels)
 ```
 
 
@@ -226,4 +227,20 @@ simple_bikes_data |>
 We can see that rainfall, snowfall and wind speed are the only weather variables that have a negative correlation with the bike rentals, but not strong.
 
 Temperature, and solar radiation have a positive and strong correlation with the amount of bikes rented.
+
+## Splitting the data
+
+We are going to do a 75/25 split on the data for our training and test set, stratifying it on the seasons variable.
+
+This means the re sampling is created within the stratification variable (75% of winter, 75% of summer, etc)
+
+```{r}
+set.seed(10)
+bike_split <- initial_split(simple_bikes_data, prop = 0.75, strata = seasons)
+bike_train <- training(bike_split)
+bike_test <- testing(bike_split)
+bike_train
+```
+
+## Fitting MLR Models
 
