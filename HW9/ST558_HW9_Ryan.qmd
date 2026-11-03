@@ -11,6 +11,7 @@ editor: visual
 library(tidyverse)
 library(lubridate)
 library(rsample)
+library(tidymodels)
 ```
 
 # Reading in Data
@@ -143,3 +144,117 @@ nrow(bike_data)
 ```
 
 ### 7. Summarize across hours
+
+```{r}
+bike_daily <- bike_data |>
+  group_by(date, seasons, holiday) |>
+  summarize(
+    across(c(bike_count, rainfall, snowfall), sum),
+    across(c(temp, humidity, wind_speed, visibility, dew_point_temp, solar_radiation), mean),
+    .groups = "drop"
+  )
+
+bike_daily
+```
+
+### 8. Summaries from daily data
+
+```{r}
+bike_daily |> 
+  select(where(is.numeric)) |>
+  summary()
+```
+
+
+```{r}
+bike_daily |> bike_summary(seasons)
+```
+
+```{r}
+bike_daily |> bike_summary(holiday)
+```
+
+
+
+```{r}
+bike_daily |> bike_summary(seasons, holiday)
+```
+
+Correlations:
+
+```{r}
+bike_daily |>
+  select(where(is.numeric)) |>
+  cor() |>
+  round(2)
+```
+
+Plots: 
+
+Plot of daily bike rentals over the year:
+
+```{r}
+season_colors <- c(
+  Winter = "lightblue",
+  Spring = "springgreen",
+  Summer = "orange",
+  Autumn = "yellow"
+)
+
+
+ggplot(bike_daily, aes(date, bike_count, color = seasons)) +
+  geom_line(aes(group = 1), linewidth = 0.5) +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Bikes rented per day", color = "Season")
+```
+
+Bike rentals by season and holiday
+
+```{r}
+ggplot(bike_daily, aes(seasons, bike_count, color = seasons)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.5) +
+  facet_wrap(~ holiday) +
+  scale_color_manual(values = season_colors, guide = "none") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(x = NULL, y = "Bikes rented per day")
+
+```
+
+Daily bike rentals with temperature
+
+```{r}
+ggplot(bike_daily, aes(temp, bike_count)) +
+  geom_point(aes(color = seasons), alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, color = "black") +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Temperature",
+    x = "Mean Temperature (°C)", y = "Bikes Rented per day")
+```
+
+Bike rentals with Solar radiation 
+
+```{r}
+ggplot(bike_daily, aes(solar_radiation, bike_count)) +
+  geom_point(alpha = 0.5, color = "orange") +
+  labs(
+    title = "Daily Bike Rentals vs. Solar Radiation",
+    x = "Solar Radiation (MJ/m^2)", y = "Bikes Rented per day")
+```
+
+# Split the Data
+
+```{r}
+set.seed(44)
+
+bike_split <- rsample::initial_split(bike_daily, prop = 0.75, strata = "seasons")
+bike_train <- training(bike_split)
+bike_test <- testing(bike_split)
+```
+
+# Fitting MLR Models
+
