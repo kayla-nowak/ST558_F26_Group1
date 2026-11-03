@@ -205,19 +205,11 @@ table(seoul_new$holiday)
 
 **Numeric Summaries**
 
-Overall:
-
 ```{r}
-# apply(X = seoul_new |> select(where(is.numeric)),
-#       MARGIN = 2, 
-#       FUN = summary,
-#       na.rm=TRUE)
-
 psych::describe(seoul_new |> select(where(is.numeric)) ) |> 
   select(n, min, median, max, range, mean, sd)
 ```
 
-***add rest if time***
 
 ## Split for Training
 
@@ -259,6 +251,8 @@ standards
 **Standardize**
 
 Standardize all numeric x-variables on the dataset:  (x - mean(x_train)) / sd(x_train). Store results in new datasets for quick spot-check qc.
+
+Do not standardize the y-variable (bike_count).
 
 ```{r}
 #Initiate Standardized Datasets
@@ -354,3 +348,59 @@ tse3
 Model 3 has the smallest RMSE (2817.623). Proceed with Model 3 for the formal analysis.
 
 ### Final Model
+
+Find standards for the full dataset (seoul_new).
+
+```{r}
+standards_final <- apply(X = seoul_new |> select(where(is.numeric)),
+                   MARGIN = 2,
+                   FUN = function(x){
+                     temp <- c(mean(x), sd(x))
+                     names(temp) <- c("mean", "sd")
+                     temp
+                   })
+
+standards_final
+```
+
+Apply the final standardization to the full dataset. Use the same `xvars` list from before, and again, create a new dataset for quick spot-check of calculations.
+
+```{r}
+#Initialize new dataset
+seoul_newz <- seoul_new
+
+#Loop
+print(xvars)
+
+for (i in 1:length(xvars)){
+  
+  x <- xvars[i]
+  
+  seoul_newz[,x] <- (seoul_newz[,x] - standards_final["mean", x])/standards_final["sd", x]
+  
+}
+```
+
+Add day-of-week variable.
+
+```{r}
+seoul_newz <- seoul_newz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+```
+
+Fit model 3 to the standardized full dataset.
+
+```{r}
+mod_final <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall +
+             I(temp^2) + I(humidity^2),
+           data = seoul_newz)
+```
+
+Coefficient estimates:
+
+```{r}
+mod_final
+```
