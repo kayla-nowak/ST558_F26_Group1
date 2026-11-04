@@ -219,7 +219,7 @@ We can also calculate the pearson correlation between the numeric variables and 
 simple_bikes_data |> 
   summarise(across(
       where(is.numeric) & !bike_count, 
-      ~ cor(bike_count, .x, use = "pairwise.complete.obs")
+      ~ cor(bike_count, .x)
     )
   )
 ```
@@ -322,3 +322,85 @@ and we get the test set standardize using the training set as the reference
 bike_test_std <- standardrize_tibble(bike_train, bike_test, bike_count)
 bike_test_std
 ```
+
+Now we are going to fit three models
+
+### 1. No interactions model
+
+We are going to fit all numeric variables and seasons, holiday, week_day.
+
+```{r}
+lm1 <- lm(bike_count ~ seasons + holiday + week_day + rainfall + snowfall + temperature_c + humidity_percent + wind_speed_m_s + visibility_10m + dew_point_temperature_c + solar_radiation_mj_m2,
+          data = bike_train_std)
+```
+
+### 2. Some interactions model
+
+This model will include some interactions terms which are defines using the `:` between the variables that we want the interaction term
+```{r}
+lm2 <- lm(bike_count ~ seasons + holiday + week_day + rainfall + snowfall + temperature_c + humidity_percent + wind_speed_m_s + visibility_10m + dew_point_temperature_c + solar_radiation_mj_m2 + seasons:holiday + seasons:temperature_c + temperature_c:rainfall,
+          data = bike_train_std)
+```
+
+### 3. With quadratic terms linear model
+
+
+This model will include all the terms from the `lm2` and some quadratic terms
+```{r}
+lm3 <- lm(bike_count ~ seasons + holiday + week_day + rainfall + snowfall + temperature_c + humidity_percent + wind_speed_m_s + visibility_10m + dew_point_temperature_c + solar_radiation_mj_m2 + seasons:holiday + seasons:temperature_c + temperature_c:rainfall + I(temperature_c^2) + I(humidity_percent^2),
+          data = bike_train_std)
+```
+
+### Model selection
+
+Using RMSE as the metric to select the model, we are going to calculate the RMSE for each model now using the test set which was standardized.
+
+```{r}
+#For the simplest model
+rmse_vec(bike_test_std$bike_count, predict(lm1, newdata = bike_test_std))
+
+#For the model including interaction terms
+rmse_vec(bike_test_std$bike_count, predict(lm2, newdata = bike_test_std))
+
+#For the model including interaction and quadratic terms
+rmse_vec(bike_test_std$bike_count, predict(lm3, newdata = bike_test_std))
+```
+
+Now that we know that the model that include interaction terms, but not the quadratic terms is the one that minimizes our metric, we proceed to fit that model to the entire data-set.
+
+### Fitting to the entire data-set
+
+First we add the variable week_day, and use our helper function to standardize the data.
+
+```{r}
+simple_bikes_data <- simple_bikes_data|>
+  #We create a column with what day of the week is, and add the label true so we get the name
+  mutate(day = wday(simple_bikes_data$date, 
+                    label = TRUE),
+         #Now we create as factor whether is a weekday or a weekend
+         week_day = as_factor(
+           if_else(day %in% c("Sat", "Sun"),
+                   "Weekend", "Weekday")
+         )) |>
+  select(date, day, week_day, seasons, holiday, bike_count, everything())
+
+#And we standardize
+
+simple_bikes_data_std <- standardrize_tibble(simple_bikes_data,
+                                             simple_bikes_data, 
+                                             bike_count)
+
+simple_bikes_data_std
+```
+Now we fit the model
+```{r}
+bikes_model <- lm(bike_count ~ seasons + holiday + week_day + rainfall + snowfall + temperature_c + humidity_percent + wind_speed_m_s + visibility_10m + dew_point_temperature_c + solar_radiation_mj_m2 + seasons:holiday + seasons:temperature_c + temperature_c:rainfall,
+          data = simple_bikes_data_std)
+```
+
+The coefficients for the final fitted model are:
+
+```{r}
+coef(bikes_model)
+```
+
