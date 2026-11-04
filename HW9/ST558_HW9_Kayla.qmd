@@ -11,6 +11,7 @@ format: html
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
+library(tidymodels)
 ```
 
 ## Read-in Data
@@ -192,7 +193,6 @@ seoul_new <- seoul_fn |>
             solar      = mean(solar_radiation_mj_m2)) |>
   ungroup()
 
-str(seoul_new)
 ```
 
 **Categorical Frequencies**
@@ -205,22 +205,202 @@ table(seoul_new$holiday)
 
 **Numeric Summaries**
 
-Overall:
-
 ```{r}
 psych::describe(seoul_new |> select(where(is.numeric)) ) |> 
   select(n, min, median, max, range, mean, sd)
 ```
 
-***add rest if time***
 
 ## Split for Training
 
-Split 75:25 for training:test, stratified by season.
+Split 75:25 for training:test, stratified by seasons.
 
 ```{r}
+set.seed(789)
 
+seoul_split <- rsample::initial_split(seoul_new, prop = 0.75, strata = "seasons")
+seoul_train <- training(seoul_split)
+seoul_test  <- testing(seoul_split)
 ```
 
 
 ## MLR Fit
+
+### Data prep
+
+Additional data transformations are needed...
+
+**Find Standards**
+
+Calculate mean and standard deviation for all numeric x-variables in the training dataset. These will be used to standardize each variable in both training and testing.
+
+Results are stored in the `standards` matrix as ["mean", ] and ["sd", ] row positions, with each variable name as the column positions.
+
+```{r}
+standards <- apply(X = seoul_train |> select(where(is.numeric)),
+                   MARGIN = 2,
+                   FUN = function(x){
+                     temp <- c(mean(x), sd(x))
+                     names(temp) <- c("mean", "sd")
+                     temp
+                   })
+
+standards
+```
+
+**Standardize**
+
+Standardize all numeric x-variables on the dataset:  (x - mean(x_train)) / sd(x_train). Store results in new datasets for quick spot-check qc.
+
+Do not standardize the y-variable (bike_count).
+
+```{r}
+#Initiate Standardized Datasets
+seoul_trainz <- seoul_train
+seoul_testz  <- seoul_test
+
+#Predictors to loop over
+xvars <- c("rainfall", "snowfall", "temp", "humidity", "windspeed", "visibility", "dewpoint", "solar")
+
+
+for (i in 1:length(xvars)){
+  
+  x <- xvars[i]
+  
+  #Training Data
+  seoul_trainz[,x] <- (seoul_trainz[,x] - standards["mean", x])/standards["sd", x]
+  
+  #Testing Data
+  seoul_testz[,x] <- (seoul_testz[,x] - standards["mean", x])/standards["sd", x]
+
+}
+
+```
+
+**DOW Derived**
+
+Derive day of week variable from date (factor with 1=Sunday, ..., 7 = Saturday)
+
+```{r}
+seoul_trainz <- seoul_trainz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+
+seoul_testz <- seoul_testz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+```
+
+### Three Models
+
+Three proposed models:
+
+1. Main effects model ( ~ seasons + holiday + dow + allX)
+2. Interaction model (~ mod1 + seasons\*holiday + seasons\*temp + temp*rainfall)
+3. Quadratic model (~ mod2 + temp^2 + humidity^2)
+
+Fit models using training data:
+
+```{r}
+#Model 1:
+mod1 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar,
+           data = seoul_trainz)
+mod1
+
+#Model 2:
+mod2 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall,
+           data = seoul_trainz)
+mod2
+
+#Model 3:
+mod3 <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall +
+             I(temp^2) + I(humidity^2),
+           data = seoul_trainz)
+mod3
+```
+
+### Test Set Error Assessment
+
+Using RMSE metric and the standardized test data (seoul_testz)
+
+```{r}
+#Model 1:
+tse1 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod1, newdata=seoul_testz) )
+tse1
+
+#Model 2:
+tse2 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod2, newdata=seoul_testz) )
+tse2
+
+#Model 3:
+tse3 <- yardstick::rmse_vec(seoul_testz$bike_count, 
+                            predict(mod3, newdata=seoul_testz) )
+tse3
+```
+
+Model 3 has the smallest RMSE (2817.623). Proceed with Model 3 for the formal analysis.
+
+### Final Model
+
+Find standards for the full dataset (seoul_new).
+
+```{r}
+standards_final <- apply(X = seoul_new |> select(where(is.numeric)),
+                   MARGIN = 2,
+                   FUN = function(x){
+                     temp <- c(mean(x), sd(x))
+                     names(temp) <- c("mean", "sd")
+                     temp
+                   })
+
+standards_final
+```
+
+Apply the final standardization to the full dataset. Use the same `xvars` list from before, and again, create a new dataset for quick spot-check of calculations.
+
+```{r}
+#Initialize new dataset
+seoul_newz <- seoul_new
+
+#Loop
+print(xvars)
+
+for (i in 1:length(xvars)){
+  
+  x <- xvars[i]
+  
+  seoul_newz[,x] <- (seoul_newz[,x] - standards_final["mean", x])/standards_final["sd", x]
+  
+}
+```
+
+Add day-of-week variable.
+
+```{r}
+seoul_newz <- seoul_newz |> 
+  mutate(dow = wday(date_num)) |>
+  select(date_num, dow, everything())
+```
+
+Fit model 3 to the standardized full dataset.
+
+```{r}
+mod_final <- lm(bike_count ~ seasons + holiday + dow + rainfall + snowfall + temp +
+             humidity + windspeed + visibility + dewpoint + solar +
+             seasons:holiday + seasons:temp + temp:rainfall +
+             I(temp^2) + I(humidity^2),
+           data = seoul_newz)
+```
+
+Coefficient estimates:
+
+```{r}
+mod_final
+```

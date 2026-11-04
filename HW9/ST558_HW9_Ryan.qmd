@@ -11,11 +11,13 @@ editor: visual
 library(tidyverse)
 library(lubridate)
 library(rsample)
+library(tidymodels)
 ```
 
 # Reading in Data
 
 ```{r}
+# Here latin1 encoding fixes the invalid string errors caused by the degree variables
 bike <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/SeoulBikeData.csv", 
                  locale = locale(encoding = "latin1")
 )
@@ -31,12 +33,15 @@ bike
 ```{r}
 colSums(is.na(bike))
 ```
+No columns have missing values, so we dont need to drop anything
+
 
 ### 2. Column types and values
 
 ```{r}
 glimpse(bike)
 ```
+Here date is read in as a character variable, and seasons, holiday, and functioning day should be factors.
 
 Summary stats for numeric columns
 
@@ -45,6 +50,7 @@ bike |>
   select(where(is.numeric)) |>
   summary()
 ```
+These ranges look normal. Humidity has a minimum of 0, which shouldn't happen outside. This may be a sensor problem, but we'll leave it in
 
 Unique values for categorical variables:
 
@@ -53,12 +59,25 @@ bike |>
   select(where(is.character), -Date) |>
   map(unique)
 ```
+Here are the unique values for categorical variables that will have to be turned into factors, their counts are below
+
+```{r}
+bike |>
+  count(Seasons)
+
+bike |>
+  count(Holiday)
+
+bike |>
+  count(`Functioning Day`)
+```
 
 ### 3. Convert date
 
 ```{r}
 bike <- bike |>
   mutate(Date = dmy(Date))
+# Checking for anything that failed to parse
 sum(is.na(bike$Date))
 ```
 ```{r}
@@ -74,9 +93,10 @@ bike <- bike |>
 bike
 ```
 
-### 5. Rename variables
+### 5. Rename variables 
 
 ```{r}
+# Using lower snake case here
 bike_data <- bike |>
   rename(
     date = Date,
@@ -143,3 +163,258 @@ nrow(bike_data)
 ```
 
 ### 7. Summarize across hours
+
+Here we are collapsing the hours into days
+
+```{r}
+bike_daily <- bike_data |>
+  group_by(date, seasons, holiday) |>
+  summarize(
+    across(c(bike_count, rainfall, snowfall), sum),
+    across(c(temp, humidity, wind_speed, visibility, dew_point_temp, solar_radiation), mean),
+    .groups = "drop"
+  )
+
+bike_daily
+```
+
+We now have 353 rows, one for each day the system was running
+
+### 8. Summaries from daily data
+
+```{r}
+bike_daily |> 
+  select(where(is.numeric)) |>
+  summary()
+```
+
+
+```{r}
+bike_daily |> bike_summary(seasons)
+```
+
+```{r}
+bike_daily |> bike_summary(holiday)
+```
+
+
+
+```{r}
+bike_daily |> bike_summary(seasons, holiday)
+```
+The mean rentals per day is about 17,500, ranging from 977 to 36,149. Season makes a large difference, with winter averaging around 5,400 rentals. 
+
+Holidays also average about 5,000 fewer rentals, although there is a low sample size, and most holidays occur during winter.
+
+Correlations:
+
+```{r}
+bike_daily |>
+  select(where(is.numeric)) |>
+  cor() |>
+  round(2)
+```
+Temperature (0.75) and solar radiation (0.74) have the strongest linear relationship with rentals, followed by dew point (0.65). 
+
+Temperature and dew point are also highly correlated (0.96), so they carry very similar information.
+
+Plots: 
+
+Plot of daily bike rentals over the year:
+
+```{r}
+season_colors <- c(
+  Winter = "lightblue",
+  Spring = "springgreen",
+  Summer = "orange",
+  Autumn = "yellow"
+)
+
+
+ggplot(bike_daily, aes(date, bike_count, color = seasons)) +
+  geom_line(aes(group = 1), linewidth = 0.5) +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Bikes rented per day", color = "Season")
+```
+Rentals stay low through winter, climb through spring, Peak in June and again around September.
+
+Bike rentals by season and holiday
+
+```{r}
+ggplot(bike_daily, aes(seasons, bike_count, color = seasons)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.5) +
+  facet_wrap(~ holiday) +
+  scale_color_manual(values = season_colors, guide = "none") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(x = NULL, y = "Bikes rented per day")
+
+```
+The holiday boxplots are misleading because of the lack of data, but non-holidays show that winter has the lowest median rental amount of the four seasons. Spring has the second lowest median, but the largest spread.
+
+Daily bike rentals with temperature
+
+```{r}
+ggplot(bike_daily, aes(temp, bike_count)) +
+  geom_point(aes(color = seasons), alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, color = "black") +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Temperature",
+    x = "Mean Temperature (°C)", y = "Bikes Rented per day")
+```
+Temperature has a clear relationship with bike rentals, but its not purely linear. Rentals fall off for the hot days, hinting at the usefulness of a squared term in our model fit.
+
+Bike rentals with Solar radiation 
+
+```{r}
+ggplot(bike_daily, aes(solar_radiation, bike_count)) +
+  geom_point(alpha = 0.5, color = "orange") +
+  labs(
+    title = "Daily Bike Rentals vs. Solar Radiation",
+    x = "Solar Radiation (MJ/m^2)", y = "Bikes Rented per day")
+```
+
+Bike rentals and solar radiation have a strong correlation (0.74), although sunny days tend to also be warm days,
+so some of this correlation may also be explained by the temperature effect.
+
+# Split the Data
+
+Here we use a 75/25 split stratified on seasons
+```{r}
+set.seed(44)
+
+bike_split <- rsample::initial_split(bike_daily, prop = 0.75, strata = "seasons")
+bike_train <- training(bike_split)
+bike_test <- testing(bike_split)
+```
+
+# Fitting MLR Models
+
+## Preparing the data
+
+First, we need to prepare the data by creating a day_type factor with Sunday as day 1 and
+Saturday as day 7. Then, we need to standardize each numeric weather variable using our training data as a reference.
+```{r}
+weather_vars <- c(
+  "temp", "humidity", "wind_speed", "visibility",
+  "dew_point_temp", "solar_radiation", "rainfall", "snowfall"
+)
+
+standardize <- function(data, reference) {
+  data |>
+    mutate(
+      day_type = if_else(wday(date, week_start = 7) %in% c(1, 7), "weekend", "weekday"),
+      day_type = factor(day_type, levels = c("weekday", "weekend")),
+      across(
+        all_of(weather_vars),
+        \(x) (x - mean(reference[[cur_column()]])) / sd(reference[[cur_column()]]),
+        .names = "{.col}_std"
+      )
+    )
+}
+```
+
+```{r}
+train_std <- standardize(bike_train, reference = bike_train)
+test_std <- standardize(bike_test, reference = bike_train)
+```
+
+Checking standardization results, training variables should have a mean of approximately 0 and standard
+deviation of 1. Test set should be close but not exact.
+
+```{r}
+bind_rows(train = train_std, test = test_std, .id = "set") |>
+  group_by(set) |>
+  summarize(
+    temp_std_mean = mean(temp_std),
+    temp_std_sd = sd(temp_std),
+    rainfall_std_mean = mean(rainfall_std),
+    rainfall_std_sd = sd(rainfall_std)
+  )
+```
+
+## Fitting models
+
+### Model 1: Main effects
+
+```{r}
+formula_1 <- bike_count ~ temp_std + humidity_std + wind_speed_std + visibility_std +
+  dew_point_temp_std + solar_radiation_std + rainfall_std + snowfall_std +
+  seasons + holiday + day_type
+```
+
+### Model 2: Interactions
+
+```{r}
+formula_2 <- update(
+  formula_1,
+  . ~ . + seasons:holiday + seasons:temp_std + temp_std:rainfall_std
+)
+```
+
+### Model 3: Quadratic terms
+
+```{r}
+formula_3 <- update(
+  formula_2,
+  . ~ . + I(temp_std^2) + I(humidity_std^2)
+)
+```
+
+```{r}
+model_formulas <- list(
+  "Model 1" = formula_1,
+  "Model 2" = formula_2,
+  "Model 3" = formula_3
+)
+
+model_fits <- map(model_formulas, \(f) lm(f, data = train_std))
+```
+
+## Comparing test set RMSE
+
+```{r}
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+
+test_rmse <- map_dbl(
+  model_fits,
+  \(fit) rmse(test_std$bike_count, predict(fit, newdata = test_std))
+)
+```
+
+```{r}
+tibble(model = names(test_rmse), test_rmse = test_rmse)
+
+best_model <- names(which.min(test_rmse))
+```
+
+Our best model has the lowest test set RMSE, so we select Model 3. Although Model 2 is also a good choice, adding the interaction
+terms appear to do a lot of heavy lifting.
+
+## Fitting best model to full dataset
+
+```{r}
+bike_full_std <- standardize(bike_daily, reference = bike_daily)
+
+final_fit <- lm(model_formulas[[best_model]], data = bike_full_std)
+
+coef(summary(final_fit)) |>
+  as_tibble(rownames = "term") |>
+  select(term, estimate = Estimate, std_error = `Std. Error`, t_value = `t value`)
+```
+
+Here is the final model fit. Is has an intercept of 18061, which is the prediction for a baseline day with 
+all weather variables constant. Rentals increase as temperature and solar radiation increase, whereas rentals decrease as humidity and wind speed increase.  
+
+```{r}
+summary(final_fit)$adj.r.squared
+```
+
+The final model has an adjusted R-squared of 0.917, although this is measured on the same data used to fit the model, so the test
+RMSE is a better guide of prediction.
