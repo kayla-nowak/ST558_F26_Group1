@@ -244,3 +244,81 @@ bike_train
 
 ## Fitting MLR Models
 
+#### Some previous manipulations
+
+First we are going to add a column with the function `wday()` from `lubridate`
+
+```{r}
+bike_train <- bike_train|>
+  #We create a column with what day of the week is, and add the label true so we get the name
+  mutate(day = wday(bike_train$date, 
+                    label = TRUE),
+         #Now we create as factor whether is a weekday or a weekend
+         week_day = as_factor(
+           if_else(day %in% c("Sat", "Sun"),
+                   "Weekend", "Weekday")
+         )) |>
+  select(date, day, week_day, seasons, holiday, bike_count, everything())
+
+bike_train
+```
+Now we repeat the process for the test set
+
+```{r}
+bike_test <- bike_test|>
+  #We create a column with what day of the week is, and add the label true so we get the name
+  mutate(day = wday(bike_test$date, 
+                    label = TRUE),
+         #Now we create as factor whether is a weekday or a weekend
+         week_day = as_factor(
+           if_else(day %in% c("Sat", "Sun"),
+                   "Weekend", "Weekday")
+         )) |>
+  select(date, day, week_day, seasons, holiday, bike_count, everything())
+```
+
+Now we are going to standardize the numeric predictor variables.
+
+For that i am going to create a helper function that is going to take a reference tibble, a tibble to standardize, and the response variable.
+```{r}
+standardrize_tibble <- function(reference, data, response){
+  
+  #We get the mean from the reference tibble
+  ref_mean <- reference |> summarise(across(
+     where(is.numeric) & !{{response}}, 
+     ~ mean(.x)
+ )
+ )
+  
+  #We get the standard deviation from the reference tibble
+  ref_std <- reference |> summarise(across(
+     where(is.numeric) & !{{response}}, 
+     ~ sd(.x)
+ )
+ )
+  
+  #We get the columns for which we are going to transform
+  cols <- names(ref_mean)
+  
+  #And finally we apply to each value of the data what the standardization
+  data |>
+    mutate(across(
+      all_of(cols),
+      ~ (.x - ref_mean[[cur_column()]]) / ref_std[[cur_column()]]
+    ))
+  
+}
+```
+
+We test the function
+
+```{r}
+bike_train_std <- standardrize_tibble(bike_train, bike_train, bike_count)
+bike_train_std
+```
+and we get the test set standardize using the training set as the reference
+
+```{r}
+bike_test_std <- standardrize_tibble(bike_train, bike_test, bike_count)
+bike_test_std
+```
