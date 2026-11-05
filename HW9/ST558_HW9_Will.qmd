@@ -21,7 +21,7 @@ The degree symbols in the column names (like `Temperature(°C)`) cause `read_csv
 ```{r}
 #| label: read-data
 bike_raw <- read_csv(
-  "https://www4.stat.ncsu.edu/~online/datasets/SeoulBikeData.csv",
+  "SeoulBikeData.csv",
   locale = locale(encoding = "latin1")
 )
 bike_raw
@@ -299,6 +299,17 @@ ggplot(bike_daily, aes(x = date, y = bike_count)) +
  
 Rentals follow the seasons, peaking in early summer and fall and dropping off in winter.
 
+# split the data
+
+Split the daily data 75/25 into training and test sets, stratifying on `seasons` so each set has a similar mix of seasons.
+
+```{r}
+#| label: split
+set.seed(558)
+bike_split <- initial_split(bike_daily, prop = 0.75, strata = seasons)
+bike_train <- training(bike_split)
+bike_test  <- testing(bike_split)
+```
 
 # fitting models
  
