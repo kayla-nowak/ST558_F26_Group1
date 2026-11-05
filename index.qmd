@@ -17,3 +17,5 @@ author:
 - [Homework 5](/HW5/ST558_HW5_Final.qmd)
 
 - [Homework 8: Correlation Exploration App](https://01a16012-80ff-5fb4-6151-e2ec6f3de35e.share.connect.posit.cloud/)
+
+- [Homework 9](/HW9/HW9-Final.qmd)
