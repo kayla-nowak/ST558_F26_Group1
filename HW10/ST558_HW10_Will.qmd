@@ -480,3 +480,93 @@ recipe_3 |>
   select(temp, temp_sq, humidity, humidity_sq) |>
   head()
 ```
+
+
+## model specification
+ 
+All three MLR models use a linear regression fit with `lm()`. In `tidymodels`, we describe the model once with `linear_reg()` and choose the `"lm"` engine to do the fitting.
+ 
+```{r}
+#| label: lm-spec
+lm_spec <- linear_reg() |>
+  set_engine("lm")
+```
+ 
+## workflows
+ 
+A workflow bundles a recipe with a model, so the preprocessing and the fit always happen together. We make one workflow per recipe.
+ 
+```{r}
+#| label: lm-workflows
+lm_wf_1 <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(lm_spec)
+ 
+lm_wf_2 <- workflow() |>
+  add_recipe(recipe_2) |>
+  add_model(lm_spec)
+ 
+lm_wf_3 <- workflow() |>
+  add_recipe(recipe_3) |>
+  add_model(lm_spec)
+```
+ 
+## fit with 10-fold cv
+ 
+`fit_resamples()` fits each workflow 10 times, once per fold. Each time it trains on nine folds and computes RMSE and MAE on the held-out fold.
+ 
+```{r}
+#| label: lm-cv
+#| warning: false
+bike_metrics <- metric_set(rmse, mae)
+ 
+lm_cv_1 <- fit_resamples(lm_wf_1, resamples = bike_folds, metrics = bike_metrics)
+lm_cv_2 <- fit_resamples(lm_wf_2, resamples = bike_folds, metrics = bike_metrics)
+lm_cv_3 <- fit_resamples(lm_wf_3, resamples = bike_folds, metrics = bike_metrics)
+```
+ 
+## choose the best model
+ 
+`collect_metrics()` averages each metric across the 10 folds. We put all three models in one table, sorted by CV RMSE.
+ 
+```{r}
+#| label: lm-cv-compare
+lm_cv_results <- bind_rows(
+  collect_metrics(lm_cv_1) |> mutate(model = "MLR 1"),
+  collect_metrics(lm_cv_2) |> mutate(model = "MLR 2"),
+  collect_metrics(lm_cv_3) |> mutate(model = "MLR 3")
+) |>
+  select(model, .metric, mean, std_err)
+ 
+lm_cv_results |>
+  filter(.metric == "rmse") |>
+  arrange(mean)
+```
+ 
+We pick the model with the lowest CV RMSE.
+ 
+```{r}
+#| label: lm-best
+lm_cv_rmse <- lm_cv_results |>
+  filter(.metric == "rmse") |>
+  pull(mean)
+ 
+best_lm_index <- which.min(lm_cv_rmse)
+best_lm_name  <- c("MLR 1",
+                   "MLR 2",
+                   "MLR 3")[best_lm_index]
+best_lm_wf    <- list(lm_wf_1, lm_wf_2, lm_wf_3)[[best_lm_index]]
+```
+ 
+The best MLR model by CV RMSE is `r best_lm_name`.
+ 
+## fit the best model to the training set
+ 
+`last_fit()` takes the original split, fits the workflow on the full training set, and evaluates it on the test set in one step. We save it here and use its test-set metrics in the final comparison.
+ 
+```{r}
+#| label: lm-last-fit
+lm_final_fit <- last_fit(best_lm_wf, split = bike_split, metrics = bike_metrics)
+ 
+collect_metrics(lm_final_fit)
+```
