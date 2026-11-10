@@ -403,3 +403,80 @@ bike_folds <- vfold_cv(bike_train, v = 10)
  
 bike_folds
 ```
+
+
+# fitting MLR models
+ 
+ 
+### recipe 1
+ 
+Recipe 1 uses every variable in `bike_train` to predict `bike_count`, then:
+ 
+1. `step_date()` pulls the day of the week out of `date` as a number (1 = Sunday through 7 = Saturday).
+2. `step_mutate()` turns that into a weekday/weekend factor called `day_type`.
+3. `step_rm()` removes `date` and the intermediate day-of-week column, since we don't model on the date itself.
+4. `step_normalize()` standardizes every numeric predictor. The response, `bike_count`, isn't a predictor, so it stays on its original scale.
+5. `step_dummy()` creates dummy variables for `seasons`, `holiday`, and `day_type`.
+ 
+```{r}
+#| label: recipe-1
+recipe_1 <- recipe(bike_count ~ ., data = bike_train) |>
+  step_date(date, features = "dow", label = FALSE) |>
+  step_mutate(
+    day_type = factor(if_else(date_dow %in% c(1, 7), "Weekend", "Weekday"))
+  ) |>
+  step_rm(date, date_dow) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(seasons, holiday, day_type)
+```
+ 
+To check the recipe does what we expect, we `prep()` it (learn the means, standard deviations, and factor levels from the training data) and `bake()` it (apply it to the training data):
+ 
+```{r}
+#| label: recipe-1-check
+recipe_1 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  glimpse()
+```
+ 
+The numeric predictors are now standardized, `date` is gone, and each factor has been replaced by dummy columns. Autumn, Holiday, and Weekday are the reference levels.
+ 
+### recipe 2
+ 
+Recipe 2 is Recipe 1 plus interactions between seasons and holiday, seasons and temperature, and temperature and rainfall. Because these come after `step_dummy()`, the seasons and holiday variables are now several dummy columns each. `starts_with()` selects all of the dummy columns for a variable at once, so we get one interaction term for each dummy. All three interactions go in one `step_interact()` so that `starts_with("seasons_")` only matches the original dummy columns, not interaction columns created by an earlier step.
+ 
+```{r}
+#| label: recipe-2
+interaction_terms <- ~ starts_with("seasons_"):starts_with("holiday_") +
+  starts_with("seasons_"):temp +
+  temp:rainfall
+ 
+recipe_2 <- recipe_1 |>
+  step_interact(terms = interaction_terms)
+ 
+recipe_2 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(contains("_x_")) |>
+  names()
+```
+ 
+### recipe 3
+ 
+Recipe 3 is Recipe 2 plus squared terms for temperature and humidity. These come after `step_normalize()`, so they are squares of the **standardized** variables, as the assignment asks.
+ 
+```{r}
+#| label: recipe-3
+recipe_3 <- recipe_2 |>
+  step_mutate(
+    temp_sq     = temp^2,
+    humidity_sq = humidity^2
+  )
+ 
+recipe_3 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(temp, temp_sq, humidity, humidity_sq) |>
+  head()
+```
