@@ -12,6 +12,7 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(tidymodels)
+library(baguette)
 ```
  
 Use data read-in and EDA logic from HW9.
@@ -570,3 +571,208 @@ lm_final_fit <- last_fit(best_lm_wf, split = bike_split, metrics = bike_metrics)
  
 collect_metrics(lm_final_fit)
 ```
+
+
+# fitting other models
+ 
+We now fit three tree-based models, all using Recipe 1. Each model has tuning parameters. For each one, we will:
+ 
+1. Mark the parameters to tune with `tune()`.
+2. Try a grid of values with `tune_grid()` on the 10 CV folds.
+3. Pick the values with the lowest CV RMSE using `select_best()`.
+4. Plug them into the workflow with `finalize_workflow()`.
+5. Fit the final model on the full training set with `last_fit()`.
+ 
+## regression tree
+ 
+A regression tree splits the data into groups with a series of yes/no questions about the predictors, then predicts the mean bike count in each group. We tune two settings:
+ 
+- `tree_depth`: how many splits deep the tree can go.
+- `cost_complexity`: how much each extra split has to improve the fit to be kept. Larger values prune the tree back more.
+ 
+```{r}
+#| label: tree-spec
+tree_spec <- decision_tree(
+  tree_depth      = tune(),
+  cost_complexity = tune()
+) |>
+  set_engine("rpart") |>
+  set_mode("regression")
+ 
+tree_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(tree_spec)
+```
+ 
+We try 5 values of each parameter, for 25 combinations.
+ 
+```{r}
+#| label: tree-tune
+tree_grid <- grid_regular(
+  tree_depth(),
+  cost_complexity(),
+  levels = 5
+)
+ 
+tree_tune <- tune_grid(
+  tree_wf,
+  resamples = bike_folds,
+  grid      = tree_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(tree_tune, metric = "rmse", n = 5)
+```
+ 
+Finalize the workflow with the best values and fit it on the full training set.
+ 
+```{r}
+#| label: tree-final
+tree_best <- select_best(tree_tune, metric = "rmse")
+tree_best
+ 
+tree_final_wf  <- finalize_workflow(tree_wf, tree_best)
+tree_final_fit <- last_fit(tree_final_wf, split = bike_split, metrics = bike_metrics)
+```
+ 
+## bagged tree
+ 
+A single tree changes a lot with small changes to the data. Bagging fixes this by fitting many trees, each on a bootstrap sample of the training data, and averaging their predictions. We use `bag_tree()` from the `baguette` package with 50 trees. We let each tree grow without pruning (`cost_complexity = 0`) and tune:
+ 
+- `tree_depth`: how deep each tree can grow.
+- `min_n`: the smallest number of days allowed in a group before a split is made.
+ 
+```{r}
+#| label: bag-spec
+bag_spec <- bag_tree(
+  tree_depth      = tune(),
+  min_n           = tune(),
+  cost_complexity = 0
+) |>
+  set_engine("rpart", times = 50) |>
+  set_mode("regression")
+ 
+bag_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(bag_spec)
+```
+ 
+Bagging involves random sampling, so we set a seed before tuning to get the same results each render. We try 4 values of each parameter, for 16 combinations.
+ 
+```{r}
+#| label: bag-tune
+bag_grid <- grid_regular(
+  tree_depth(),
+  min_n(),
+  levels = 4
+)
+ 
+set.seed(558)
+bag_tune <- tune_grid(
+  bag_wf,
+  resamples = bike_folds,
+  grid      = bag_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(bag_tune, metric = "rmse", n = 5)
+```
+ 
+```{r}
+#| label: bag-final
+bag_best <- select_best(bag_tune, metric = "rmse")
+bag_best
+ 
+bag_final_wf <- finalize_workflow(bag_wf, bag_best)
+ 
+set.seed(558)
+bag_final_fit <- last_fit(bag_final_wf, split = bike_split, metrics = bike_metrics)
+```
+ 
+## random forest
+ 
+A random forest is a bagged tree where at each split, a tree may only choose from a random subset of the predictors. This keeps one strong predictor from dominating every tree, so the trees are less alike and their average is more accurate. We use 500 trees with the `ranger` engine and tune:
+ 
+- `mtry`: how many predictors each split may choose from.
+- `min_n`: the smallest group size allowed before a split.
+ 
+We also set `importance = "impurity"` so `ranger` records how much each variable improves the splits.
+ 
+```{r}
+#| label: rf-spec
+rf_spec <- rand_forest(
+  mtry  = tune(),
+  min_n = tune(),
+  trees = 500
+) |>
+  set_engine("ranger", importance = "impurity") |>
+  set_mode("regression")
+ 
+rf_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(rf_spec)
+```
+ 
+ 
+```{r}
+#| label: rf-tune
+n_predictors <- recipe_1 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(-bike_count) |>
+  ncol()
+ 
+rf_grid <- grid_regular(
+  mtry(range = c(1, n_predictors)),
+  min_n(),
+  levels = 4
+)
+ 
+set.seed(558)
+rf_tune <- tune_grid(
+  rf_wf,
+  resamples = bike_folds,
+  grid      = rf_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(rf_tune, metric = "rmse", n = 5)
+```
+ 
+```{r}
+#| label: rf-final
+rf_best <- select_best(rf_tune, metric = "rmse")
+rf_best
+ 
+rf_final_wf <- finalize_workflow(rf_wf, rf_best)
+ 
+set.seed(558)
+rf_final_fit <- last_fit(rf_final_wf, split = bike_split, metrics = bike_metrics)
+```
+
+
+# compare on the test set
+
+Each `last_fit()` object already holds that model's predictions on the test set. `collect_metrics()` pulls out the test RMSE and MAE.
+
+```{r}
+#| label: test-compare
+test_results <- bind_rows(
+  collect_metrics(lm_final_fit)   |> mutate(model = best_lm_name),
+  collect_metrics(tree_final_fit) |> mutate(model = "Regression tree"),
+  collect_metrics(bag_final_fit)  |> mutate(model = "Bagged tree"),
+  collect_metrics(rf_final_fit)   |> mutate(model = "Random forest")
+) |>
+  select(model, .metric, .estimate) |>
+  pivot_wider(names_from = .metric, values_from = .estimate) |>
+  arrange(rmse)
+
+test_results
+```
+
+```{r}
+#| label: test-best
+best_overall_name <- test_results$model[1]
+```
+
+The best model on the test set is the **`r best_overall_name`**, with a test RMSE of `r round(test_results$rmse[1])` and a test MAE of `r round(test_results$mae[1])` bikes per day.
