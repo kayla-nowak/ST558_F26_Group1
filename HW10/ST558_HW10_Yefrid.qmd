@@ -430,3 +430,101 @@ I have got the transformed table (the recipe do what we want)
 
 We are going to take what was created earlier and add interaction terms between season and holiday, season and temp, and temp and rainfall.
 
+```{r}
+bike_rec_2 <- 
+  bike_rec_1 |>
+  step_interact(terms = 
+                  ~ starts_with("seasons"):starts_with("holiday") + 
+                  starts_with("seasons"):temp + 
+                  temp:rainfall)
+  
+```
+
+```{r}
+bike_rec_2 |>
+  prep(training = bike_train) |>
+  bake(new_data = bike_train)
+```
+## 3rd Recipe
+
+In this recipe we are going to but we are going to add a quadratic terms for temperature and humidity variables, using the function `step_mutate()`.
+
+```{r}
+bike_rec_3 <- 
+  bike_rec_2 |>
+  step_mutate(temp_sq = temp^2,
+              humidity_sq = humidity^2)
+```
+
+```{r}
+bike_rec_3 |>
+  prep(training = bike_train) |>
+  bake(new_data = bike_train)
+```
+
+### Fitting `lm`
+
+We are going to set up the model to have the engine as `lm`.
+```{r}
+bike_mod <- linear_reg() |>
+  set_engine("lm")
+```
+
+Now we set up the workflow for the models
+
+```{r}
+bike_wfl_1 <- workflow() |>
+  add_recipe(bike_rec_1) |>
+  add_model(bike_mod)
+
+bike_wfl_2 <- workflow() |>
+  add_recipe(bike_rec_2) |>
+  add_model(bike_mod)
+
+bike_wfl_3 <- workflow() |>
+  add_recipe(bike_rec_3) |>
+  add_model(bike_mod)
+```
+
+Now that we have the workflows, we can use the cross-validation using the 10 folds previously created for the training set.
+
+We are going to use the `fit_resamples()` function for this purpose.
+
+And we apply the same for both of the 
+
+```{r}
+bike_CV_fits_1 <- bike_wfl_1 |>
+  fit_resamples(bike_folds)
+
+bike_CV_fits_2 <- bike_wfl_2 |>
+  fit_resamples(bike_folds)
+
+bike_CV_fits_3 <- bike_wfl_3 |>
+  fit_resamples(bike_folds)
+
+#We print the metrics in order
+
+rbind(bike_CV_fits_1 |> collect_metrics(),
+      bike_CV_fits_2 |> collect_metrics(),
+      bike_CV_fits_3 |> collect_metrics())
+
+```
+
+Based on the mean RMSE metric for each of the fitted models, the one that shows the lower RMSE is the model 3 which include the interaction and quadratic terms.
+
+### Best model fitting
+
+We are going to take the model 3 which includes interaction and quadratic terms and fitted to the entire training set, using the `last_fit()` function.
+
+```{r}
+MLR_metric <- bike_wfl_3 |>
+  last_fit(bike_split) |>
+  collect_metrics()
+
+MLR_metric
+```
+
+# Fitting Other Models
+
+We are going to use the first recipe form the above section for a tuned regression tree model, a tuned bagged tree model, and a random forest model.
+
