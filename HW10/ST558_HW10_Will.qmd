@@ -13,6 +13,7 @@ library(lubridate)
 library(janitor)
 library(tidymodels)
 library(baguette)
+library(rpart.plot)
 ```
  
 Use data read-in and EDA logic from HW9.
@@ -776,3 +777,95 @@ best_overall_name <- test_results$model[1]
 ```
 
 The best model on the test set is the **`r best_overall_name`**, with a test RMSE of `r round(test_results$rmse[1])` and a test MAE of `r round(test_results$mae[1])` bikes per day.
+
+
+# final model summaries
+ 
+`extract_fit_parsnip()` and `extract_fit_engine()` pull the fitted model out of a `last_fit()` object. These are the models fit on the full training set.
+ 
+## MLR coefficient table
+ 
+```{r}
+#| label: lm-coefs
+lm_final_fit |>
+  extract_fit_parsnip() |>
+  tidy() |>
+  print(n = Inf)
+```
+ 
+The predictors are standardized. Each coefficient is the change in daily bike count for a one standard deviation increase in that variable, holding the others fixed. The dummy coefficients compare each level to the reference level.
+ 
+## regression tree
+ 
+```{r}
+#| label: tree-plot
+#| fig-width: 10
+#| fig-height: 6
+tree_final_fit |>
+  extract_fit_engine() |>
+  rpart.plot(roundint = FALSE)
+```
+ 
+Each box shows the predicted daily bike count for that group and the percent of training days in it. A split like `temp < 0.5` means "temperature below half a standard deviation above average."
+ 
+## bagged tree
+ 
+`baguette` stores each variable's importance, averaged over the 50 trees, in the `imp` part of the fitted model.
+ 
+```{r}
+#| label: bag-vip
+bag_final_fit |>
+  extract_fit_engine() |>
+  pluck("imp") |>
+  mutate(term = fct_reorder(term, value)) |>
+  ggplot(aes(x = value, y = term)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Bagged Tree Variable Importance",
+    x = "Importance",
+    y = NULL
+  )
+```
+ 
+## random forest
+ 
+Because we set `importance = "impurity"` in the engine, the fitted `ranger` model holds each variable's importance: how much its splits reduce prediction error, summed over all 500 trees. `ggplot` plots it.
+ 
+```{r}
+rf_final_fit |>
+  extract_fit_engine() |>
+  pluck("variable.importance") |>
+  enframe(name = "term", value = "value") |>
+  mutate(term = fct_reorder(term, value)) |>
+  ggplot(aes(x = value, y = term)) +
+  geom_col(fill = "darkgreen") +
+  labs(
+    title = "Random Forest Variable Importance",
+    x = "Importance",
+    y = NULL
+  )
+```
+ 
+# fit the best model to the entire data set
+ 
+Finally, we take the overall best model from the test set comparison and fit it to all of `bike_daily`, training and test together. The recipe is re-learned on the full data, so the standardization now uses the mean and standard deviation of all the days.
+ 
+```{r}
+#| label: full-fit
+final_workflows <- list(
+  best_lm_wf,
+  tree_final_wf,
+  bag_final_wf,
+  rf_final_wf
+)
+names(final_workflows) <- c(best_lm_name, "Regression tree", "Bagged tree", "Random forest")
+ 
+best_overall_wf <- final_workflows[[best_overall_name]]
+ 
+set.seed(558)
+full_fit <- fit(best_overall_wf, data = bike_daily)
+ 
+full_fit
+```
+ 
+This is our final model: the **`r best_overall_name`**, fit on all `r nrow(bike_daily)` days.
