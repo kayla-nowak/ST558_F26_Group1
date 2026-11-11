@@ -14,6 +14,8 @@ library(lubridate)
 library(janitor)
 library(tidymodels)
 library(baguette)
+library(ranger)
+library(rpart.plot)
 ```
 
 This homework continues from HW 9. We reuse the same data reading, cleaning, and EDA, then fit the models with the `tidymodels` framework. `tidymodels` loads `rsample`, `recipes`, `parsnip`, `workflows`, `tune`, and `yardstick` for us.
@@ -386,11 +388,11 @@ Sunnier days have more rentals, which matches the strong positive correlation ab
 
 ## Split the Data
 
-We split the daily data 75/25 into training and test sets, stratifying on `seasons`. Stratifying means the split is done within each season: 75% of winter days go to training, 75% of summer days, and so on. That way both sets have a similar mix of seasons. We use the same seed as HW 9, so this is the same split we used there.
+We split the daily data 75/25 into training and test sets, stratifying on `seasons`. Stratifying means the split is done within each season: 75% of winter days go to training, 75% of summer days, and so on. That way both sets have a similar mix of seasons. 
 
 ```{r}
 #| label: split
-set.seed(44)
+set.seed(558)
 bike_split <- initial_split(bike_daily, prop = 0.75, strata = seasons)
 bike_train <- training(bike_split)
 bike_test  <- testing(bike_split)
@@ -494,7 +496,7 @@ recipe_2 <- recipe_1 |>
 recipe_2
 ```
 
-As before, we prep and bake the recipe to check the new columns:
+We then prep and bake the recipe to check the new columns:
 
 ```{r}
 #| label: recipe-2-check
@@ -549,7 +551,7 @@ baked_3 |>
 
 ### Model Fitting
 
-All three models use the same linear regression specification with the `lm` engine. 
+All three models use the same linear regression specification with the `lm` engine.
 
 ```{r}
 #| label: lm-spec
@@ -589,7 +591,7 @@ best_mlr_index <- which.min(mlr_cv_results$cv_rmse)
 best_mlr_name  <- mlr_cv_results$model[best_mlr_index]
 ```
 
-The model with the lowest CV RMSE is **model 3**, with a CV RMSE of 2884.008 bikes per day.
+The model with the lowest CV RMSE is **`r best_mlr_name`**, with a CV RMSE of `r round(mlr_cv_results$cv_rmse[best_mlr_index])` bikes per day.
 
 Adding the interactions lowered the CV RMSE by about 980 bikes per day, roughly five standard errors, so they help. Adding the squared terms lowered it by only about 17 more, so recipes 2 and 3 perform about the same. Recipe 3 has the lowest CV RMSE, so we use it as our best MLR model. The simpler recipe 2 would be a reasonable choice too.
 
@@ -659,7 +661,7 @@ tree_best <- tree_tune |>
 tree_best
 ```
 
-#### Fit the Best Regression Tree to the Training Set
+Now, we Fit the Best Regression Tree to the Training Set
 
 `finalize_workflow()` replaces the `tune()` placeholders with the best values, and `last_fit()` fits that tree on the full training set and evaluates it on the test set.
 
@@ -679,7 +681,7 @@ collect_metrics(tree_final)
 
 ### II. Bagged Tree Model
 
-`bag_tree()` comes from the `baguette` package. `times = 25` sets the number of bootstrap trees per fit. We tune two parameters of the individual trees: `cost_complexity` (the same pruning penalty as the regression tree) and `min_n` (the smallest number of days a group must have before the tree will split it). 
+`bag_tree()` comes from the `baguette` package. `times = 25` sets the number of bootstrap trees per fit. We tune two parameters of the individual trees: `cost_complexity` (the same pruning penalty as the regression tree) and `min_n` (the smallest number of days a group must have before the tree will split it).
 
 ```{r}
 #| label: bag-spec
@@ -705,7 +707,7 @@ bag_grid <- grid_regular(
   levels = c(5, 4)
 )
 
-set.seed(44)
+set.seed(558)
 bag_tune <- tune_grid(
   bag_wf,
   resamples = bike_folds,
@@ -725,14 +727,14 @@ bag_best <- bag_tune |>
 bag_best
 ```
 
-#### Fit the Best Bagged Tree to the Training Set
+Now, we Fit the Best Bagged Tree to the Training Set
 
 ```{r}
 #| label: bag-last-fit
 bag_final_wf <- bag_wf |>
   finalize_workflow(bag_best)
 
-set.seed(44)
+set.seed(558)
 bag_final <- last_fit(
   bag_final_wf,
   split   = bike_split,
@@ -740,4 +742,180 @@ bag_final <- last_fit(
 )
 
 collect_metrics(bag_final)
+```
+
+### III. Random Forest Model
+
+```{r}
+#| label: rf-spec
+rf_spec <- rand_forest(
+  mtry  = tune(),
+  min_n = tune(),
+  trees = 500
+) |>
+  set_engine("ranger", importance = "impurity") |>
+  set_mode("regression")
+
+rf_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(rf_spec)
+```
+
+After recipe 1, there are 13 predictors: 8 standardized weather variables and 5 dummy variables. `mtry()` doesn't know that ahead of time, so we give it the range 1 to 13. With `mtry = 13`, every split can use every predictor, which makes the forest the same as a bagged tree.
+
+```{r}
+#| label: rf-tune
+rf_grid <- grid_regular(
+  mtry(range = c(1, 13)),
+  min_n(range = c(2, 20)),
+  levels = c(7, 4)
+)
+
+set.seed(558)
+rf_tune <- tune_grid(
+  rf_wf,
+  resamples = bike_folds,
+  grid      = rf_grid,
+  metrics   = metric_set(yardstick::rmse, yardstick::mae)
+)
+```
+
+```{r}
+#| label: rf-best
+rf_tune |>
+  show_best(metric = "rmse", n = 5)
+
+rf_best <- rf_tune |>
+  select_best(metric = "rmse")
+
+rf_best
+```
+
+Now, we Fit the Best Random Forest to the Training Set
+
+```{r}
+#| label: rf-last-fit
+rf_final_wf <- rf_wf |>
+  finalize_workflow(rf_best)
+
+set.seed(558)
+rf_final <- last_fit(
+  rf_final_wf,
+  split   = bike_split,
+  metrics = metric_set(yardstick::rmse, yardstick::mae)
+)
+
+collect_metrics(rf_final)
+```
+
+### Compare on the test sets
+
+Each final model was fit on the full training set by `last_fit()`, which also predicted the test set. We stack their test metrics into one table, sorted by RMSE.
+
+```{r}
+#| label: test-comparison
+test_results <- bind_rows(
+  "MLR"             = collect_metrics(mlr_final),
+  "Regression tree" = collect_metrics(tree_final),
+  "Bagged tree"     = collect_metrics(bag_final),
+  "Random forest"   = collect_metrics(rf_final),
+  .id = "model"
+) |>
+  select(model, .metric, .estimate) |>
+  pivot_wider(names_from = .metric, values_from = .estimate) |>
+  arrange(rmse)
+
+test_results
+
+best_overall <- test_results$model[1]
+```
+
+The best model on the test set is the **`r best_overall`**, with a test RMSE of `r round(test_results$rmse[1])` and a test MAE of `r round(test_results$mae[1])` bikes per day.
+
+## Final Model Summaries
+
+### MLR: Coefficient Table
+
+`extract_fit_parsnip()` pulls the fitted `lm` model out of the `last_fit()` result, and `tidy()` turns it into a coefficient table.
+
+```{r}
+#| label: mlr-coefs
+mlr_final |>
+  extract_fit_parsnip() |>
+  tidy() |>
+  print(n = Inf)
+```
+
+### Regression Tree: Plot of the Final Fit
+
+`extract_fit_engine()` returns the underlying `rpart` object, which `rpart.plot()` can draw. `roundint = FALSE` stops a warning about rpart not being able to find the original data.
+
+```{r}
+#| label: tree-plot
+#| fig-width: 14
+#| fig-height: 8
+tree_final |>
+  extract_fit_engine() |>
+  rpart.plot(roundint = FALSE)
+```
+
+### Bagged Tree: Variable Importance
+
+`baguette` computes variable importance while it fits, and stores it in the `imp` element of the fitted model.
+
+```{r}
+#| label: bag-importance
+bag_final |>
+  extract_fit_engine() |>
+  pluck("imp") |>
+  mutate(term = fct_reorder(term, value)) |>
+  ggplot(aes(value, term)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Bagged Tree Variable Importance", x = "Importance", y = NULL)
+```
+
+### Random Forest: Variable Importance
+
+Because we set `importance = "impurity"` in the engine, `ranger` stores the importance values in `variable.importance`. `enframe()` turns that named vector into a tibble we can plot.
+
+```{r}
+#| label: rf-importance
+rf_final |>
+  extract_fit_engine() |>
+  pluck("variable.importance") |>
+  enframe(name = "term", value = "importance") |>
+  mutate(term = fct_reorder(term, importance)) |>
+  ggplot(aes(importance, term)) +
+  geom_col(fill = "darkgreen") +
+  labs(title = "Random Forest Variable Importance", x = "Importance", y = NULL)
+```
+
+Temperature is the most important predictor in both plots, but the rest of the order differs. `ranger` only credits the variable a split actually used. `rpart`, whose importance `baguette` uses, also gives partial credit to surrogate splits, so dew point temperature (correlated 0.96 with temperature) ranks much higher in the bagged tree plot.
+
+## Fit the Best Model to the Entire Data Set
+
+We pick the finalized workflow for the overall best model and fit it to all `r nrow(bike_daily)` days with `fit()`. The recipe is re-prepped on the full data, so the standardizing now uses the means and standard deviations of all the data.
+
+```{r}
+#| label: full-fit
+final_wfs <- list(
+  "MLR"             = best_mlr_wf,
+  "Regression tree" = tree_final_wf,
+  "Bagged tree"     = bag_final_wf,
+  "Random forest"   = rf_final_wf
+)
+
+set.seed(558)
+full_fit <- final_wfs[[best_overall]] |>
+  fit(data = bike_daily)
+
+full_fit
+```
+
+As a quick check, the fitted values on the full data (these are in-sample, so they're optimistic compared to the test results):
+
+```{r}
+#| label: full-fit-check
+augment(full_fit, new_data = bike_daily) |>
+  metrics(truth = bike_count, estimate = .pred)
 ```
