@@ -1,5 +1,432 @@
 ---
 title: "ST558_HW10_Yefrid"
+author: "Yefrid Cordoba"
 format: html
 ---
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(tidyverse)
+library(lubridate)
+library(rsample)
+library(janitor)
+library(yardstick)
+```
+
+# Reading the Data
+
+We read the data from a local copy of the CSV saved in the repo, so rendering doesn't depend on the course website being up. The file is latin1 encoded, not UTF-8: the degree symbols in names like `Temperature(°C)` make `read_csv()` throw `invalid multibyte string` unless we set the encoding in `locale()`.
+
+We also run `janitor::clean_names()` right away. It converts every column to lower snake case and strips out the degree symbol, so we never have to type the original names with backticks.
+
+```{r}
+#| label: read-data
+bike_raw <- read_csv("SeoulBikeData.csv", locale = locale(encoding = "latin1")) |>
+  clean_names() |>
+  as_tibble()
+
+bike_raw
+```
+
+# EDA
+
+## Checking the Data
+
+### 1. Missingness
+
+First, check each column for missing values.
+
+```{r}
+#| label: missing
+colSums(is.na(bike_raw))
+```
+
+No column has any missing values, so nothing needs to be fixed or imputed.
+
+### 2. Column Types and Values
+
+Next, check that the column types make sense.
+
+```{r}
+#| label: col-types
+glimpse(bike_raw)
+```
+
+`date`, `seasons`, `holiday`, and `functioning_day` were read in as characters. `date` needs to become a real date and the other three need to become factors. Everything else is numeric, as expected.
+
+Basic summary statistics for the numeric columns:
+
+```{r}
+#| label: numeric-summary
+bike_raw |>
+  select(where(is.numeric)) |>
+  summary()
+```
+
+The ranges look valid. Humidity is between 0 and 98%, hours run from 0 to 23, and rainfall, snowfall, and bike counts are never negative. Bike count has a long right tail (the max is far above the median), which we look at below.
+
+Unique values and counts for the categorical columns:
+
+```{r}
+#| label: cat-values
+table(bike_raw$seasons, useNA = "ifany")
+table(bike_raw$holiday, useNA = "ifany")
+table(bike_raw$functioning_day, useNA = "ifany")
+```
+
+The values are clean, with no typos or blanks. We also check whether holidays and non-functioning days overlap:
+
+```{r}
+#| label: holiday-functioning
+xtabs(~ holiday + functioning_day, data = bike_raw)
+```
+
+### 3. Convert the Date
+
+The dates are in day/month/year format, so we use `dmy()` from `lubridate`. We then confirm nothing failed to parse and check the date range.
+
+```{r}
+#| label: convert-date
+bike_raw <- bike_raw |>
+  mutate(date = dmy(date))
+
+sum(is.na(bike_raw$date))
+range(bike_raw$date)
+```
+
+Every date parsed, and the data covers one year, from December 2017 through November 2018.
+
+### 4. Convert Character Variables to Factors
+
+```{r}
+#| label: factors
+bike_raw <- bike_raw |>
+  mutate(across(c(seasons, holiday, functioning_day), as.factor))
+
+str(bike_raw |> select(seasons, holiday, functioning_day))
+```
+
+### 5. Rename Variables
+
+`clean_names()` already gave us snake case names, but some include units and are long (`dew_point_temperature_c`, `solar_radiation_mj_m2`). We shorten them to make the modeling code easier to read.
+
+```{r}
+#| label: rename
+bike_data <- bike_raw |>
+  rename(
+    bike_count      = rented_bike_count,
+    temp            = temperature_c,
+    humidity        = humidity_percent,
+    wind_speed      = wind_speed_m_s,
+    visibility      = visibility_10m,
+    dew_point_temp  = dew_point_temperature_c,
+    solar_radiation = solar_radiation_mj_m2,
+    rainfall        = rainfall_mm,
+    snowfall        = snowfall_cm
+  )
+
+names(bike_data)
+```
+
+### 6. Summary Statistics
+
+To avoid repeating the same `summarize()` code for each grouping, we write a helper that summarizes bike count by whatever grouping variables we pass it.
+
+```{r}
+#| label: summary-function
+bike_summary <- function(data, ...) {
+  data |>
+    group_by(...) |>
+    summarize(
+      n      = n(),
+      total  = sum(bike_count),
+      mean   = mean(bike_count),
+      sd     = sd(bike_count),
+      min    = min(bike_count),
+      median = median(bike_count),
+      max    = max(bike_count),
+      .groups = "drop"
+    )
+}
+```
+
+Across seasons:
+
+```{r}
+#| label: summary-by-season
+bike_data |> bike_summary(seasons)
+```
+
+Summer has the highest mean rentals, followed by autumn, spring, and winter.
+
+Across holidays:
+
+```{r}
+#| label: summary-by-holiday
+bike_data |> bike_summary(holiday)
+```
+
+More bikes are rented on non-holidays than on holidays.
+
+Across functioning days:
+
+```{r}
+#| label: summary-by-functioning
+bike_data |> bike_summary(functioning_day)
+```
+
+When `functioning_day` is `No`, the bike count is always 0: the system wasn't running, so no bikes could be rented. These rows tell us nothing about demand, so we drop them and keep only functioning hours.
+
+```{r}
+#| label: subset-functioning
+bike_data <- bike_data |>
+  filter(functioning_day == "Yes") |>
+  select(-functioning_day)
+
+nrow(bike_data)
+```
+
+Before collapsing to daily data, we check whether the very high hourly counts look like data entry errors:
+
+```{r}
+#| label: hourly-boxplot
+ggplot(bike_data, aes(x = seasons, y = bike_count, fill = seasons)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_minimal() +
+  labs(
+    title = "Hourly Bike Rentals by Season",
+    x = NULL,
+    y = "Bikes rented per hour"
+  )
+```
+
+The high counts look legitimate. They're less common, but they show up in every season, so no single season accounts for all of them. Winter's whole distribution sits much lower than the other three seasons.
+
+### 7. Summarize Across Hours
+
+To simplify the analysis, we collapse the hourly data to one row per day. Bike count, rainfall, and snowfall are summed across the day, and the other weather variables are averaged.
+
+```{r}
+#| label: daily
+bike_daily <- bike_data |>
+  group_by(date, seasons, holiday) |>
+  summarize(
+    across(c(bike_count, rainfall, snowfall), sum),
+    across(c(temp, humidity, wind_speed, visibility, dew_point_temp, solar_radiation), mean),
+    .groups = "drop"
+  )
+
+bike_daily
+```
+
+The daily data has `r nrow(bike_daily)` days. This is the data we analyze from here on.
+
+### 8. Summaries and Plots on the Daily Data
+
+Recreate the summary statistics on the daily data.
+
+```{r}
+#| label: daily-numeric-summary
+bike_daily |>
+  select(where(is.numeric)) |>
+  summary()
+```
+
+```{r}
+#| label: daily-by-season
+bike_daily |> bike_summary(seasons)
+```
+
+```{r}
+#| label: daily-by-holiday
+bike_daily |> bike_summary(holiday)
+```
+
+```{r}
+#| label: daily-by-season-holiday
+bike_daily |> bike_summary(seasons, holiday)
+```
+
+The order holds on the daily data: summer has the most rentals and winter has by far the fewest. Holidays still have fewer rentals than regular days, but there are only a handful of holidays in each season.
+
+#### Correlations
+
+Correlations between all the numeric variables:
+
+```{r}
+#| label: correlation
+bike_daily |>
+  select(where(is.numeric)) |>
+  cor() |>
+  round(2)
+```
+
+To make the relationship with the response easier to read, here is each variable's correlation with bike count in one row:
+
+```{r}
+#| label: correlation-bike-count
+bike_daily |>
+  summarize(across(where(is.numeric) & !bike_count, ~ round(cor(bike_count, .x), 2)))
+```
+
+Temperature, solar radiation, and dew point temperature have strong positive correlations with bike count. Rainfall, snowfall, and wind speed are negatively correlated with it. Temperature and dew point temperature are also very highly correlated with each other, so they carry a lot of the same information.
+
+#### Plots
+
+We use the same season colors in every plot.
+
+```{r}
+#| label: season-colors
+season_colors <- c(
+  Winter = "lightblue",
+  Spring = "springgreen3",
+  Summer = "orange",
+  Autumn = "goldenrod"
+)
+```
+
+Daily bike rentals over the year:
+
+```{r}
+#| label: plot-time
+ggplot(bike_daily, aes(date, bike_count, color = seasons)) +
+  geom_line(aes(group = 1), linewidth = 0.5) +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+  labs(
+    title = "Daily Bike Rentals Over Time",
+    x = NULL,
+    y = "Bikes rented per day",
+    color = "Season"
+  )
+```
+
+Rentals follow the seasons. They peak in early summer and again in early fall, and drop off sharply in winter.
+
+Bike rentals by season and holiday:
+
+```{r}
+#| label: plot-season-holiday
+ggplot(bike_daily, aes(seasons, bike_count, color = seasons)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.5) +
+  facet_wrap(~ holiday) +
+  scale_color_manual(values = season_colors, guide = "none") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals by Season and Holiday",
+    x = NULL,
+    y = "Bikes rented per day"
+  )
+```
+
+The points show how few holidays there are in each season, so the holiday boxplots are based on very little data.
+
+Daily bike rentals against temperature:
+
+```{r}
+#| label: plot-temp
+#| message: false
+ggplot(bike_daily, aes(temp, bike_count)) +
+  geom_point(aes(color = seasons), alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, color = "black") +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Temperature",
+    x = "Mean Temperature (°C)",
+    y = "Bikes rented per day",
+    color = "Season"
+  )
+```
+
+Rentals rise with temperature, peak around 25°C, and dip on the hottest days. That curve suggests a squared temperature term may help, which Model 3 tests.
+
+Daily bike rentals against rainfall:
+
+```{r}
+#| label: plot-rain
+ggplot(bike_daily, aes(rainfall, bike_count)) +
+  geom_point(alpha = 0.6) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Rainfall",
+    x = "Total Rainfall (mm)",
+    y = "Bikes rented per day"
+  )
+```
+
+Most days have no rain. On days with any notable rain, rentals tend to be low.
+
+Daily bike rentals against solar radiation:
+
+```{r}
+#| label: plot-solar
+ggplot(bike_daily, aes(solar_radiation, bike_count)) +
+  geom_point(alpha = 0.6, color = "orange") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Solar Radiation",
+    x = "Mean Solar Radiation (MJ/m²)",
+    y = "Bikes rented per day"
+  )
+```
+
+Sunnier days have more rentals, which matches the strong positive correlation above.
+
+# Split the Data
+
+We are going to split the data in training and test set using tidymodels, and a 75/25 split, stratifying the data by season.
+
+```{r}
+#This will make sure we get the same result when splitting the data
+set.seed(12)
+bike_split <- initial_split(bike_daily, prop = 3/4, strata = seasons)
+
+bike_train <- training(bike_split)
+bike_test <- testing(bike_split)
+```
+
+Now using the training set we are going to create a 10 fold CV split for the cross-validation of the models.
+
+```{r}
+bike_folds <- vfold_cv(bike_train)
+```
+
+# Fitting MLR Models
+
+## 1st Recipe
+
+We are going to ignore the variable date for modeling, create the weekday, weekend, standardize numeric variables, and create the dummy variables.
+```{r}
+bike_rec_1 <- 
+  recipe(bike_count ~ ., data = bike_train) |>
+  update_role(date, new_role = "ID") |>
+  step_date(date, features = "dow") |>
+  step_mutate(week_day = 
+    factor(
+      if_else(
+        date_dow %in% c("Sat", "Sun"), 
+        "weekend", 
+        "weekday"))) |>
+  step_rm(date_dow) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(all_nominal_predictors())
+  
+```
+Here we check that the transformations work
+```{r}
+bike_rec_1 |>
+  prep(training = bike_train) |>
+  bake(new_data = bike_train)
+```
+
+I have got the transformed table (the recipe do what we want)
+
+## 2nd Recipe
+
+We are going to take what was created earlier and add interaction terms between season and holiday, season and temp, and temp and rainfall.
 
