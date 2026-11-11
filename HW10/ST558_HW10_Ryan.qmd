@@ -13,6 +13,7 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(tidymodels)
+library(baguette)
 ```
 
 This homework continues from HW 9. We reuse the same data reading, cleaning, and EDA, then fit the models with the `tidymodels` framework. `tidymodels` loads `rsample`, `recipes`, `parsnip`, `workflows`, `tune`, and `yardstick` for us.
@@ -421,3 +422,322 @@ bike_folds
 
 Each fold holds out about `r round(nrow(bike_train) / 10)` days. That's small enough that some rare season and holiday combinations may be missing from a fold's analysis set, which matters once we add the season by holiday interaction.
 
+## Fitting MLR Models
+
+### Recipe 1: Main Effects
+
+We build the recipe on the training data. `bike_count ~ .` makes every other column a predictor. Then we change `date` to an ID role, so it stays in the data but isn't used as a predictor.
+
+```{r}
+#| label: recipe-1
+recipe_1 <- recipe(bike_count ~ ., data = bike_train) |>
+  update_role(date, new_role = "ID") |>
+  step_date(date, features = "dow") |>
+  step_mutate(
+    day_type = factor(
+      if_else(date_dow %in% c("Sat", "Sun"), "Weekend", "Weekday"),
+      levels = c("Weekday", "Weekend")
+    )
+  ) |>
+  step_rm(date_dow) |>
+  step_relevel(holiday, ref_level = "No Holiday") |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(seasons, holiday, day_type)
+
+recipe_1
+```
+
+To check the recipe, we `prep()` it on the training data and `bake()` it. `new_data = NULL` returns the processed training set.
+
+```{r}
+#| label: recipe-1-check
+baked_1 <- recipe_1 |>
+  prep() |>
+  bake(new_data = NULL)
+
+glimpse(baked_1)
+```
+
+Each day of the week should map to the right `day_type`. `date` is still in the baked data because it has an ID role, so we can check against it:
+
+```{r}
+#| label: recipe-1-day-check
+baked_1 |>
+  count(dow = wday(date, label = TRUE), day_type_Weekend)
+```
+
+The standardized predictors should have mean 0 and standard deviation 1 on the training data:
+
+```{r}
+#| label: recipe-1-std-check
+baked_1 |>
+  summarize(across(
+    c(temp, humidity, wind_speed, visibility, dew_point_temp,
+      solar_radiation, rainfall, snowfall),
+    list(mean = ~ round(mean(.x), 3), sd = sd)
+  ))
+```
+
+### Recipe 2: Adding Interactions
+
+`step_interact()` has to come after `step_dummy()`, because it multiplies columns that already exist. By that point `seasons` has become three dummy columns (`seasons_Spring`, `seasons_Summer`, `seasons_Winter`), so we use `starts_with("seasons_")` to interact all three at once. The interactions also come after `step_normalize()`, so they're products of the standardized variables.
+
+```{r}
+#| label: recipe-2
+recipe_2 <- recipe_1 |>
+  step_interact(
+    terms = ~ starts_with("seasons_"):holiday_Holiday +
+      starts_with("seasons_"):temp +
+      temp:rainfall
+  )
+
+recipe_2
+```
+
+As before, we prep and bake the recipe to check the new columns:
+
+```{r}
+#| label: recipe-2-check
+baked_2 <- recipe_2 |>
+  prep() |>
+  bake(new_data = NULL)
+
+baked_2 |>
+  select(contains("_x_")) |>
+  glimpse()
+```
+
+The season by holiday interactions are only nonzero on holidays in that season, so we count how many training days each one is based on:
+
+```{r}
+#| label: recipe-2-holiday-check
+baked_2 |>
+  summarize(across(contains("_x_holiday"), ~ sum(.x != 0)))
+```
+
+### Recipe 3: Adding Quadratic Terms
+
+Recipe 3 has every step from recipe 2, plus squared terms for temperature and humidity. We add them with `step_mutate()`. It comes after `step_normalize()` in the chain, so `temp` and `humidity` are already standardized when they get squared.
+
+```{r}
+#| label: recipe-3
+recipe_3 <- recipe_2 |>
+  step_mutate(
+    temp_sq     = temp^2,
+    humidity_sq = humidity^2
+  )
+
+recipe_3
+```
+
+To check, the new columns should equal the squares of the standardized columns. Because `temp` and `humidity` have mean 0 and standard deviation 1 on the training data, the average of each squared column will be just under 1.
+
+```{r}
+#| label: recipe-3-check
+baked_3 <- recipe_3 |>
+  prep() |>
+  bake(new_data = NULL)
+
+baked_3 |>
+  summarize(
+    temp_sq_matches     = all.equal(temp_sq, temp^2),
+    humidity_sq_matches = all.equal(humidity_sq, humidity^2),
+    mean_temp_sq        = mean(temp_sq),
+    mean_humidity_sq    = mean(humidity_sq)
+  )
+```
+
+### Model Fitting
+
+All three models use the same linear regression specification with the `lm` engine. 
+
+```{r}
+#| label: lm-spec
+lm_spec <- linear_reg() |>
+  set_engine("lm")
+
+mlr_wf_1 <- workflow() |> add_recipe(recipe_1) |> add_model(lm_spec)
+mlr_wf_2 <- workflow() |> add_recipe(recipe_2) |> add_model(lm_spec)
+mlr_wf_3 <- workflow() |> add_recipe(recipe_3) |> add_model(lm_spec)
+```
+
+`fit_resamples()` fits each workflow 10 times. Each time it preps the recipe and fits the model on 9 folds, then predicts the held-out fold.
+
+```{r}
+#| label: mlr-cv
+mlr_cv_1 <- fit_resamples(mlr_wf_1, resamples = bike_folds)
+mlr_cv_2 <- fit_resamples(mlr_wf_2, resamples = bike_folds)
+mlr_cv_3 <- fit_resamples(mlr_wf_3, resamples = bike_folds)
+```
+
+`collect_metrics()` averages each metric over the 10 folds. We combine the RMSE rows into one table:
+
+```{r}
+#| label: mlr-cv-results
+mlr_cv_results <- bind_rows(
+  "Recipe 1: Main effects"    = collect_metrics(mlr_cv_1),
+  "Recipe 2: + Interactions"  = collect_metrics(mlr_cv_2),
+  "Recipe 3: + Quadratic terms" = collect_metrics(mlr_cv_3),
+  .id = "model"
+) |>
+  filter(.metric == "rmse") |>
+  select(model, cv_rmse = mean, std_err, n)
+
+mlr_cv_results
+
+best_mlr_index <- which.min(mlr_cv_results$cv_rmse)
+best_mlr_name  <- mlr_cv_results$model[best_mlr_index]
+```
+
+The model with the lowest CV RMSE is **model 3**, with a CV RMSE of 2884.008 bikes per day.
+
+Adding the interactions lowered the CV RMSE by about 980 bikes per day, roughly five standard errors, so they help. Adding the squared terms lowered it by only about 17 more, so recipes 2 and 3 perform about the same. Recipe 3 has the lowest CV RMSE, so we use it as our best MLR model. The simpler recipe 2 would be a reasonable choice too.
+
+### Fit the Best MLR Model to the Training Set
+
+`last_fit()` takes the split object, fits the workflow on the whole training set, and evaluates it on the test set. We ask for both RMSE and MAE now, since we'll need both to compare model families on the test set later.
+
+```{r}
+#| label: mlr-last-fit
+best_mlr_wf <- list(mlr_wf_1, mlr_wf_2, mlr_wf_3)[[best_mlr_index]]
+
+mlr_final <- last_fit(
+  best_mlr_wf,
+  split   = bike_split,
+  metrics = metric_set(yardstick::rmse, yardstick::mae)
+)
+
+collect_metrics(mlr_final)
+```
+
+## Fitting Other Models
+
+### I. Regression Tree Model
+
+```{r}
+#| label: tree-spec
+tree_spec <- decision_tree(
+  tree_depth      = tune(),
+  cost_complexity = tune()
+) |>
+  set_engine("rpart") |>
+  set_mode("regression")
+
+tree_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(tree_spec)
+```
+
+`grid_regular()` makes every combination of evenly spaced values for each parameter: 10 values of `cost_complexity` (on a log scale) and 5 of `tree_depth`, for 50 combinations in all. `tune_grid()` fits each combination on the 10 CV folds.
+
+```{r}
+#| label: tree-tune
+tree_grid <- grid_regular(
+  cost_complexity(),
+  tree_depth(),
+  levels = c(10, 5)
+)
+
+tree_tune <- tune_grid(
+  tree_wf,
+  resamples = bike_folds,
+  grid      = tree_grid,
+  metrics   = metric_set(yardstick::rmse, yardstick::mae)
+)
+```
+
+The five best combinations by CV RMSE:
+
+```{r}
+#| label: tree-best
+tree_tune |>
+  show_best(metric = "rmse", n = 5)
+
+tree_best <- tree_tune |>
+  select_best(metric = "rmse")
+
+tree_best
+```
+
+#### Fit the Best Regression Tree to the Training Set
+
+`finalize_workflow()` replaces the `tune()` placeholders with the best values, and `last_fit()` fits that tree on the full training set and evaluates it on the test set.
+
+```{r}
+#| label: tree-last-fit
+tree_final_wf <- tree_wf |>
+  finalize_workflow(tree_best)
+
+tree_final <- last_fit(
+  tree_final_wf,
+  split   = bike_split,
+  metrics = metric_set(yardstick::rmse, yardstick::mae)
+)
+
+collect_metrics(tree_final)
+```
+
+### II. Bagged Tree Model
+
+`bag_tree()` comes from the `baguette` package. `times = 25` sets the number of bootstrap trees per fit. We tune two parameters of the individual trees: `cost_complexity` (the same pruning penalty as the regression tree) and `min_n` (the smallest number of days a group must have before the tree will split it). 
+
+```{r}
+#| label: bag-spec
+bag_spec <- bag_tree(
+  cost_complexity = tune(),
+  min_n           = tune()
+) |>
+  set_engine("rpart", times = 25) |>
+  set_mode("regression")
+
+bag_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(bag_spec)
+```
+
+The grid has 5 values of `cost_complexity` and 4 of `min_n`, for 20 combinations. Bootstrap sampling is random, so we set a seed to make the results reproducible.
+
+```{r}
+#| label: bag-tune
+bag_grid <- grid_regular(
+  cost_complexity(),
+  min_n(range = c(2, 20)),
+  levels = c(5, 4)
+)
+
+set.seed(44)
+bag_tune <- tune_grid(
+  bag_wf,
+  resamples = bike_folds,
+  grid      = bag_grid,
+  metrics   = metric_set(yardstick::rmse, yardstick::mae)
+)
+```
+
+```{r}
+#| label: bag-best
+bag_tune |>
+  show_best(metric = "rmse", n = 5)
+
+bag_best <- bag_tune |>
+  select_best(metric = "rmse")
+
+bag_best
+```
+
+#### Fit the Best Bagged Tree to the Training Set
+
+```{r}
+#| label: bag-last-fit
+bag_final_wf <- bag_wf |>
+  finalize_workflow(bag_best)
+
+set.seed(44)
+bag_final <- last_fit(
+  bag_final_wf,
+  split   = bike_split,
+  metrics = metric_set(yardstick::rmse, yardstick::mae)
+)
+
+collect_metrics(bag_final)
+```
