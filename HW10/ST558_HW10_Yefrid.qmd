@@ -16,6 +16,8 @@ library(janitor)
 library(yardstick)
 library(baguette)
 library(ranger)
+library(rpart)
+library(rpart.plot)
 ```
 
 # Reading the Data
@@ -724,6 +726,7 @@ It can be seen that for both of the metrics evaluated, Random Forest Model shows
 
 ### MLR coefficient table
 
+We are going to present the coefficient table for the best MLR model.
 ```{r}
 MLR_final |>
   extract_workflow() |>
@@ -731,3 +734,45 @@ MLR_final |>
   tidy()
 ```
 
+### Final fit
+
+Final fit plot for the regression tree model.
+
+```{r}
+tree_final_fit |>
+  extract_fit_engine() |>
+  rpart.plot::rpart.plot(roundint = FALSE)
+```
+
+### Importance for bagged trees model
+
+Here we extract the final model and then we plot the variable importance.
+```{r}
+bagged_final_model <- extract_fit_engine(bagged_final_fit) 
+bagged_final_model$imp |>
+  mutate(term = factor(term, levels = term)) |>
+  ggplot(aes(x = term, y = value)) + 
+  geom_bar(stat ="identity") +
+  coord_flip()
+```
+
+We conclude that temperature is the most important variable for our predictions.
+
+### Importance for Random Forest model
+
+```{r}
+
+```
+
+#Best model
+
+Now that we know that random forest model was the best to predict our testing set, we can fit it to the entire bike data set.
+
+```{r}
+
+rf_best_model_fit <- rf_final_wfl |>
+  fit(data = bike_daily)
+
+rf_best_model_fit
+
+```
