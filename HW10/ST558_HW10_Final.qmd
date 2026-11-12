@@ -1,6 +1,889 @@
 ---
 title: "ST558_HW10_Final"
-author: "Kayla Nowak, Ryan Mersereau, Yefrid Cordoba, Will Carter"
+author: "Ryan Mersereau, Yefrid Cordoba, Will Carter"
 format: html
 ---
 
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(tidyverse)
+library(tidymodels)
+library(lubridate)
+library(rsample)
+library(janitor)
+library(yardstick)
+library(baguette)
+library(ranger)
+library(rpart)
+library(rpart.plot)
+```
+
+This homework continues from HW 9. We reuse the same data reading, cleaning, and EDA, then fit the models with the `tidymodels` framework. `tidymodels` loads `rsample`, `recipes`, `parsnip`, `workflows`, `tune`, and `yardstick` for us.
+
+# Reading the Data
+
+We read the data from a local copy of the CSV saved in the repo, so rendering doesn't depend on the course website being up. The file is latin1 encoded, not UTF-8: the degree symbols in names like `Temperature(°C)` make `read_csv()` throw `invalid multibyte string` unless we set the encoding in `locale()`.
+
+We also run `janitor::clean_names()` right away. It converts every column to lower snake case and strips out the degree symbol, so we never have to type the original names with backticks.
+
+```{r}
+#| label: read-data
+bike_raw <- read_csv("SeoulBikeData.csv", locale = locale(encoding = "latin1")) |>
+  clean_names() |>
+  as_tibble()
+
+bike_raw
+```
+
+# EDA
+
+## Checking the Data
+
+### 1. Missingness
+
+First, check each column for missing values.
+
+```{r}
+#| label: missing
+colSums(is.na(bike_raw))
+```
+
+No column has any missing values, so nothing needs to be fixed or imputed.
+
+### 2. Column Types and Values
+
+Next, check that the column types make sense.
+
+```{r}
+#| label: col-types
+glimpse(bike_raw)
+```
+
+`date`, `seasons`, `holiday`, and `functioning_day` were read in as characters. `date` needs to become a real date and the other three need to become factors. Everything else is numeric, as expected.
+
+Basic summary statistics for the numeric columns:
+
+```{r}
+#| label: numeric-summary
+bike_raw |>
+  select(where(is.numeric)) |>
+  summary()
+```
+
+The ranges look valid. Humidity is between 0 and 98%, hours run from 0 to 23, and rainfall, snowfall, and bike counts are never negative. Bike count has a long right tail (the max is far above the median), which we look at below.
+
+Unique values and counts for the categorical columns:
+
+```{r}
+#| label: cat-values
+table(bike_raw$seasons, useNA = "ifany")
+table(bike_raw$holiday, useNA = "ifany")
+table(bike_raw$functioning_day, useNA = "ifany")
+```
+
+The values are clean, with no typos or blanks. We also check whether holidays and non-functioning days overlap:
+
+```{r}
+#| label: holiday-functioning
+xtabs(~ holiday + functioning_day, data = bike_raw)
+```
+
+### 3. Convert the Date
+
+The dates are in day/month/year format, so we use `dmy()` from `lubridate`. We then confirm nothing failed to parse and check the date range.
+
+```{r}
+#| label: convert-date
+bike_raw <- bike_raw |>
+  mutate(date = dmy(date))
+
+sum(is.na(bike_raw$date))
+range(bike_raw$date)
+```
+
+Every date parsed, and the data covers one year, from December 2017 through November 2018.
+
+### 4. Convert Character Variables to Factors
+
+```{r}
+#| label: factors
+bike_raw <- bike_raw |>
+  mutate(across(c(seasons, holiday, functioning_day), as.factor))
+
+str(bike_raw |> select(seasons, holiday, functioning_day))
+```
+
+### 5. Rename Variables
+
+`clean_names()` already gave us snake case names, but some include units and are long (`dew_point_temperature_c`, `solar_radiation_mj_m2`). We shorten them to make the modeling code easier to read.
+
+```{r}
+#| label: rename
+bike_data <- bike_raw |>
+  rename(
+    bike_count      = rented_bike_count,
+    temp            = temperature_c,
+    humidity        = humidity_percent,
+    wind_speed      = wind_speed_m_s,
+    visibility      = visibility_10m,
+    dew_point_temp  = dew_point_temperature_c,
+    solar_radiation = solar_radiation_mj_m2,
+    rainfall        = rainfall_mm,
+    snowfall        = snowfall_cm
+  )
+
+names(bike_data)
+```
+
+### 6. Summary Statistics
+
+To avoid repeating the same `summarize()` code for each grouping, we write a helper that summarizes bike count by whatever grouping variables we pass it.
+
+```{r}
+#| label: summary-function
+bike_summary <- function(data, ...) {
+  data |>
+    group_by(...) |>
+    summarize(
+      n      = n(),
+      total  = sum(bike_count),
+      mean   = mean(bike_count),
+      sd     = sd(bike_count),
+      min    = min(bike_count),
+      median = median(bike_count),
+      max    = max(bike_count),
+      .groups = "drop"
+    )
+}
+```
+
+Across seasons:
+
+```{r}
+#| label: summary-by-season
+bike_data |> bike_summary(seasons)
+```
+
+Summer has the highest mean rentals, followed by autumn, spring, and winter.
+
+Across holidays:
+
+```{r}
+#| label: summary-by-holiday
+bike_data |> bike_summary(holiday)
+```
+
+More bikes are rented on non-holidays than on holidays.
+
+Across functioning days:
+
+```{r}
+#| label: summary-by-functioning
+bike_data |> bike_summary(functioning_day)
+```
+
+When `functioning_day` is `No`, the bike count is always 0: the system wasn't running, so no bikes could be rented. These rows tell us nothing about demand, so we drop them and keep only functioning hours.
+
+```{r}
+#| label: subset-functioning
+bike_data <- bike_data |>
+  filter(functioning_day == "Yes") |>
+  select(-functioning_day)
+
+nrow(bike_data)
+```
+
+Before collapsing to daily data, we check whether the very high hourly counts look like data entry errors:
+
+```{r}
+#| label: hourly-boxplot
+ggplot(bike_data, aes(x = seasons, y = bike_count, fill = seasons)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_minimal() +
+  labs(
+    title = "Hourly Bike Rentals by Season",
+    x = NULL,
+    y = "Bikes rented per hour"
+  )
+```
+
+The high counts look legitimate. They're less common, but they show up in every season, so no single season accounts for all of them. Winter's whole distribution sits much lower than the other three seasons.
+
+### 7. Summarize Across Hours
+
+To simplify the analysis, we collapse the hourly data to one row per day. Bike count, rainfall, and snowfall are summed across the day, and the other weather variables are averaged.
+
+```{r}
+#| label: daily
+bike_daily <- bike_data |>
+  group_by(date, seasons, holiday) |>
+  summarize(
+    across(c(bike_count, rainfall, snowfall), sum),
+    across(c(temp, humidity, wind_speed, visibility, dew_point_temp, solar_radiation), mean),
+    .groups = "drop"
+  )
+
+bike_daily
+```
+
+The daily data has `r nrow(bike_daily)` days. This is the data we analyze from here on.
+
+### 8. Summaries and Plots on the Daily Data
+
+Recreate the summary statistics on the daily data.
+
+```{r}
+#| label: daily-numeric-summary
+bike_daily |>
+  select(where(is.numeric)) |>
+  summary()
+```
+
+```{r}
+#| label: daily-by-season
+bike_daily |> bike_summary(seasons)
+```
+
+```{r}
+#| label: daily-by-holiday
+bike_daily |> bike_summary(holiday)
+```
+
+```{r}
+#| label: daily-by-season-holiday
+bike_daily |> bike_summary(seasons, holiday)
+```
+
+The order holds on the daily data: summer has the most rentals and winter has by far the fewest. Holidays still have fewer rentals than regular days, but there are only a handful of holidays in each season.
+
+#### Correlations
+
+Correlations between all the numeric variables:
+
+```{r}
+#| label: correlation
+bike_daily |>
+  select(where(is.numeric)) |>
+  cor() |>
+  round(2)
+```
+
+To make the relationship with the response easier to read, here is each variable's correlation with bike count in one row:
+
+```{r}
+#| label: correlation-bike-count
+bike_daily |>
+  summarize(across(where(is.numeric) & !bike_count, ~ round(cor(bike_count, .x), 2)))
+```
+
+Temperature, solar radiation, and dew point temperature have strong positive correlations with bike count. Rainfall, snowfall, and wind speed are negatively correlated with it. Temperature and dew point temperature are also very highly correlated with each other, so they carry a lot of the same information.
+
+#### Plots
+
+We use the same season colors in every plot.
+
+```{r}
+#| label: season-colors
+season_colors <- c(
+  Winter = "lightblue",
+  Spring = "springgreen3",
+  Summer = "orange",
+  Autumn = "goldenrod"
+)
+```
+
+Daily bike rentals over the year:
+
+```{r}
+#| label: plot-time
+ggplot(bike_daily, aes(date, bike_count, color = seasons)) +
+  geom_line(aes(group = 1), linewidth = 0.5) +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+  labs(
+    title = "Daily Bike Rentals Over Time",
+    x = NULL,
+    y = "Bikes rented per day",
+    color = "Season"
+  )
+```
+
+Rentals follow the seasons. They peak in early summer and again in early fall, and drop off sharply in winter.
+
+Bike rentals by season and holiday:
+
+```{r}
+#| label: plot-season-holiday
+ggplot(bike_daily, aes(seasons, bike_count, color = seasons)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.5) +
+  facet_wrap(~ holiday) +
+  scale_color_manual(values = season_colors, guide = "none") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals by Season and Holiday",
+    x = NULL,
+    y = "Bikes rented per day"
+  )
+```
+
+The points show how few holidays there are in each season, so the holiday boxplots are based on very little data.
+
+Daily bike rentals against temperature:
+
+```{r}
+#| label: plot-temp
+#| message: false
+ggplot(bike_daily, aes(temp, bike_count)) +
+  geom_point(aes(color = seasons), alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, color = "black") +
+  scale_color_manual(values = season_colors) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Temperature",
+    x = "Mean Temperature (°C)",
+    y = "Bikes rented per day",
+    color = "Season"
+  )
+```
+
+Rentals rise with temperature, peak around 25°C, and dip on the hottest days. That curve suggests a squared temperature term may help, which Model 3 tests.
+
+Daily bike rentals against rainfall:
+
+```{r}
+#| label: plot-rain
+ggplot(bike_daily, aes(rainfall, bike_count)) +
+  geom_point(alpha = 0.6) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Rainfall",
+    x = "Total Rainfall (mm)",
+    y = "Bikes rented per day"
+  )
+```
+
+Most days have no rain. On days with any notable rain, rentals tend to be low.
+
+Daily bike rentals against solar radiation:
+
+```{r}
+#| label: plot-solar
+ggplot(bike_daily, aes(solar_radiation, bike_count)) +
+  geom_point(alpha = 0.6, color = "orange") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Daily Bike Rentals vs. Solar Radiation",
+    x = "Mean Solar Radiation (MJ/m²)",
+    y = "Bikes rented per day"
+  )
+```
+
+Sunnier days have more rentals, which matches the strong positive correlation above.
+
+
+# Split the Data
+
+We split the daily data 75/25 into training and test sets with `initial_split()`, stratifying on `seasons`. Stratifying means the split is done within each season: 75% of winter days go to training, 75% of summer days, and so on. Both sets have a similar mix of seasons.
+ 
+```{r}
+#| label: split
+set.seed(558)
+bike_split <- initial_split(bike_daily, prop = 0.75, strata = seasons)
+bike_train <- training(bike_split)
+bike_test  <- testing(bike_split)
+ 
+bike_split
+```
+ 
+The training set has `r nrow(bike_train)` days and the test set has `r nrow(bike_test)`.
+
+To check the stratification, we count the days in each season for both sets:
+
+```{r}
+#| label: split-check
+bind_rows(train = bike_train, test = bike_test, .id = "set") |>
+  count(set, seasons) |>
+  pivot_wider(names_from = set, values_from = n)
+```
+
+We keep the `bike_split` object, not just the two data sets, because `last_fit()` uses it later to fit a final model on the training set and evaluate it on the test set.
+
+### Cross-Validation Folds
+
+To compare models without touching the test set, we split the training set into 10 folds. Each model is fit 10 times, each time on 9 folds, and evaluated on the fold that was held out. Averaging those 10 results gives the CV error we use to choose models.
+
+```{r}
+#| label: cv-folds
+bike_folds <- vfold_cv(bike_train, v = 10)
+
+bike_folds
+```
+
+Each fold holds out about `r round(nrow(bike_train) / 10)` days. That's small enough that some rare season and holiday combinations may be missing from a fold's analysis set, which matters once we add the season by holiday interaction.
+
+## Fitting MLR Models
+
+### Recipe 1: Main Effects
+
+Recipe 1 uses every variable in `bike_train` to predict `bike_count`, then:
+ 
+1. `step_date()` pulls the day of the week out of `date` as a number (1 = Sunday through 7 = Saturday).
+2. `step_mutate()` turns that into a weekday/weekend factor called `day_type`.
+3. `step_rm()` removes `date_dow` column, since we don't model on the date itself.
+4. `step_normalize()` standardizes every numeric predictor. The response, `bike_count`, isn't a predictor, so it stays on its original scale.
+5. `step_dummy()` creates dummy variables for `seasons`, `holiday`, and `day_type`.
+
+```{r}
+recipe_1 <- 
+  recipe(bike_count ~ ., data = bike_train) |>
+  update_role(date, new_role = "ID") |>
+  step_date(date, features = "dow") |>
+  step_mutate(day_type = 
+    factor(
+      if_else(
+        date_dow %in% c("Sat", "Sun"), 
+        "weekend", 
+        "weekday"))) |>
+  step_rm(date_dow) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(all_nominal_predictors())
+  
+```
+
+To check the recipe, we `prep()` it on the training data and `bake()` it. `new_data = NULL` returns the processed training set.
+
+```{r}
+#| label: recipe-1-check
+baked_1 <- recipe_1 |>
+  prep() |>
+  bake(new_data = NULL)
+
+glimpse(baked_1)
+```
+
+The numeric predictors are now standardized, `date_dow` is gone, and each factor has been replaced by dummy columns. Autumn, Holiday, and Weekday are the reference levels.
+
+### Recipe 2: Adding Interactions
+
+Recipe 2 is Recipe 1 plus interactions between seasons and holiday, seasons and temperature, and temperature and rainfall. Because these come after `step_dummy()`, the seasons and holiday variables are now several dummy columns each. `starts_with()` selects all of the dummy columns for a variable at once, so we get one interaction term for each dummy. All three interactions go in one `step_interact()` so that `starts_with("seasons_")` only matches the original dummy columns, not interaction columns created by an earlier step.
+ 
+```{r}
+#| label: recipe-2
+interaction_terms <- ~ starts_with("seasons_"):starts_with("holiday_") +
+  starts_with("seasons_"):temp +
+  temp:rainfall
+ 
+recipe_2 <- recipe_1 |>
+  step_interact(terms = interaction_terms)
+ 
+recipe_2 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(contains("_x_")) |>
+  names()
+```
+
+We then prep and bake the recipe to check the new columns:
+
+```{r}
+#| label: recipe-2-check
+baked_2 <- recipe_2 |>
+  prep() |>
+  bake(new_data = NULL)
+
+baked_2 |>
+  select(contains("_x_")) |>
+  glimpse()
+```
+
+The season by holiday interactions are only nonzero on holidays in that season, so we count how many training days each one is based on:
+
+```{r}
+#| label: recipe-2-holiday-check
+baked_2 |>
+  summarize(across(contains("_x_holiday"), ~ sum(.x != 0)))
+```
+
+### Recipe 3: Adding Quadratic Terms
+
+Recipe 3 is Recipe 2 plus squared terms for temperature and humidity. These come after `step_normalize()`, so they are squares of the **standardized** variables, as the assignment asks.
+ 
+```{r}
+#| label: recipe-3
+recipe_3 <- recipe_2 |>
+  step_mutate(
+    temp_sq     = temp^2,
+    humidity_sq = humidity^2
+  )
+ 
+recipe_3 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(temp, temp_sq, humidity, humidity_sq) |>
+  head()
+```
+
+### Model Fitting
+
+All three MLR models use a linear regression fit with `lm()`. In `tidymodels`, we describe the model once with `linear_reg()` and choose the `"lm"` engine to do the fitting.
+```{r}
+#| label: lm-spec
+lm_spec <- linear_reg() |>
+  set_engine("lm")
+
+mlr_wf_1 <- workflow() |> add_recipe(recipe_1) |> add_model(lm_spec)
+mlr_wf_2 <- workflow() |> add_recipe(recipe_2) |> add_model(lm_spec)
+mlr_wf_3 <- workflow() |> add_recipe(recipe_3) |> add_model(lm_spec)
+```
+
+`fit_resamples()` fits each workflow 10 times. Each time it preps the recipe and fits the model on 9 folds, then predicts the held-out fold.
+
+```{r}
+#| label: mlr-cv
+mlr_cv_1 <- fit_resamples(mlr_wf_1, resamples = bike_folds)
+mlr_cv_2 <- fit_resamples(mlr_wf_2, resamples = bike_folds)
+mlr_cv_3 <- fit_resamples(mlr_wf_3, resamples = bike_folds)
+```
+
+`collect_metrics()` averages each metric over the 10 folds. We combine the RMSE rows into one table:
+
+```{r}
+#| label: mlr-cv-results
+mlr_cv_results <- bind_rows(
+  "Recipe 1: Main effects"    = collect_metrics(mlr_cv_1),
+  "Recipe 2: + Interactions"  = collect_metrics(mlr_cv_2),
+  "Recipe 3: + Quadratic terms" = collect_metrics(mlr_cv_3),
+  .id = "model"
+) |>
+  filter(.metric == "rmse") |>
+  select(model, cv_rmse = mean, std_err, n)
+
+mlr_cv_results
+
+best_mlr_index <- which.min(mlr_cv_results$cv_rmse)
+best_mlr_name  <- mlr_cv_results$model[best_mlr_index]
+```
+
+The model with the lowest CV RMSE is **`r best_mlr_name`**, with a CV RMSE of `r round(mlr_cv_results$cv_rmse[best_mlr_index])` bikes per day.
+
+Adding the interactions lowered the CV RMSE by about 980 bikes per day, roughly five standard errors, so they help. Adding the squared terms lowered it by only about 17 more, so recipes 2 and 3 perform about the same. Recipe 3 has the lowest CV RMSE, so we use it as our best MLR model. The simpler recipe 2 would be a reasonable choice too.
+
+### Fit the Best MLR Model to the Training Set
+
+`last_fit()` takes the split object, fits the workflow on the whole training set, and evaluates it on the test set. We ask for both RMSE and MAE now, since we'll need both to compare model families on the test set later.
+
+```{r}
+#| label: mlr-last-fit
+
+bike_metrics <- metric_set(rmse, mae)
+
+best_mlr_wf <- list(mlr_wf_1, mlr_wf_2, mlr_wf_3)[[best_mlr_index]]
+
+mlr_final <- last_fit(
+  best_mlr_wf,
+  split   = bike_split,
+  metrics = bike_metrics
+)
+
+collect_metrics(mlr_final)
+```
+# Fitting Other Models
+ 
+We now fit three tree-based models, all using Recipe 1. Each model has tuning parameters. For each one, we will:
+ 
+1. Mark the parameters to tune with `tune()`.
+2. Try a grid of values with `tune_grid()` on the 10 CV folds.
+3. Pick the values with the lowest CV RMSE using `select_best()`.
+4. Plug them into the workflow with `finalize_workflow()`.
+5. Fit the final model on the full training set with `last_fit()`.
+ 
+### I. Regression Tree Model
+ 
+A regression tree splits the data into groups with a series of yes/no questions about the predictors, then predicts the mean bike count in each group. We tune two settings:
+ 
+- `tree_depth`: how many splits deep the tree can go.
+- `cost_complexity`: how much each extra split has to improve the fit to be kept. Larger values prune the tree back more.
+ 
+```{r}
+#| label: tree-spec
+tree_spec <- decision_tree(
+  tree_depth      = tune(),
+  cost_complexity = tune()
+) |>
+  set_engine("rpart") |>
+  set_mode("regression")
+ 
+tree_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(tree_spec)
+```
+ 
+We try 5 values of each parameter, for 25 combinations.
+ 
+```{r}
+#| label: tree-tune
+tree_grid <- grid_regular(
+  tree_depth(),
+  cost_complexity(),
+  levels = 5
+)
+ 
+tree_tune <- tune_grid(
+  tree_wf,
+  resamples = bike_folds,
+  grid      = tree_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(tree_tune, metric = "rmse", n = 5)
+```
+ 
+Finalize the workflow with the best values and fit it on the full training set.
+ 
+```{r}
+#| label: tree-final
+tree_best <- select_best(tree_tune, metric = "rmse")
+tree_best
+ 
+tree_final_wf  <- finalize_workflow(tree_wf, tree_best)
+tree_final_fit <- last_fit(tree_final_wf, split = bike_split, metrics = bike_metrics)
+```
+ 
+### II. Bagged Tree Model
+ 
+A single tree changes a lot with small changes to the data. Bagging fixes this by fitting many trees, each on a bootstrap sample of the training data, and averaging their predictions. We use `bag_tree()` from the `baguette` package with 50 trees. We let each tree grow without pruning (`cost_complexity = 0`) and tune:
+ 
+- `tree_depth`: how deep each tree can grow.
+- `min_n`: the smallest number of days allowed in a group before a split is made.
+ 
+```{r}
+#| label: bag-spec
+bag_spec <- bag_tree(
+  tree_depth      = tune(),
+  min_n           = tune(),
+  cost_complexity = 0
+) |>
+  set_engine("rpart", times = 50) |>
+  set_mode("regression")
+ 
+bag_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(bag_spec)
+```
+ 
+Bagging involves random sampling, so we set a seed before tuning to get the same results each render. We try 4 values of each parameter, for 16 combinations.
+ 
+```{r}
+#| label: bag-tune
+bag_grid <- grid_regular(
+  tree_depth(),
+  min_n(),
+  levels = 4
+)
+ 
+set.seed(558)
+bag_tune <- tune_grid(
+  bag_wf,
+  resamples = bike_folds,
+  grid      = bag_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(bag_tune, metric = "rmse", n = 5)
+```
+ 
+```{r}
+#| label: bag-final
+bag_best <- select_best(bag_tune, metric = "rmse")
+bag_best
+ 
+bag_final_wf <- finalize_workflow(bag_wf, bag_best)
+ 
+set.seed(558)
+bag_final_fit <- last_fit(bag_final_wf, split = bike_split, metrics = bike_metrics)
+```
+ 
+### III. Random Forest Model
+ 
+A random forest is a bagged tree where at each split, a tree may only choose from a random subset of the predictors. This keeps one strong predictor from dominating every tree, so the trees are less alike and their average is more accurate. We use 500 trees with the `ranger` engine and tune:
+ 
+- `mtry`: how many predictors each split may choose from.
+- `min_n`: the smallest group size allowed before a split.
+ 
+We also set `importance = "impurity"` so `ranger` records how much each variable improves the splits.
+ 
+```{r}
+#| label: rf-spec
+rf_spec <- rand_forest(
+  mtry  = tune(),
+  min_n = tune(),
+  trees = 500
+) |>
+  set_engine("ranger", importance = "impurity") |>
+  set_mode("regression")
+ 
+rf_wf <- workflow() |>
+  add_recipe(recipe_1) |>
+  add_model(rf_spec)
+```
+ 
+ 
+```{r}
+#| label: rf-tune
+n_predictors <- recipe_1 |>
+  prep() |>
+  bake(new_data = NULL) |>
+  select(-bike_count) |>
+  ncol()
+ 
+rf_grid <- grid_regular(
+  mtry(range = c(1, n_predictors)),
+  min_n(),
+  levels = 4
+)
+ 
+set.seed(558)
+rf_tune <- tune_grid(
+  rf_wf,
+  resamples = bike_folds,
+  grid      = rf_grid,
+  metrics   = bike_metrics
+)
+ 
+show_best(rf_tune, metric = "rmse", n = 5)
+```
+ 
+```{r}
+#| label: rf-final
+rf_best <- select_best(rf_tune, metric = "rmse")
+rf_best
+ 
+rf_final_wf <- finalize_workflow(rf_wf, rf_best)
+ 
+set.seed(558)
+rf_final_fit <- last_fit(rf_final_wf, split = bike_split, metrics = bike_metrics)
+```
+
+
+### Compare on the test sets
+
+Each `last_fit()` object already holds that model's predictions on the test set. `collect_metrics()` pulls out the test RMSE and MAE.
+
+```{r}
+#| label: test-compare
+test_results <- bind_rows(
+  collect_metrics(mlr_final)   |> mutate(model = "MLR 3"),
+  collect_metrics(tree_final_fit) |> mutate(model = "Regression tree"),
+  collect_metrics(bag_final_fit)  |> mutate(model = "Bagged tree"),
+  collect_metrics(rf_final_fit)   |> mutate(model = "Random forest")
+) |>
+  select(model, .metric, .estimate) |>
+  pivot_wider(names_from = .metric, values_from = .estimate) |>
+  arrange(rmse)
+
+test_results
+```
+
+```{r}
+#| label: test-best
+best_overall_name <- test_results$model[1]
+```
+
+The best model on the test set is the **`r best_overall_name`**, with a test RMSE of `r round(test_results$rmse[1])` and a test MAE of `r round(test_results$mae[1])` bikes per day.
+
+
+# Final Model Summaries
+ 
+`extract_fit_parsnip()` and `extract_fit_engine()` pull the fitted model out of a `last_fit()` object. These are the models fit on the full training set.
+ 
+## MLR coefficient table
+ 
+```{r}
+#| label: lm-coefs
+mlr_final |>
+  extract_fit_parsnip() |>
+  tidy() |>
+  print(n = Inf)
+```
+ 
+The predictors are standardized. Each coefficient is the change in daily bike count for a one standard deviation increase in that variable, holding the others fixed. The dummy coefficients compare each level to the reference level.
+ 
+## Regression Tree: Plot of the Final Fit
+ 
+```{r}
+#| label: tree-plot
+#| fig-width: 10
+#| fig-height: 6
+tree_final_fit |>
+  extract_fit_engine() |>
+  rpart.plot(roundint = FALSE)
+```
+ 
+Each box shows the predicted daily bike count for that group and the percent of training days in it. A split like `temp < 0.5` means "temperature below half a standard deviation above average."
+ 
+## Bagged Tree: Variable Importance
+ 
+`baguette` stores each variable's importance, averaged over the 50 trees, in the `imp` part of the fitted model.
+ 
+```{r}
+#| label: bag-vip
+bag_final_fit |>
+  extract_fit_engine() |>
+  pluck("imp") |>
+  mutate(term = fct_reorder(term, value)) |>
+  ggplot(aes(x = value, y = term)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Bagged Tree Variable Importance",
+    x = "Importance",
+    y = NULL
+  )
+```
+ 
+## Random Forest: Variable Importance
+ 
+Because we set `importance = "impurity"` in the engine, the fitted `ranger` model holds each variable's importance: how much its splits reduce prediction error, summed over all 500 trees. `ggplot` plots it.
+ 
+```{r}
+rf_final_fit |>
+  extract_fit_engine() |>
+  pluck("variable.importance") |>
+  enframe(name = "term", value = "value") |>
+  mutate(term = fct_reorder(term, value)) |>
+  ggplot(aes(x = value, y = term)) +
+  geom_col(fill = "darkgreen") +
+  labs(
+    title = "Random Forest Variable Importance",
+    x = "Importance",
+    y = NULL
+  )
+```
+ 
+# Fit the Best Model to the Entire Data Set
+ 
+Finally, we take the overall best model from the test set comparison and fit it to all of `bike_daily`, training and test together. The recipe is re-learned on the full data, so the standardization now uses the mean and standard deviation of all the days.
+ 
+```{r}
+#| label: full-fit
+final_workflows <- list(
+  mlr_wf_3,
+  tree_final_wf,
+  bag_final_wf,
+  rf_final_wf
+)
+names(final_workflows) <- c("MLR 3", "Regression tree", "Bagged tree", "Random forest")
+ 
+best_overall_wf <- final_workflows[[best_overall_name]]
+ 
+set.seed(558)
+full_fit <- fit(best_overall_wf, data = bike_daily)
+ 
+full_fit
+```
+ 
+This is our final model: the **`r best_overall_name`**, fit on all `r nrow(bike_daily)` days.
