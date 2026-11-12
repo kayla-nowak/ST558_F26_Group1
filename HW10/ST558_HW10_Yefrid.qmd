@@ -9,11 +9,13 @@ format: html
 #| message: false
 #| warning: false
 library(tidyverse)
+library(tidymodels)
 library(lubridate)
 library(rsample)
 library(janitor)
 library(yardstick)
 library(baguette)
+library(ranger)
 ```
 
 # Reading the Data
@@ -518,11 +520,12 @@ Based on the mean RMSE metric for each of the fitted models, the one that shows 
 We are going to take the model 3 which includes interaction and quadratic terms and fitted to the entire training set, using the `last_fit()` function.
 
 ```{r}
-MLR_metric <- bike_wfl_3 |>
-  last_fit(bike_split) |>
-  collect_metrics()
+MLR_final <- bike_wfl_3 |>
+  last_fit(bike_split, 
+           metrics = metric_set(rmse, mae)) 
 
-MLR_metric
+MLR_final |>
+  collect_metrics()
 ```
 
 # Fitting Other Models
@@ -560,7 +563,8 @@ And now we can fit the tree using resamples
 ```{r}
 tree_fits <- tree_wfl|>
   tune_grid(resamples = bike_folds,
-            grid = tree_grid)
+            grid = tree_grid,
+            metrics = metric_set(rmse, mae))
 ```
 
 with these, we are going to get the best parameters, and fit it to the entire training set
@@ -578,7 +582,8 @@ tree_final_wfl <- tree_wfl |>
 And using the Last fit, also we are going to use the collect metrics for this model.
 ```{r}
 tree_final_fit <- tree_final_wfl |>
-  last_fit(bike_split)
+  last_fit(bike_split, 
+           metrics = metric_set(rmse, mae))
 
 tree_final_fit |>
   collect_metrics()
@@ -617,7 +622,8 @@ And we fit the model using the folds.
 ```{r}
 bagged_fits <- bagged_wfl|>
   tune_grid(resamples = bike_folds,
-            grid = bagged_grid)
+            grid = bagged_grid,
+            metrics = metric_set(rmse, mae))
 ```
 
 with these, we are going to get the best parameters, and fit it to the entire training set
@@ -632,7 +638,8 @@ bagged_final_wfl <- bagged_wfl |>
   finalize_workflow(bagged_best_param)
 
 bagged_final_fit <- bagged_final_wfl |>
-  last_fit(bike_split)
+  last_fit(bike_split,
+           metrics = metric_set(rmse, mae))
 
 bagged_final_fit |>
   collect_metrics()
@@ -640,4 +647,87 @@ bagged_final_fit |>
 
 ##Random Forest Model
 
-First we define the 
+First we define the model
+
+```{r}
+rf_mod <- rand_forest(mtry = tune(),
+                      trees = tune()) |>
+  set_engine("ranger") |>
+  set_mode("regression")
+```
+
+And we set up the workflow
+
+```{r}
+rf_wfl <- workflow() |>
+  add_recipe(bike_rec_1) |>
+  add_model(rf_mod)
+```
+
+We define the grid for the tuning parameters
+
+```{r}
+# rf_grid <- grid_regular(mtry(),
+#                         levels = 5)
+```
+
+And we can fit it to the crossvalidation folds created.
+
+```{r}
+rf_fits <- rf_wfl|>
+  tune_grid(resamples = bike_folds,
+            grid = c(5,5),
+            metrics = metric_set(rmse, mae))
+```
+
+with these, we are going to get the best parameters, and fit it to the entire training set
+
+```{r}
+rf_best_param <- select_best(rf_fits, metric = "rmse")
+rf_best_param
+```
+Now we are going to refit on our entire data set using the best tuning parameters
+```{r}
+rf_final_wfl <- rf_wfl |>
+  finalize_workflow(rf_best_param)
+
+rf_final_fit <- rf_final_wfl |>
+  last_fit(bike_split,
+           metrics = metric_set(rmse, mae))
+
+rf_final_fit |>
+  collect_metrics()
+```
+
+## Compare on the test set
+
+Now that we have completed and selected the best parameters for regression trees model, bagging trees model, and random forest model, and the best MLR, we are going to compare between them on how good they predict the test set, using the RMSE and the MAE as metrics.
+```{r}
+rbind(
+  MLR_final |>
+    collect_metrics() |> 
+    mutate(Model = "MLR", .before = ".metric"), 
+  tree_final_fit |>
+    collect_metrics() |> 
+    mutate(Model = "Tree", .before = ".metric"), 
+  bagged_final_fit |>
+    collect_metrics() |> 
+    mutate(Model = "Bagged", .before = ".metric"),
+  rf_final_fit |>
+    collect_metrics() |> 
+    mutate(Model = "RF", .before = ".metric")
+) |>
+  arrange(.metric, .estimate)
+```
+
+It can be seen that for both of the metrics evaluated, Random Forest Model shows the lowest estimate on the test set, which tell us that is the best model for predicting the bike count.
+
+### MLR coefficient table
+
+```{r}
+MLR_final |>
+  extract_workflow() |>
+  extract_fit_parsnip() |>
+  tidy()
+```
+
